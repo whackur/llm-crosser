@@ -9,14 +9,16 @@ import { useSettings } from "@/src/hooks/useSettings";
 import { useHistory } from "@/src/hooks/useHistory";
 import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 import { extractContent } from "@/src/lib/messaging";
+import { startConversationUrlCapture } from "@/src/lib/conversation-url-capture";
 import type { HistoryEntry } from "@/src/types/history";
 import type { GridLayout } from "@/src/types/settings";
 
 export default function BatchSearchPage() {
   const { settings, loading: settingsLoading, updateSettings } = useSettings();
-  const { addEntry } = useHistory();
+  const { history, addEntry, updateEntry } = useHistory();
   const { siteConfigs, loading: configLoading } = useSiteConfig();
   const [isQuerying, setIsQuerying] = useState(false);
+  const [siteUrlOverrides, setSiteUrlOverrides] = useState<Record<string, string>>({});
   const [shareState, setShareState] = useState<{
     isOpen: boolean;
     siteName: string;
@@ -26,10 +28,13 @@ export default function BatchSearchPage() {
     siteName: "",
     content: "",
   });
+  const urlCaptureCleanupRef = useRef<(() => void) | null>(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const urlQuery = searchParams.get("q") || "";
+  const historyId = searchParams.get("historyId") || "";
   const autoSentQueryRef = useRef<string>("");
+  const appliedHistoryIdRef = useRef<string>("");
 
   const siteList = useMemo(
     () =>
@@ -98,8 +103,9 @@ export default function BatchSearchPage() {
 
       await Promise.all(sends);
 
+      const entryId = crypto.randomUUID();
       const entry: HistoryEntry = {
-        id: crypto.randomUUID(),
+        id: entryId,
         query,
         timestamp: Date.now(),
         siteResults: enabledSites.map((s) => ({ siteName: s.name })),
@@ -107,11 +113,21 @@ export default function BatchSearchPage() {
       await addEntry(entry);
 
       setIsQuerying(false);
+
+      urlCaptureCleanupRef.current?.();
+      urlCaptureCleanupRef.current = startConversationUrlCapture({
+        sites: enabledSites,
+        onCaptured: (siteResults) => {
+          const withUrls = siteResults.filter((r) => r.conversationUrl);
+          if (withUrls.length > 0) {
+            void updateEntry(entryId, { siteResults });
+          }
+        },
+      });
     },
-    [siteList, siteConfigs, addEntry],
+    [siteList, siteConfigs, addEntry, updateEntry],
   );
 
-  // Auto-send query from omnibox or history navigation
   const handleSendRef = useRef(handleSend);
   handleSendRef.current = handleSend;
 
@@ -121,7 +137,6 @@ export default function BatchSearchPage() {
 
     autoSentQueryRef.current = urlQuery;
 
-    // Delay to allow iframes to load their content scripts
     const timer = setTimeout(() => {
       handleSendRef.current(urlQuery);
       setSearchParams({}, { replace: true });
@@ -129,6 +144,25 @@ export default function BatchSearchPage() {
 
     return () => clearTimeout(timer);
   }, [urlQuery, settingsLoading, configLoading, settings, setSearchParams]);
+
+  useEffect(() => {
+    if (!historyId || settingsLoading || configLoading || !settings) return;
+    if (appliedHistoryIdRef.current === historyId) return;
+
+    const entry = history.find((e) => e.id === historyId);
+    if (!entry) return;
+
+    appliedHistoryIdRef.current = historyId;
+
+    const overrides: Record<string, string> = {};
+    for (const result of entry.siteResults) {
+      if (result.conversationUrl) {
+        overrides[result.siteName] = result.conversationUrl;
+      }
+    }
+    setSiteUrlOverrides(overrides);
+    setSearchParams({}, { replace: true });
+  }, [historyId, history, settingsLoading, configLoading, settings, setSearchParams]);
 
   const handleLayoutChange = useCallback(
     (layout: GridLayout) => {
@@ -176,10 +210,11 @@ export default function BatchSearchPage() {
   }, []);
 
   const renderIframe = useCallback(
-    (site: { name: string; url: string }) => (
-      <IframeWrapper siteName={site.name} siteUrl={site.url} onShare={handleShare} />
-    ),
-    [handleShare],
+    (site: { name: string; url: string }) => {
+      const effectiveUrl = siteUrlOverrides[site.name] || site.url;
+      return <IframeWrapper siteName={site.name} siteUrl={effectiveUrl} onShare={handleShare} />;
+    },
+    [handleShare, siteUrlOverrides],
   );
 
   if (settingsLoading || configLoading || !settings) {

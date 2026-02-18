@@ -3,6 +3,7 @@ import type { HistoryEntry } from "../types/history";
 import {
   getHistory,
   addHistoryEntry,
+  updateHistoryEntry,
   deleteHistoryEntry,
   clearHistory,
   searchHistory,
@@ -12,6 +13,7 @@ interface UseHistoryReturn {
   history: HistoryEntry[];
   loading: boolean;
   addEntry: (entry: HistoryEntry) => Promise<void>;
+  updateEntry: (id: string, updates: Partial<HistoryEntry>) => Promise<void>;
   deleteEntry: (id: string) => Promise<void>;
   clearHistory: () => Promise<void>;
   searchHistory: (query: string) => Promise<HistoryEntry[]>;
@@ -66,6 +68,18 @@ export function useHistory(): UseHistoryReturn {
     [history],
   );
 
+  const handleUpdateEntry = useCallback(async (id: string, updates: Partial<HistoryEntry>) => {
+    setHistory((prev) => prev.map((e) => (e.id === id ? { ...e, ...updates } : e)));
+
+    try {
+      await updateHistoryEntry(id, updates);
+    } catch (error) {
+      const reloaded = await getHistory();
+      setHistory(reloaded);
+      throw error;
+    }
+  }, []);
+
   const handleDeleteEntry = useCallback(
     async (id: string) => {
       const optimistic = history.filter((entry) => entry.id !== id);
@@ -102,6 +116,7 @@ export function useHistory(): UseHistoryReturn {
     history,
     loading,
     addEntry: handleAddEntry,
+    updateEntry: handleUpdateEntry,
     deleteEntry: handleDeleteEntry,
     clearHistory: handleClearHistory,
     searchHistory: handleSearchHistory,

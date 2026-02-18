@@ -75,6 +75,26 @@ export async function addHistoryEntry(entry: HistoryEntry): Promise<void> {
 }
 
 /**
+ * Update an existing history entry by id (partial merge)
+ */
+export async function updateHistoryEntry(
+  id: string,
+  updates: Partial<HistoryEntry>,
+): Promise<void> {
+  return new Promise((resolve) => {
+    chrome.storage.local.get([HISTORY_KEY], (result: Record<string, unknown>) => {
+      const current = result[HISTORY_KEY] as HistoryEntry[] | undefined;
+      const updated = (current || []).map((entry) =>
+        entry.id === id ? { ...entry, ...updates } : entry,
+      );
+      chrome.storage.local.set({ [HISTORY_KEY]: updated }, () => {
+        resolve();
+      });
+    });
+  });
+}
+
+/**
  * Delete history entry by id
  */
 export async function deleteHistoryEntry(id: string): Promise<void> {
