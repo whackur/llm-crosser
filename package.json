@@ -1,7 +1,7 @@
 {
   "name": "llm-crosser",
   "version": "0.1.0",
-  "description": "Chrome extension that embeds multiple LLM chat sites (ChatGPT, Gemini, Grok, Perplexity, etc.) in a single tab for side-by-side comparison",
+  "description": "Query multiple LLM chats at once and compare responses side by side",
   "scripts": {
     "dev": "wxt",
     "build": "wxt build",
