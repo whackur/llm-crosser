@@ -95,6 +95,16 @@ export default defineContentScript({
         return;
       }
 
+      if (type === "GET_URL_VIA_POST") {
+        const { siteName } = event.data as { siteName?: string };
+        const source = event.source as Window | null;
+        source?.postMessage(
+          { type: "CURRENT_URL", siteName: siteName ?? "", url: window.location.href },
+          "*",
+        );
+        return;
+      }
+
       if (type === "EXTRACT_CONTENT_VIA_POST") {
         const { contentExtractor, siteName } = event.data as {
           contentExtractor?: Parameters<typeof extractConversation>[0];

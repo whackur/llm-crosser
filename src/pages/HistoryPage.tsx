@@ -155,7 +155,7 @@ export default function HistoryPage() {
             <HistoryCard
               key={entry.id}
               entry={entry}
-              onClick={() => navigate("/?q=" + encodeURIComponent(entry.query))}
+              onClick={() => navigate("/?historyId=" + encodeURIComponent(entry.id))}
             />
           ))}
         </div>

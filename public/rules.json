@@ -6,15 +6,20 @@
       "type": "modifyHeaders",
       "requestHeaders": [
         { "header": "Sec-Fetch-Dest", "operation": "set", "value": "document" },
-        { "header": "Sec-Fetch-Site", "operation": "set", "value": "same-origin" },
+        { "header": "Sec-Fetch-Site", "operation": "set", "value": "none" },
         { "header": "Sec-Fetch-Mode", "operation": "set", "value": "navigate" },
         { "header": "Sec-Fetch-User", "operation": "set", "value": "?1" },
-        { "header": "Upgrade-Insecure-Requests", "operation": "set", "value": "1" }
+        { "header": "Upgrade-Insecure-Requests", "operation": "set", "value": "1" },
+        { "header": "Referer", "operation": "remove" }
       ],
       "responseHeaders": [
         { "header": "content-security-policy", "operation": "remove" },
         { "header": "x-frame-options", "operation": "remove" },
-        { "header": "permissions-policy", "operation": "remove" }
+        { "header": "permissions-policy", "operation": "remove" },
+        { "header": "cross-origin-resource-policy", "operation": "remove" },
+        { "header": "cross-origin-embedder-policy", "operation": "remove" },
+        { "header": "cross-origin-opener-policy", "operation": "remove" },
+        { "header": "origin-agent-cluster", "operation": "remove" }
       ]
     },
     "condition": {
