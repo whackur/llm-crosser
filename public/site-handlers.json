@@ -1,0 +1,411 @@
+{
+  "version": "0.1.0",
+  "lastUpdated": "2026-02-18T00:00:00Z",
+  "sites": [
+    {
+      "name": "ChatGPT",
+      "enabled": true,
+      "region": "US",
+      "url": "https://chatgpt.com/",
+      "searchHandler": {
+        "steps": [
+          {
+            "action": "focus",
+            "selector": "#prompt-textarea"
+          },
+          {
+            "action": "setValue",
+            "selector": "#prompt-textarea",
+            "inputType": "contenteditable"
+          },
+          {
+            "action": "triggerEvents",
+            "selector": "#prompt-textarea",
+            "events": ["input", "change", "blur", "focus"]
+          },
+          {
+            "action": "wait",
+            "duration": 100
+          },
+          {
+            "action": "click",
+            "selector": "button[data-testid=\"send-button\"]",
+            "retryOnDisabled": true,
+            "maxAttempts": 3,
+            "retryInterval": 300
+          }
+        ]
+      },
+      "fileUploadHandler": {
+        "steps": [
+          {
+            "action": "focus",
+            "selector": "#prompt-textarea"
+          },
+          {
+            "action": "wait",
+            "duration": 200
+          },
+          {
+            "action": "paste"
+          }
+        ]
+      },
+      "contentExtractor": {
+        "messageContainer": "[data-message-author-role=\"assistant\"]",
+        "contentSelectors": [".markdown.prose"],
+        "thinkingSelector": ":scope > div:not(.markdown)",
+        "extractThinking": true,
+        "urlExtractor": {
+          "pattern": "chatgpt.com/c/"
+        }
+      },
+      "historyHandler": {
+        "urlFeature": "/c/"
+      },
+      "userPromptButton": {
+        "containerSelector": "[data-message-author-role=\"user\"]",
+        "textSelector": "[data-message-author-role=\"user\"]"
+      }
+    },
+    {
+      "name": "Gemini",
+      "enabled": true,
+      "region": "US",
+      "url": "https://gemini.google.com/",
+      "searchHandler": {
+        "steps": [
+          {
+            "action": "focus",
+            "selector": "[contenteditable=\"true\"]"
+          },
+          {
+            "action": "setValue",
+            "selector": "[contenteditable=\"true\"]",
+            "inputType": "contenteditable"
+          },
+          {
+            "action": "triggerEvents",
+            "selector": "[contenteditable=\"true\"]",
+            "events": ["input", "change", "blur", "focus"]
+          },
+          {
+            "action": "wait",
+            "duration": 100
+          },
+          {
+            "action": "sendKeys",
+            "selector": "[contenteditable=\"true\"]",
+            "keys": "Enter"
+          }
+        ]
+      },
+      "fileUploadHandler": {
+        "steps": [
+          {
+            "action": "focus",
+            "selector": "[contenteditable=\"true\"]"
+          },
+          {
+            "action": "wait",
+            "duration": 200
+          },
+          {
+            "action": "paste"
+          }
+        ]
+      },
+      "contentExtractor": {
+        "messageContainer": ".conversation-container",
+        "contentSelectors": ["model-response .model-response-text"]
+      },
+      "historyHandler": {
+        "urlFeature": "/app/"
+      },
+      "userPromptButton": {
+        "containerSelector": "[contenteditable=\"true\"]",
+        "textSelector": "[contenteditable=\"true\"]"
+      }
+    },
+    {
+      "name": "Grok",
+      "enabled": true,
+      "region": "US",
+      "url": "https://grok.com/",
+      "searchHandler": {
+        "steps": [
+          {
+            "action": "focus",
+            "selector": "div[contenteditable=\"true\"].tiptap",
+            "waitForElement": true,
+            "maxAttempts": 5,
+            "retryInterval": 200
+          },
+          {
+            "action": "setValue",
+            "selector": "div[contenteditable=\"true\"].tiptap",
+            "inputType": "contenteditable",
+            "waitForElement": true,
+            "maxAttempts": 5,
+            "retryInterval": 200
+          },
+          {
+            "action": "triggerEvents",
+            "selector": "div[contenteditable=\"true\"].tiptap",
+            "events": ["input", "change", "blur", "focus"],
+            "waitForElement": true,
+            "maxAttempts": 5,
+            "retryInterval": 200
+          },
+          {
+            "action": "wait",
+            "duration": 100
+          },
+          {
+            "action": "sendKeys",
+            "selector": "div[contenteditable=\"true\"].tiptap",
+            "keys": "Enter",
+            "waitForElement": true,
+            "maxAttempts": 5,
+            "retryInterval": 200
+          }
+        ]
+      },
+      "fileUploadHandler": {
+        "steps": [
+          {
+            "action": "focus",
+            "selector": "div[contenteditable=\"true\"].tiptap",
+            "waitForElement": true,
+            "maxAttempts": 5,
+            "retryInterval": 200
+          },
+          {
+            "action": "wait",
+            "duration": 200
+          },
+          {
+            "action": "paste"
+          }
+        ]
+      },
+      "contentExtractor": {
+        "messageContainer": "[data-message-author-role=\"assistant\"]",
+        "contentSelectors": [
+          ".response-content-markdown.markdown",
+          ".response-content-markdown",
+          ".markdown"
+        ]
+      },
+      "historyHandler": {
+        "urlFeature": "/c/"
+      },
+      "userPromptButton": {
+        "containerSelector": "[data-message-author-role=\"assistant\"]",
+        "textSelector": "[data-message-author-role=\"assistant\"]"
+      }
+    },
+    {
+      "name": "Qwen",
+      "enabled": false,
+      "region": "China",
+      "url": "https://chat.qwen.ai/",
+      "searchHandler": {
+        "steps": [
+          {
+            "action": "focus",
+            "selector": "textarea"
+          },
+          {
+            "action": "setValue",
+            "selector": "textarea"
+          },
+          {
+            "action": "triggerEvents",
+            "selector": "textarea",
+            "events": ["input", "change", "blur", "focus"]
+          },
+          {
+            "action": "wait",
+            "duration": 100
+          },
+          {
+            "action": "sendKeys",
+            "selector": "textarea",
+            "keys": "Enter"
+          }
+        ]
+      },
+      "fileUploadHandler": {
+        "steps": [
+          {
+            "action": "focus",
+            "selector": "textarea"
+          },
+          {
+            "action": "wait",
+            "duration": 200
+          },
+          {
+            "action": "paste"
+          }
+        ]
+      },
+      "contentExtractor": {
+        "messageContainer": "[class*=\"message\"]",
+        "contentSelectors": [".markdown", "[class*=\"message\"]", "[class*=\"response\"]"]
+      },
+      "historyHandler": {
+        "urlFeature": "/chat/"
+      },
+      "userPromptButton": {
+        "containerSelector": "textarea",
+        "textSelector": "textarea"
+      },
+      "notes": "Selectors need verification - initial configuration"
+    },
+    {
+      "name": "z.ai",
+      "enabled": true,
+      "region": "US",
+      "url": "https://chat.z.ai/",
+      "searchHandler": {
+        "steps": [
+          {
+            "action": "focus",
+            "selector": "textarea",
+            "waitForElement": true,
+            "maxAttempts": 10,
+            "retryInterval": 500
+          },
+          {
+            "action": "setValue",
+            "selector": "textarea"
+          },
+          {
+            "action": "triggerEvents",
+            "selector": "textarea",
+            "events": ["input", "change", "blur", "focus"]
+          },
+          {
+            "action": "wait",
+            "duration": 300
+          },
+          {
+            "action": "click",
+            "selector": [
+              "button[type='submit']",
+              "button[aria-label*='send']",
+              "button[aria-label*='Send']"
+            ],
+            "retryOnDisabled": true,
+            "maxAttempts": 10,
+            "retryInterval": 300
+          }
+        ]
+      },
+      "fileUploadHandler": {
+        "steps": [
+          {
+            "action": "focus",
+            "selector": "textarea",
+            "timeout": 3000
+          },
+          {
+            "action": "wait",
+            "duration": 200
+          },
+          {
+            "action": "paste"
+          }
+        ]
+      },
+      "contentExtractor": {
+        "messageContainer": "[class*='message'], [class*='conversation'], main",
+        "contentSelectors": ["[class*='message'], [class*='conversation']"],
+        "userMessageSelector": "[class*='user']",
+        "assistantMessageSelector": "[class*='assistant'], [class*='bot']"
+      },
+      "historyHandler": {
+        "urlFeature": "/c/"
+      },
+      "userPromptButton": {
+        "containerSelector": "textarea",
+        "textSelector": "textarea"
+      },
+      "notes": "Selectors are experimental - z.ai DOM structure needs verification"
+    },
+    {
+      "name": "Perplexity",
+      "enabled": true,
+      "region": "US",
+      "url": "https://www.perplexity.ai/",
+      "searchHandler": {
+        "steps": [
+          {
+            "action": "focus",
+            "selector": ["#ask-input", "textarea[placeholder*=\"Ask\"]", "textarea[autofocus]"],
+            "waitForElement": true,
+            "maxAttempts": 5,
+            "retryInterval": 300
+          },
+          {
+            "action": "setValue",
+            "selector": ["#ask-input", "textarea[placeholder*=\"Ask\"]", "textarea[autofocus]"],
+            "inputType": "contenteditable",
+            "waitForElement": true,
+            "maxAttempts": 5,
+            "retryInterval": 300
+          },
+          {
+            "action": "triggerEvents",
+            "selector": ["#ask-input", "textarea[placeholder*=\"Ask\"]", "textarea[autofocus]"],
+            "events": ["input", "change", "blur", "focus"]
+          },
+          {
+            "action": "wait",
+            "duration": 100
+          },
+          {
+            "action": "sendKeys",
+            "selector": ["#ask-input", "textarea[placeholder*=\"Ask\"]", "textarea[autofocus]"],
+            "keys": "Enter",
+            "waitForElement": true,
+            "maxAttempts": 5,
+            "retryInterval": 300
+          }
+        ]
+      },
+      "fileUploadHandler": {
+        "steps": [
+          {
+            "action": "focus",
+            "selector": ["#ask-input", "textarea[placeholder*=\"Ask\"]", "textarea[autofocus]"],
+            "waitForElement": true,
+            "maxAttempts": 5,
+            "retryInterval": 300
+          },
+          {
+            "action": "wait",
+            "duration": 200
+          },
+          {
+            "action": "paste"
+          }
+        ]
+      },
+      "contentExtractor": {
+        "messageContainer": "[class*=\"message\"], .prose",
+        "contentSelectors": [".prose", ".markdown", "[class*=\"response\"]"]
+      },
+      "historyHandler": {
+        "urlFeature": "/search/"
+      },
+      "userPromptButton": {
+        "containerSelector": "#ask-input",
+        "textSelector": "#ask-input"
+      },
+      "notes": "Perplexity uses Lexical editor (#ask-input contenteditable). Enter key submits. Selectors may need verification."
+    }
+  ]
+}

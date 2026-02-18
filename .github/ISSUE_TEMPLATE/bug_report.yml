@@ -1,0 +1,113 @@
+name: Bug Report
+description: Report a bug or unexpected behavior in LLM Crosser
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please write your issue in English.** Non-English issues will be closed. Broken English is perfectly fine.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm the following before submitting
+      options:
+        - label: I will write this issue in English
+          required: true
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: I am using the latest version of LLM Crosser
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: Describe the bug in detail...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Open LLM Crosser extension
+        2. Navigate to '...'
+        3. Click on '...'
+        4. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Describe what should happen...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: Describe what actually happened...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected-site
+    attributes:
+      label: Affected LLM Site
+      description: Which LLM site is affected? Select "All" if it's a general issue.
+      options:
+        - All
+        - ChatGPT
+        - Gemini
+        - Grok
+        - Perplexity
+        - Qwen
+        - Z.ai
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      description: Which browser are you using?
+      options:
+        - Chrome
+        - Edge
+        - Brave
+        - Other Chromium-based
+    validations:
+      required: true
+
+  - type: input
+    id: browser-version
+    attributes:
+      label: Browser Version
+      description: "Go to chrome://version to find this"
+      placeholder: "e.g. 131.0.6778.109"
+
+  - type: textarea
+    id: console-errors
+    attributes:
+      label: Console Errors
+      description: Open DevTools (F12) → Console tab, and paste any error messages
+      placeholder: Paste console errors here...
+      render: shell
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem (screenshots, screen recordings, etc.)
+      placeholder: Add any other context, screenshots, or information...

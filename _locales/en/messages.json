@@ -1,0 +1,8 @@
+{
+  "appName": {
+    "message": "LLM Crosser"
+  },
+  "extDescription": {
+    "message": "Query multiple LLM sites simultaneously"
+  }
+}

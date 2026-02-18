@@ -1,0 +1,37 @@
+node_modules/
+dist/
+coverage/
+
+# env
+.env
+.env.*
+
+# build artifacts
+*.tsbuildinfo
+*.tgz
+
+# logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+!.vscode/settings.json
+.idea/
+
+# AGENTS
+.sisyphus/*
+!.sisyphus/rules/
+.claude
+.cursor
+.opencode
+
+# WXT (auto-generated)
+.wxt/
+
+# CUSTOM
+.output/
+.playwright-mcp/

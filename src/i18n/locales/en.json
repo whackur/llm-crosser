@@ -1,0 +1,81 @@
+{
+  "nav": {
+    "batchSearch": "Batch Search",
+    "settings": "Settings",
+    "history": "History"
+  },
+  "settings": {
+    "title": "Settings",
+    "searchEngines": "Search Engines",
+    "searchEnginesDesc": "Enable or disable LLM sites",
+    "promptTemplates": "Prompt Templates",
+    "promptTemplatesDesc": "Manage query templates",
+    "language": "Language",
+    "languageDesc": "Choose display language",
+    "addTemplate": "Add Template",
+    "editTemplate": "Edit Template",
+    "deleteTemplate": "Delete Template",
+    "templateName": "Template Name",
+    "templateText": "Template Text",
+    "templatePlaceholder": "Use {query} as placeholder for your query",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirmDelete": "Are you sure you want to delete this template?",
+    "theme": "Theme",
+    "themeDesc": "Choose a color theme for the interface",
+    "themeMidnight": "Midnight",
+    "themeDawn": "Dawn",
+    "themeOcean": "Ocean",
+    "themeForest": "Forest"
+  },
+  "batch": {
+    "inputPlaceholder": "Ask all LLMs...",
+    "send": "Send",
+    "sending": "Sending...",
+    "columns": "Columns",
+    "noSitesEnabled": "No sites enabled. Go to Settings to enable LLM sites.",
+    "loading": "Loading...",
+    "ready": "Ready",
+    "querying": "Querying..."
+  },
+  "history": {
+    "title": "History",
+    "search": "Search history...",
+    "empty": "No search history yet",
+    "clear": "Clear All",
+    "confirmClear": "Are you sure you want to clear all history?",
+    "noResults": "No matching entries found",
+    "timeAgo": "{{time}} ago",
+    "sites": "Sites"
+  },
+  "share": {
+    "title": "Share Conversation",
+    "copyMarkdown": "Copy as Markdown",
+    "copied": "Copied!",
+    "download": "Download .md",
+    "close": "Close",
+    "extracting": "Extracting conversation...",
+    "extractFailed": "Failed to extract conversation"
+  },
+  "error": {
+    "loadFailed": "Failed to load {{siteName}}",
+    "captchaDetected": "Security challenge detected. Please complete it in the iframe or open in new tab.",
+    "timeout": "{{siteName}} timed out",
+    "sessionExpired": "Please log in to {{siteName}}",
+    "retry": "Retry",
+    "openInNewTab": "Open in New Tab",
+    "injectionFailed": "Failed to send query to {{siteName}}"
+  },
+  "disclaimer": {
+    "tos": "This tool may violate the Terms of Service of embedded LLM sites. Use at your own risk."
+  },
+  "common": {
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "on": "On",
+    "off": "Off",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "close": "Close"
+  }
+}
