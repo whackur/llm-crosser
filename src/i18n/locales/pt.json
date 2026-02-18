@@ -1,0 +1,80 @@
+{
+  "nav": {
+    "batchSearch": "Busca em Lote",
+    "settings": "Configurações",
+    "history": "Histórico"
+  },
+  "settings": {
+    "title": "Configurações",
+    "searchEngines": "Mecanismos de Busca",
+    "searchEnginesDesc": "Ativar ou desativar sites LLM",
+    "promptTemplates": "Modelos de Prompt",
+    "promptTemplatesDesc": "Gerenciar modelos de consulta",
+    "language": "Idioma",
+    "languageDesc": "Escolher idioma de exibição",
+    "addTemplate": "Adicionar Modelo",
+    "editTemplate": "Editar Modelo",
+    "deleteTemplate": "Excluir Modelo",
+    "templateName": "Nome do Modelo",
+    "templateText": "Texto do Modelo",
+    "templatePlaceholder": "Use {query} como espaço reservado para sua consulta",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "confirmDelete": "Tem certeza de que deseja excluir este modelo?",
+    "theme": "Tema",
+    "themeDesc": "Escolher um tema de cores para a interface",
+    "themeMidnight": "Meia-noite",
+    "themeDawn": "Aurora",
+    "themeOcean": "Oceano",
+    "themeForest": "Floresta"
+  },
+  "batch": {
+    "inputPlaceholder": "Pergunte a todos os LLMs...",
+    "send": "Enviar",
+    "sending": "Enviando...",
+    "columns": "Colunas",
+    "noSitesEnabled": "Nenhum site ativado. Vá para Configurações para ativar sites LLM.",
+    "loading": "Carregando...",
+    "ready": "Pronto",
+    "querying": "Consultando..."
+  },
+  "history": {
+    "title": "Histórico",
+    "search": "Pesquisar histórico...",
+    "empty": "Nenhum histórico de busca ainda",
+    "clear": "Limpar Tudo",
+    "confirmClear": "Tem certeza de que deseja limpar todo o histórico?",
+    "timeAgo": "{{time}} atrás",
+    "sites": "Sites"
+  },
+  "share": {
+    "title": "Compartilhar Conversa",
+    "copyMarkdown": "Copiar como Markdown",
+    "copied": "Copiado!",
+    "download": "Baixar .md",
+    "close": "Fechar",
+    "extracting": "Extraindo conversa...",
+    "extractFailed": "Falha ao extrair conversa"
+  },
+  "error": {
+    "loadFailed": "Falha ao carregar {{siteName}}",
+    "captchaDetected": "Desafio de segurança detectado. Complete-o no iframe ou abra em uma nova aba.",
+    "timeout": "{{siteName}} expirou",
+    "sessionExpired": "Faça login em {{siteName}}",
+    "retry": "Tentar Novamente",
+    "openInNewTab": "Abrir em Nova Aba",
+    "injectionFailed": "Falha ao enviar consulta para {{siteName}}"
+  },
+  "disclaimer": {
+    "tos": "Esta ferramenta pode violar os Termos de Servico dos sites LLM incorporados. Use por sua conta e risco."
+  },
+  "common": {
+    "enabled": "Ativado",
+    "disabled": "Desativado",
+    "on": "Ativar",
+    "off": "Desativar",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "close": "Fechar"
+  }
+}

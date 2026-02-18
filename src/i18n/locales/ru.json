@@ -1,0 +1,80 @@
+{
+  "nav": {
+    "batchSearch": "Пакетный поиск",
+    "settings": "Настройки",
+    "history": "История"
+  },
+  "settings": {
+    "title": "Настройки",
+    "searchEngines": "Поисковые системы",
+    "searchEnginesDesc": "Включить или отключить сайты LLM",
+    "promptTemplates": "Шаблоны подсказок",
+    "promptTemplatesDesc": "Управление шаблонами запросов",
+    "language": "Язык",
+    "languageDesc": "Выберите язык отображения",
+    "addTemplate": "Добавить шаблон",
+    "editTemplate": "Редактировать шаблон",
+    "deleteTemplate": "Удалить шаблон",
+    "templateName": "Имя шаблона",
+    "templateText": "Текст шаблона",
+    "templatePlaceholder": "Используйте {query} как заполнитель для вашего запроса",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "confirmDelete": "Вы уверены, что хотите удалить этот шаблон?",
+    "theme": "Тема",
+    "themeDesc": "Выберите цветовую тему интерфейса",
+    "themeMidnight": "Полночь",
+    "themeDawn": "Рассвет",
+    "themeOcean": "Океан",
+    "themeForest": "Лес"
+  },
+  "batch": {
+    "inputPlaceholder": "Спросить все LLM...",
+    "send": "Отправить",
+    "sending": "Отправка...",
+    "columns": "Столбцы",
+    "noSitesEnabled": "Нет включенных сайтов. Перейдите в Настройки, чтобы включить сайты LLM.",
+    "loading": "Загрузка...",
+    "ready": "Готово",
+    "querying": "Запрос..."
+  },
+  "history": {
+    "title": "История",
+    "search": "Поиск в истории...",
+    "empty": "История поиска пока пуста",
+    "clear": "Очистить все",
+    "confirmClear": "Вы уверены, что хотите очистить всю историю?",
+    "timeAgo": "{{time}} назад",
+    "sites": "Сайты"
+  },
+  "share": {
+    "title": "Поделиться беседой",
+    "copyMarkdown": "Копировать как Markdown",
+    "copied": "Скопировано!",
+    "download": "Скачать .md",
+    "close": "Закрыть",
+    "extracting": "Извлечение беседы...",
+    "extractFailed": "Ошибка при извлечении беседы"
+  },
+  "error": {
+    "loadFailed": "Ошибка загрузки {{siteName}}",
+    "captchaDetected": "Обнаружена проверка безопасности. Пожалуйста, завершите её в iframe или откройте в новой вкладке.",
+    "timeout": "{{siteName}} истекло время ожидания",
+    "sessionExpired": "Пожалуйста, войдите в {{siteName}}",
+    "retry": "Повторить",
+    "openInNewTab": "Открыть в новой вкладке",
+    "injectionFailed": "Ошибка отправки запроса на {{siteName}}"
+  },
+  "disclaimer": {
+    "tos": "Этот инструмент может нарушать условия использования встроенных сайтов LLM. Используйте на свой страх и риск."
+  },
+  "common": {
+    "enabled": "Включено",
+    "disabled": "Отключено",
+    "on": "Вкл",
+    "off": "Выкл",
+    "confirm": "Подтвердить",
+    "cancel": "Отмена",
+    "close": "Закрыть"
+  }
+}

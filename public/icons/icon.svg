@@ -1,0 +1,34 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="128" fill="#0A0A0F"/>
+  
+  <!-- Definitions for the LX Combined shape with consistent stroke width -->
+  <defs>
+    <g id="lx-combo-uniform">
+      <g transform="translate(0, 0)">
+        <!-- L Shape: Left and Bottom border style -->
+        <path d="M110 110 V 402 H 402" stroke-width="56" stroke-linecap="round" stroke-linejoin="round"/>
+        
+        <!-- X Shape: Crossing diagonals -->
+        <path d="M110 110 L 402 402" stroke-width="56" stroke-linecap="round"/>
+        <path d="M402 110 L 110 402" stroke-width="56" stroke-linecap="round"/>
+      </g>
+    </g>
+  </defs>
+
+  <!-- Red Shift Layer -->
+  <g transform="translate(10, -10)" opacity="0.7">
+    <use href="#lx-combo-uniform" stroke="#FF5C5C" fill="none"/>
+  </g>
+
+  <!-- Blue Shift Layer -->
+  <g transform="translate(-10, 10)" opacity="0.7">
+    <use href="#lx-combo-uniform" stroke="#4F8AFF" fill="none"/>
+  </g>
+
+  <!-- Main White Layer -->
+  <g>
+    <use href="#lx-combo-uniform" stroke="#FFFFFF" fill="none"/>
+  </g>
+
+</svg>

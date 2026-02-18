@@ -1,0 +1,8 @@
+{
+  "appName": {
+    "message": "LLM Crosser"
+  },
+  "extDescription": {
+    "message": "여러 LLM 사이트에 동시에 질의하기"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "name": "llm-crosser",
+  "version": "0.1.0",
+  "description": "Chrome extension that embeds multiple LLM chat sites (ChatGPT, Gemini, Grok, Perplexity, etc.) in a single tab for side-by-side comparison",
+  "scripts": {
+    "dev": "wxt",
+    "build": "wxt build",
+    "build:firefox": "wxt build --browser firefox",
+    "build:safari": "wxt build --browser safari",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip --browser firefox",
+    "zip:safari": "wxt zip --browser safari",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "fix": "eslint . --fix && prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whackur/llm-crosser.git"
+  },
+  "keywords": [
+    "llm-aggregator",
+    "llm",
+    "llm-comparison",
+    "llm-hub",
+    "llm-crosser"
+  ],
+  "author": "whackur@gmail.com",
+  "license": "GPL-3.0",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/whackur/llm-crosser/issues"
+  },
+  "homepage": "https://github.com/whackur/llm-crosser#readme",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/chrome": "^0.1.36",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^10.0.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.3.0",
+    "prettier": "^3.8.1",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.0",
+    "wxt": "^0.20.17"
+  },
+  "dependencies": {
+    "@webext-core/messaging": "^2.3.0",
+    "i18next": "^25.8.10",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-i18next": "^16.5.4",
+    "react-router-dom": "^7.13.0"
+  }
+}

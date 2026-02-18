@@ -1,0 +1,80 @@
+{
+  "nav": {
+    "batchSearch": "Recherche par lot",
+    "settings": "Paramètres",
+    "history": "Historique"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "searchEngines": "Moteurs de recherche",
+    "searchEnginesDesc": "Activer ou désactiver les sites LLM",
+    "promptTemplates": "Modèles de prompt",
+    "promptTemplatesDesc": "Gérer les modèles de requête",
+    "language": "Langue",
+    "languageDesc": "Choisir la langue d'affichage",
+    "addTemplate": "Ajouter un modèle",
+    "editTemplate": "Modifier le modèle",
+    "deleteTemplate": "Supprimer le modèle",
+    "templateName": "Nom du modèle",
+    "templateText": "Texte du modèle",
+    "templatePlaceholder": "Utilisez {query} comme espace réservé pour votre requête",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce modèle ?",
+    "theme": "Thème",
+    "themeDesc": "Choisir un thème de couleurs pour l'interface",
+    "themeMidnight": "Minuit",
+    "themeDawn": "Aurore",
+    "themeOcean": "Océan",
+    "themeForest": "Forêt"
+  },
+  "batch": {
+    "inputPlaceholder": "Poser une question à tous les LLM...",
+    "send": "Envoyer",
+    "sending": "Envoi en cours...",
+    "columns": "Colonnes",
+    "noSitesEnabled": "Aucun site activé. Allez aux Paramètres pour activer les sites LLM.",
+    "loading": "Chargement...",
+    "ready": "Prêt",
+    "querying": "Interrogation..."
+  },
+  "history": {
+    "title": "Historique",
+    "search": "Rechercher dans l'historique...",
+    "empty": "Aucun historique de recherche pour le moment",
+    "clear": "Tout effacer",
+    "confirmClear": "Êtes-vous sûr de vouloir effacer tout l'historique ?",
+    "timeAgo": "il y a {{time}}",
+    "sites": "Sites"
+  },
+  "share": {
+    "title": "Partager la conversation",
+    "copyMarkdown": "Copier en tant que Markdown",
+    "copied": "Copié !",
+    "download": "Télécharger .md",
+    "close": "Fermer",
+    "extracting": "Extraction de la conversation...",
+    "extractFailed": "Échec de l'extraction de la conversation"
+  },
+  "error": {
+    "loadFailed": "Échec du chargement de {{siteName}}",
+    "captchaDetected": "Défi de sécurité détecté. Veuillez le compléter dans l'iframe ou ouvrir dans un nouvel onglet.",
+    "timeout": "{{siteName}} a expiré",
+    "sessionExpired": "Veuillez vous connecter à {{siteName}}",
+    "retry": "Réessayer",
+    "openInNewTab": "Ouvrir dans un nouvel onglet",
+    "injectionFailed": "Échec de l'envoi de la requête à {{siteName}}"
+  },
+  "disclaimer": {
+    "tos": "Cet outil peut enfreindre les conditions d'utilisation des sites LLM intégrés. Utilisez-le à vos propres risques."
+  },
+  "common": {
+    "enabled": "Activé",
+    "disabled": "Désactivé",
+    "on": "Activé",
+    "off": "Désactivé",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "close": "Fermer"
+  }
+}

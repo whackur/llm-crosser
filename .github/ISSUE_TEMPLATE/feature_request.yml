@@ -1,0 +1,80 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for LLM Crosser
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please write your issue in English.** Non-English issues will be closed. Broken English is perfectly fine.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm the following before submitting
+      options:
+        - label: I will write this issue in English
+          required: true
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Description
+      description: What problem does this feature solve? What's the use case?
+      placeholder: |
+        Describe the problem or limitation you're experiencing...
+        Example: "I want to compare responses but can only see 2 at a time..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe how you'd like this feature to work
+      placeholder: |
+        Describe your proposed solution in detail...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?
+      placeholder: Describe any alternative solutions you've considered...
+
+  - type: dropdown
+    id: feature-type
+    attributes:
+      label: Feature Type
+      description: What type of feature is this?
+      options:
+        - New LLM Site Support
+        - UI/Layout Improvement
+        - Query/Search Enhancement
+        - Export/Sharing
+        - Settings/Configuration
+        - Keyboard Shortcuts
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other context, mockups, or examples
+      placeholder: Add any other context, screenshots, or links...
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      description: Are you willing to contribute to this feature?
+      options:
+        - label: I'm willing to submit a PR for this feature
+        - label: I can help with testing

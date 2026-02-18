@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/whackur/llm-crosser#readme
+    about: Read the documentation before submitting an issue

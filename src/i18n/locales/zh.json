@@ -1,0 +1,80 @@
+{
+  "nav": {
+    "batchSearch": "批量搜索",
+    "settings": "设置",
+    "history": "历史"
+  },
+  "settings": {
+    "title": "设置",
+    "searchEngines": "搜索引擎",
+    "searchEnginesDesc": "启用或禁用LLM网站",
+    "promptTemplates": "提示词模板",
+    "promptTemplatesDesc": "管理查询模板",
+    "language": "语言",
+    "languageDesc": "选择显示语言",
+    "addTemplate": "添加模板",
+    "editTemplate": "编辑模板",
+    "deleteTemplate": "删除模板",
+    "templateName": "模板名称",
+    "templateText": "模板文本",
+    "templatePlaceholder": "使用{query}作为查询的占位符",
+    "save": "保存",
+    "cancel": "取消",
+    "confirmDelete": "确定要删除此模板吗？",
+    "theme": "主题",
+    "themeDesc": "选择界面颜色主题",
+    "themeMidnight": "午夜",
+    "themeDawn": "黎明",
+    "themeOcean": "海洋",
+    "themeForest": "森林"
+  },
+  "batch": {
+    "inputPlaceholder": "向所有LLM提问...",
+    "send": "发送",
+    "sending": "发送中...",
+    "columns": "列",
+    "noSitesEnabled": "没有启用的网站。请转到设置以启用LLM网站。",
+    "loading": "加载中...",
+    "ready": "就绪",
+    "querying": "查询中..."
+  },
+  "history": {
+    "title": "历史",
+    "search": "搜索历史...",
+    "empty": "还没有搜索历史",
+    "clear": "全部清除",
+    "confirmClear": "确定要清除所有历史记录吗？",
+    "timeAgo": "{{time}}前",
+    "sites": "网站"
+  },
+  "share": {
+    "title": "分享对话",
+    "copyMarkdown": "复制为Markdown",
+    "copied": "已复制！",
+    "download": "下载.md",
+    "close": "关闭",
+    "extracting": "正在提取对话...",
+    "extractFailed": "提取对话失败"
+  },
+  "error": {
+    "loadFailed": "加载{{siteName}}失败",
+    "captchaDetected": "检测到安全验证。请在iframe中完成或在新标签页中打开。",
+    "timeout": "{{siteName}}超时",
+    "sessionExpired": "请登录{{siteName}}",
+    "retry": "重试",
+    "openInNewTab": "在新标签页中打开",
+    "injectionFailed": "向{{siteName}}发送查询失败"
+  },
+  "disclaimer": {
+    "tos": "本工具可能违反嵌入式LLM网站的服务条款。使用风险自负。"
+  },
+  "common": {
+    "enabled": "启用",
+    "disabled": "禁用",
+    "on": "开启",
+    "off": "关闭",
+    "confirm": "确认",
+    "cancel": "取消",
+    "close": "关闭"
+  }
+}

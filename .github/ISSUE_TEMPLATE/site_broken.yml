@@ -1,0 +1,69 @@
+name: LLM Site Broken
+description: Report an LLM site that stopped working (selectors changed, iframe blocked, etc.)
+title: "[Site]: "
+labels: ["site-broken", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please write your issue in English.** Non-English issues will be closed. Broken English is perfectly fine.
+
+        LLM sites frequently update their UI, which can break query injection or response extraction.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm the following before submitting
+      options:
+        - label: I will write this issue in English
+          required: true
+        - label: I have confirmed the site works when opened directly (not in iframe)
+          required: true
+        - label: I am using the latest version of LLM Crosser
+          required: true
+
+  - type: dropdown
+    id: site
+    attributes:
+      label: Affected Site
+      description: Which LLM site is broken?
+      options:
+        - ChatGPT
+        - Gemini
+        - Grok
+        - Perplexity
+        - Qwen
+        - Z.ai
+    validations:
+      required: true
+
+  - type: dropdown
+    id: symptom
+    attributes:
+      label: Symptom
+      description: What's happening?
+      options:
+        - Site doesn't load in iframe (blank/error)
+        - Query not injected (text doesn't appear in input)
+        - Query injected but not submitted (send button not clicked)
+        - Response extraction returns empty/wrong content
+        - Site redirects or shows "open in new tab" message
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Any additional details about the issue
+      placeholder: Describe what you see...
+
+  - type: textarea
+    id: console-errors
+    attributes:
+      label: Console Errors
+      description: Open DevTools (F12) → Console tab, and paste any error messages
+      placeholder: Paste console errors here...
+      render: shell
