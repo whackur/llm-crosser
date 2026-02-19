@@ -31,6 +31,7 @@ src/
 │   ├── background-frame-router.ts # Finds batch-search tab + resolves siteName → frameId
 │   ├── site-frame-message-router.ts # Routes messages from background to correct iframe
 │   ├── messaging.ts               # Typed wrapper around browser.runtime messaging
+│   ├── conversation-url-capture.ts # Polls iframes for per-site conversation URLs post-query
 │   └── storage.ts                 # chrome.storage.local CRUD (settings + history)
 ├── pages/                # Route-level views (one per HashRouter route)
 │   ├── BatchSearchPage.tsx   # Main: IframeGrid + QueryInputBar + omnibox auto-send
@@ -61,17 +62,18 @@ Pages (orchestrate) → Components (render) → Hooks (state) → Lib (logic) �
 
 ## WHERE TO LOOK
 
-| Task                       | File(s)                                                         | Notes                                                    |
-| -------------------------- | --------------------------------------------------------------- | -------------------------------------------------------- |
-| Add a new component        | `components/{feature}/NewComponent.tsx`                         | One file per component, Tailwind classes                 |
-| Change grid behavior       | `components/grid/IframeGrid.tsx`                                | `side-by-side` (flex-row) vs `grid` (CSS grid)           |
-| Add settings field         | `types/settings.ts` → `lib/storage.ts` → `hooks/useSettings.ts` | Update type, default, then hook                          |
-| Change theme               | `styles/globals.css` @theme block + `[data-theme]` selectors    | CSS vars: `--color-*`, `--spacing-*`, `--radius-*`       |
-| Reset / New Chat           | `components/layout/Sidebar.tsx` + `pages/BatchSearchPage.tsx`   | `/?reset=true` param → resetKey counter → iframe remount |
-| Add translation key        | `i18n/locales/*.json` (all 7) + `types/i18n.ts`                 | Key must exist in all locales                            |
-| Add automation action      | `lib/step-actions.ts`                                           | At 238 LOC — **MUST split** before adding actions        |
-| Find elements (Shadow DOM) | `lib/element-finder.ts`                                         | Pierces shadow roots recursively                         |
-| Wire new message type      | `types/messaging.ts` → `lib/messaging.ts`                       | Add type, then handler in background.ts                  |
+| Task                       | File(s)                                                         | Notes                                                             |
+| -------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Add a new component        | `components/{feature}/NewComponent.tsx`                         | One file per component, Tailwind classes                          |
+| Change grid behavior       | `components/grid/IframeGrid.tsx`                                | `side-by-side` (flex-row) vs `grid` (CSS grid)                    |
+| Add settings field         | `types/settings.ts` → `lib/storage.ts` → `hooks/useSettings.ts` | Update type, default, then hook                                   |
+| Change theme               | `styles/globals.css` @theme block + `[data-theme]` selectors    | CSS vars: `--color-*`, `--spacing-*`, `--radius-*`                |
+| Reset / New Chat           | `components/layout/Sidebar.tsx` + `pages/BatchSearchPage.tsx`   | `/?reset=true` param → resetKey counter → iframe remount          |
+| Add translation key        | `i18n/locales/*.json` (all 7) + `types/i18n.ts`                 | Key must exist in all locales                                     |
+| Add automation action      | `lib/step-actions.ts`                                           | At 238 LOC — **MUST split** before adding actions                 |
+| Find elements (Shadow DOM) | `lib/element-finder.ts`                                         | Pierces shadow roots recursively                                  |
+| Wire new message type      | `types/messaging.ts` → `lib/messaging.ts`                       | Add type, then handler in background.ts                           |
+| Capture conversation URLs  | `lib/conversation-url-capture.ts`                               | Single export `startConversationUrlCapture()`; returns cleanup fn |
 
 ## CONVENTIONS
 

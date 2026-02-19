@@ -1,6 +1,6 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-02-19 | **Commit:** 6826a02 | **Branch:** develop
+**Generated:** 2026-02-20 | **Commit:** e04aaa2 | **Branch:** feature/new-features
 
 > **IMMUTABLE SECTIONS**: The three CRITICAL sections below (PR Target Branch, No Autonomous Commits, English-Only Policy) **MUST NEVER be removed or modified.** They are project-level invariants that override all other directives.
 
@@ -89,6 +89,7 @@ llm-crosser/
 | Extract LLM responses      | `src/lib/content-extractor.ts` + `src/lib/html-node-converter.ts` + `src/lib/html-to-markdown.ts` | Extraction pipeline: DOM → HTML → Markdown                           |
 | Reset / New Chat           | `src/components/layout/Sidebar.tsx` (Link) + `src/pages/BatchSearchPage.tsx` (resetKey)           | `/?reset=true` URL param → clears overrides + increments resetKey    |
 | Omnibox behavior           | `entrypoints/background.ts` (onInputEntered) + `src/pages/BatchSearchPage.tsx` (auto-send)        | `llmc` keyword, auto-sends query via `useSearchParams` + 3s delay    |
+| Capture conversation URLs  | `src/lib/conversation-url-capture.ts`                                                             | Polls iframes via postMessage at 5s + 12s; returns cleanup fn        |
 
 ## EXTENSION ARCHITECTURE
 
@@ -136,6 +137,8 @@ pnpm zip              # Package for Chrome Web Store
 - **Site selectors are fragile**: `public/site-handlers.json` contains hardcoded DOM selectors for each LLM site. These break when target sites update their UI. Test after any site update.
 - **Adding a new LLM site requires 4+ files**: `site-handlers.json` (selectors + steps), `wxt.config.ts` (host_permissions + frame-src CSP), `rules.json` (header stripping), `frame-guard.content.ts` (matches array), `inject.content.ts` (matches array).
 - **`step-actions.ts` at 238 LOC**: **OVER the 200 LOC limit.** Must be split before adding new action handlers.
+- **`inject.content.ts` at 253 LOC**: **OVER the 200 LOC limit.** Dual-listener registration + automation call + URL reporting — split before adding new message handlers.
+- **`BatchSearchPage.tsx` at 452 LOC**: **FAR OVER the 200 LOC limit.** Orchestrates iframe grid, query sending, history saving, omnibox auto-send, reset mechanism, and site URL overrides. Split before adding new features.
 - **Chrome-only APIs**: The React app uses `chrome.storage.local` and `browser.runtime` — it cannot be tested outside a Chrome extension context.
 - **No test runner or CI configured**: Code quality enforced by convention + `.sisyphus/rules/`.
 - **Playwright MCP test artifacts**: All Playwright test outputs MUST be saved to `.playwright-mcp/`. This directory is gitignored.

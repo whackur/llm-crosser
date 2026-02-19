@@ -44,17 +44,28 @@ storage.ts         (tab + frame discovery)          (message routing to iframes)
 - `site-frame-message-router.ts` (85 LOC): Routes `INJECT_QUERY`/`INJECT_FILE`/`EXTRACT_CONTENT` messages from background to the correct iframe. Tries direct frame first, then iterates all frames as fallback (skips `FRAME_SITE_MISMATCH` responses).
 - `storage.ts` (125 LOC): CRUD for `chrome.storage.local`. Keys: `llm-crosser-settings`, `llm-crosser-history`. Contains `DEFAULT_SETTINGS` (must stay in sync with `entrypoints/background.ts`).
 
+### 4. URL Capture (conversation permalink tracking)
+
+```
+BatchSearchPage → startConversationUrlCapture() → postMessage(GET_URL_VIA_POST)
+                                                         ↓
+                                              inject.content.ts replies CURRENT_URL
+```
+
+- `conversation-url-capture.ts` (72 LOC): Polls all iframes via postMessage at 5s and 12s after query. Collects `CURRENT_URL` replies per site, fires `onCaptured(SiteResult[])` callback. Returns cleanup fn (removes listener + cancels timers).
+
 ## WHERE TO LOOK
 
-| Task                   | File                                              | Notes                                                         |
-| ---------------------- | ------------------------------------------------- | ------------------------------------------------------------- |
-| Add new action type    | `step-actions.ts` + `automation-engine.ts` switch | step-actions at 238 LOC — **MUST split first**                |
-| Fix element not found  | `element-finder.ts`                               | Check Shadow DOM piercing logic                               |
-| Fix rich editor input  | `contenteditable-handler.ts`                      | Lexical vs Tiptap vs generic — different strategies           |
-| Fix content extraction | `content-extractor.ts`                            | Config-driven — check `site-handlers.json` selectors          |
-| Add new message type   | `messaging.ts`                                    | Also add to `types/messaging.ts` + `background.ts` handler    |
-| Fix message routing    | `site-frame-message-router.ts`                    | Direct frame → fallback iteration with mismatch filtering     |
-| Change storage schema  | `storage.ts`                                      | Must also update `entrypoints/background.ts` DEFAULT_SETTINGS |
+| Task                      | File                                              | Notes                                                         |
+| ------------------------- | ------------------------------------------------- | ------------------------------------------------------------- |
+| Add new action type       | `step-actions.ts` + `automation-engine.ts` switch | step-actions at 238 LOC — **MUST split first**                |
+| Fix element not found     | `element-finder.ts`                               | Check Shadow DOM piercing logic                               |
+| Fix rich editor input     | `contenteditable-handler.ts`                      | Lexical vs Tiptap vs generic — different strategies           |
+| Fix content extraction    | `content-extractor.ts`                            | Config-driven — check `site-handlers.json` selectors          |
+| Add new message type      | `messaging.ts`                                    | Also add to `types/messaging.ts` + `background.ts` handler    |
+| Fix message routing       | `site-frame-message-router.ts`                    | Direct frame → fallback iteration with mismatch filtering     |
+| Change storage schema     | `storage.ts`                                      | Must also update `entrypoints/background.ts` DEFAULT_SETTINGS |
+| Capture conversation URLs | `conversation-url-capture.ts`                     | Polls at 5s+12s; inject.content.ts handles `GET_URL_VIA_POST` |
 
 ## CONVENTIONS
 
