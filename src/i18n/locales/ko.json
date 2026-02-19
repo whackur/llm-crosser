@@ -2,7 +2,8 @@
   "nav": {
     "batchSearch": "일괄 검색",
     "settings": "설정",
-    "history": "히스토리"
+    "history": "히스토리",
+    "newChat": "새 대화"
   },
   "settings": {
     "title": "설정",
@@ -26,7 +27,9 @@
     "themeMidnight": "미드나이트",
     "themeDawn": "새벽",
     "themeOcean": "오션",
-    "themeForest": "포레스트"
+    "themeForest": "포레스트",
+    "themeRose": "로즈",
+    "themeMint": "민트"
   },
   "batch": {
     "inputPlaceholder": "모든 LLM에게 질문하기...",

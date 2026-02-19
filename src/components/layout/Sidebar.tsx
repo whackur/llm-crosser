@@ -1,11 +1,13 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import {
   SearchIcon,
   SettingsIcon,
   HistoryIcon,
   IssueIcon,
+  GitHubIcon,
+  NewChatIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "../ui/Icons";
@@ -40,8 +42,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggleCollapse })
         ${collapsed ? "w-[72px]" : "w-64"}
       `}
     >
-      <div
-        className={`flex items-center h-14 border-b border-border/50 shrink-0 ${collapsed ? "justify-center" : "px-5"}`}
+      <Link
+        to="/?reset=true"
+        className={`flex items-center h-14 border-b border-border/50 shrink-0 cursor-pointer hover:bg-surface-secondary/50 transition-colors ${collapsed ? "justify-center" : "px-5"}`}
+        title="LLM Crosser"
       >
         <img
           src="/icons/icon-48.png"
@@ -51,6 +55,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggleCollapse })
         {!collapsed && (
           <span className="font-bold text-primary text-base tracking-tight">LLM Crosser</span>
         )}
+      </Link>
+
+      <div className={`shrink-0 pt-3 pb-1 ${collapsed ? "px-2" : "px-3"}`}>
+        <Link
+          to="/?reset=true"
+          className={`
+            flex items-center rounded-lg transition-all duration-200 group
+            bg-primary/10 text-primary hover:bg-primary/20 font-medium
+            ${itemBase}
+          `}
+          title={collapsed ? t("nav.newChat") : undefined}
+        >
+          <NewChatIcon
+            className={`w-[22px] h-[22px] shrink-0 group-hover:scale-105 transition-transform ${collapsed ? "" : "mr-3"}`}
+          />
+          {!collapsed && <span className="text-sm whitespace-nowrap">{t("nav.newChat")}</span>}
+        </Link>
       </div>
 
       <nav
@@ -96,6 +117,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggleCollapse })
             <div className="text-[11px] text-text-secondary/50 select-none">v0.1.0</div>
           </div>
         )}
+
+        <a
+          href="https://github.com/whackur/llm-crosser"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`
+            flex items-center rounded-lg transition-all duration-200 group
+            text-text-secondary hover:bg-surface-secondary hover:text-text
+            ${itemBase}
+          `}
+          title={collapsed ? "GitHub" : undefined}
+        >
+          <GitHubIcon
+            className={`w-[22px] h-[22px] shrink-0 group-hover:scale-105 transition-transform ${collapsed ? "" : "mr-3"}`}
+          />
+          {!collapsed && <span className="text-sm whitespace-nowrap">GitHub</span>}
+        </a>
 
         <a
           href="https://github.com/whackur/llm-crosser/issues/new"

@@ -2,7 +2,8 @@
   "nav": {
     "batchSearch": "批量搜索",
     "settings": "设置",
-    "history": "历史"
+    "history": "历史",
+    "newChat": "新对话"
   },
   "settings": {
     "title": "设置",
@@ -26,7 +27,9 @@
     "themeMidnight": "午夜",
     "themeDawn": "黎明",
     "themeOcean": "海洋",
-    "themeForest": "森林"
+    "themeForest": "森林",
+    "themeRose": "玫瑰",
+    "themeMint": "薄荷"
   },
   "batch": {
     "inputPlaceholder": "向所有LLM提问...",

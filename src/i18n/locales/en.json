@@ -2,7 +2,8 @@
   "nav": {
     "batchSearch": "Batch Search",
     "settings": "Settings",
-    "history": "History"
+    "history": "History",
+    "newChat": "New Chat"
   },
   "settings": {
     "title": "Settings",
@@ -26,7 +27,9 @@
     "themeMidnight": "Midnight",
     "themeDawn": "Dawn",
     "themeOcean": "Ocean",
-    "themeForest": "Forest"
+    "themeForest": "Forest",
+    "themeRose": "Rose",
+    "themeMint": "Mint"
   },
   "batch": {
     "inputPlaceholder": "Ask all LLMs...",

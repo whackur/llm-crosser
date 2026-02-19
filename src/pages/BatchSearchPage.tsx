@@ -19,6 +19,7 @@ export default function BatchSearchPage() {
   const { siteConfigs, loading: configLoading } = useSiteConfig();
   const [isQuerying, setIsQuerying] = useState(false);
   const [siteUrlOverrides, setSiteUrlOverrides] = useState<Record<string, string>>({});
+  const [resetKey, setResetKey] = useState(0);
   const [shareState, setShareState] = useState<{
     isOpen: boolean;
     siteName: string;
@@ -164,6 +165,20 @@ export default function BatchSearchPage() {
     setSearchParams({}, { replace: true });
   }, [historyId, history, settingsLoading, configLoading, settings, setSearchParams]);
 
+  useEffect(() => {
+    const resetParam = searchParams.get("reset");
+    if (!resetParam) return;
+
+    setSiteUrlOverrides({});
+    setResetKey((prev) => prev + 1);
+    setIsQuerying(false);
+    urlCaptureCleanupRef.current?.();
+    urlCaptureCleanupRef.current = null;
+    autoSentQueryRef.current = "";
+    appliedHistoryIdRef.current = "";
+    setSearchParams({}, { replace: true });
+  }, [searchParams, setSearchParams]);
+
   const handleLayoutChange = useCallback(
     (layout: GridLayout) => {
       void updateSettings({ gridLayout: layout });
@@ -212,9 +227,16 @@ export default function BatchSearchPage() {
   const renderIframe = useCallback(
     (site: { name: string; url: string }) => {
       const effectiveUrl = siteUrlOverrides[site.name] || site.url;
-      return <IframeWrapper siteName={site.name} siteUrl={effectiveUrl} onShare={handleShare} />;
+      return (
+        <IframeWrapper
+          key={`${site.name}-${resetKey}`}
+          siteName={site.name}
+          siteUrl={effectiveUrl}
+          onShare={handleShare}
+        />
+      );
     },
-    [handleShare, siteUrlOverrides],
+    [handleShare, siteUrlOverrides, resetKey],
   );
 
   if (settingsLoading || configLoading || !settings) {

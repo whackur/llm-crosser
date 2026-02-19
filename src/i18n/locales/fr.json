@@ -2,7 +2,8 @@
   "nav": {
     "batchSearch": "Recherche par lot",
     "settings": "Paramètres",
-    "history": "Historique"
+    "history": "Historique",
+    "newChat": "Nouveau chat"
   },
   "settings": {
     "title": "Paramètres",
@@ -26,7 +27,9 @@
     "themeMidnight": "Minuit",
     "themeDawn": "Aurore",
     "themeOcean": "Océan",
-    "themeForest": "Forêt"
+    "themeForest": "Forêt",
+    "themeRose": "Rose",
+    "themeMint": "Menthe"
   },
   "batch": {
     "inputPlaceholder": "Poser une question à tous les LLM...",

@@ -2,7 +2,8 @@
   "nav": {
     "batchSearch": "Пакетный поиск",
     "settings": "Настройки",
-    "history": "История"
+    "history": "История",
+    "newChat": "Новый чат"
   },
   "settings": {
     "title": "Настройки",
@@ -26,7 +27,9 @@
     "themeMidnight": "Полночь",
     "themeDawn": "Рассвет",
     "themeOcean": "Океан",
-    "themeForest": "Лес"
+    "themeForest": "Лес",
+    "themeRose": "Роза",
+    "themeMint": "Мята"
   },
   "batch": {
     "inputPlaceholder": "Спросить все LLM...",

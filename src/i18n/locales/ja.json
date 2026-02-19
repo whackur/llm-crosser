@@ -2,7 +2,8 @@
   "nav": {
     "batchSearch": "一括検索",
     "settings": "設定",
-    "history": "履歴"
+    "history": "履歴",
+    "newChat": "新しい会話"
   },
   "settings": {
     "title": "設定",
@@ -26,7 +27,9 @@
     "themeMidnight": "ミッドナイト",
     "themeDawn": "ドーン",
     "themeOcean": "オーシャン",
-    "themeForest": "フォレスト"
+    "themeForest": "フォレスト",
+    "themeRose": "ローズ",
+    "themeMint": "ミント"
   },
   "batch": {
     "inputPlaceholder": "すべてのLLMに質問...",
