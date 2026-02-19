@@ -6,11 +6,18 @@
 
 ## CRITICAL: PULL REQUEST TARGET BRANCH
 
-All PRs target `develop`. Never `main`. Merge commit only (squash disabled).
+Branch merge rules — follow strictly, no exceptions:
+
+| From → To               | Method                           | PR Required |
+| ----------------------- | -------------------------------- | ----------- |
+| `feature/*` → `develop` | Direct merge allowed             | No          |
+| `develop` → `main`      | PR only — **never direct merge** | **Yes**     |
 
 ```
-main (production) ← develop (integration) ← feature branches (your work)
+main (production) ←[PR only]← develop (integration) ←[direct merge]← feature branches (your work)
 ```
+
+Merge commit only (squash disabled).
 
 ## CRITICAL: NO AUTONOMOUS COMMITS
 
