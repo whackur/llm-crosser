@@ -18,4 +18,5 @@ export interface UserSettings {
   language: LanguageCode;
   theme: ThemeId;
   promptTemplates: PromptTemplate[];
+  exportAllTemplates: PromptTemplate[];
 }

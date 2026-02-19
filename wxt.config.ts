@@ -27,7 +27,6 @@ export default defineConfig({
       "storage",
       "declarativeNetRequest",
       "declarativeNetRequestWithHostAccess",
-      "scripting",
       "cookies",
       "webNavigation",
       "activeTab",

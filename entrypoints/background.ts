@@ -19,6 +19,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   language: "en",
   theme: "midnight",
   promptTemplates: [],
+  exportAllTemplates: [],
 };
 
 async function openOrFocusBatchSearch(hash?: string): Promise<Browser.tabs.Tab> {

@@ -11,6 +11,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   language: "en",
   theme: "midnight",
   promptTemplates: [],
+  exportAllTemplates: [],
 };
 
 /**

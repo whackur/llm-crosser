@@ -35,3 +35,4 @@ Thumbs.db
 # CUSTOM
 .output/
 .playwright-mcp/
+nul

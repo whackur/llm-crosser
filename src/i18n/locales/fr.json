@@ -10,7 +10,11 @@
     "searchEngines": "Moteurs de recherche",
     "searchEnginesDesc": "Activer ou désactiver les sites LLM",
     "promptTemplates": "Modèles de prompt",
-    "promptTemplatesDesc": "Gérer les modèles de requête",
+    "promptTemplatesDesc": "Modèles appliqués lors de l'envoi de requêtes aux LLM.",
+    "promptTemplatesHint": "sera remplacé par votre question. Sélectionnez un modèle dans la barre de recherche avant d'envoyer.",
+    "exportAllTemplates": "Modèles d'exportation globale",
+    "exportAllTemplatesDesc": "Modèles pour envelopper les réponses combinées des LLM. Utile pour coller dans un autre LLM afin d'analyser ou comparer toutes les réponses.",
+    "exportAllTemplatesHint": "sera remplacé par les conversations exportées. Sélectionnez un modèle lors de l'exportation pour envelopper la sortie.",
     "language": "Langue",
     "languageDesc": "Choisir la langue d'affichage",
     "addTemplate": "Ajouter un modèle",
@@ -19,6 +23,7 @@
     "templateName": "Nom du modèle",
     "templateText": "Texte du modèle",
     "templatePlaceholder": "Utilisez {query} comme espace réservé pour votre requête",
+    "templateQueryRequired": "Le modèle doit inclure {query} comme espace réservé.",
     "save": "Enregistrer",
     "cancel": "Annuler",
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce modèle ?",
@@ -33,13 +38,16 @@
   },
   "batch": {
     "inputPlaceholder": "Poser une question à tous les LLM...",
+    "templateActivePlaceholder": "Entrez votre requête (le modèle \"{{name}}\" sera appliqué)",
     "send": "Envoyer",
     "sending": "Envoi en cours...",
     "columns": "Colonnes",
     "noSitesEnabled": "Aucun site activé. Allez aux Paramètres pour activer les sites LLM.",
     "loading": "Chargement...",
     "ready": "Prêt",
-    "querying": "Interrogation..."
+    "querying": "Interrogation...",
+    "attachFile": "Joindre un fichier",
+    "fileTooLarge": "{{name}} est trop volumineux (max 10 Mo)"
   },
   "history": {
     "title": "Historique",
@@ -57,7 +65,9 @@
     "download": "Télécharger .md",
     "close": "Fermer",
     "extracting": "Extraction de la conversation...",
-    "extractFailed": "Échec de l'extraction de la conversation"
+    "extractFailed": "Échec de l'extraction de la conversation",
+    "exportAll": "Tout exporter",
+    "wrapWith": "Envelopper avec :"
   },
   "error": {
     "loadFailed": "Échec du chargement de {{siteName}}",

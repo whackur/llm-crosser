@@ -8,10 +8,12 @@ import { SharePopup } from "@/src/components/share/SharePopup";
 import { useSettings } from "@/src/hooks/useSettings";
 import { useHistory } from "@/src/hooks/useHistory";
 import { useSiteConfig } from "@/src/hooks/useSiteConfig";
-import { extractContent } from "@/src/lib/messaging";
 import { startConversationUrlCapture } from "@/src/lib/conversation-url-capture";
+import { formatConversation, formatAllConversations } from "@/src/lib/html-to-markdown";
+import type { ConversationData } from "@/src/lib/content-extractor";
 import type { HistoryEntry } from "@/src/types/history";
 import type { GridLayout } from "@/src/types/settings";
+import type { ContentExtractor } from "@/src/types/site";
 
 export default function BatchSearchPage() {
   const { settings, loading: settingsLoading, updateSettings } = useSettings();
@@ -193,36 +195,201 @@ export default function BatchSearchPage() {
     [updateSettings],
   );
 
-  const enabledSiteNames = useMemo(
-    () => siteList.filter((s) => s.enabled).map((s) => s.name),
+  const postMessageToSiteIframe = useCallback(
+    (siteName: string, message: Record<string, unknown>) => {
+      const iframes = document.querySelectorAll<HTMLIFrameElement>("iframe");
+      const normalizeHost = (h: string) => h.toLowerCase().replace(/^www\./, "");
+      const site = siteList.find((s) => s.name === siteName);
+      if (!site) return false;
+
+      try {
+        const siteHost = normalizeHost(new URL(site.url).hostname);
+        for (const iframe of iframes) {
+          try {
+            const iframeHost = normalizeHost(new URL(iframe.src).hostname);
+            if (
+              iframeHost === siteHost ||
+              iframeHost.endsWith(`.${siteHost}`) ||
+              siteHost.endsWith(`.${iframeHost}`)
+            ) {
+              iframe.contentWindow?.postMessage(message, "*");
+              return true;
+            }
+          } catch {
+            /* invalid iframe URL */
+          }
+        }
+      } catch {
+        /* invalid site URL */
+      }
+      return false;
+    },
     [siteList],
   );
 
-  const handleShare = useCallback(async (siteName: string) => {
-    try {
-      const response = await extractContent(siteName);
-      let markdown = "No conversation content extracted yet.";
+  const handleFileUpload = useCallback(
+    async (files: File[]) => {
+      if (files.length === 0) return;
 
-      if (typeof response === "string") {
-        markdown = response;
-      } else if (response !== null && typeof response === "object") {
-        const obj = response as Record<string, unknown>;
-        if (typeof obj["markdown"] === "string") {
-          markdown = obj["markdown"];
-        } else if (typeof obj["error"] === "string") {
-          markdown = `Error: ${obj["error"]}`;
+      const enabledSites = siteList.filter((s) => s.enabled);
+      if (enabledSites.length === 0) return;
+
+      const fileDataArray = await Promise.all(
+        files.map(async (file) => ({
+          arrayBuffer: await file.arrayBuffer(),
+          type: file.type,
+          fileName: file.name,
+        })),
+      );
+
+      for (let i = 0; i < enabledSites.length; i++) {
+        const site = enabledSites[i];
+        if (!site) continue;
+
+        const config = siteConfigs.find((c) => c.name === site.name);
+        const focusSelector = config?.fileUploadHandler?.steps?.[0]?.selector;
+
+        postMessageToSiteIframe(site.name, {
+          type: "INJECT_FILE_VIA_POST",
+          siteName: site.name,
+          files: fileDataArray,
+          focusSelector,
+        });
+
+        if (i < enabledSites.length - 1) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
         }
       }
+    },
+    [siteList, siteConfigs, postMessageToSiteIframe],
+  );
 
-      setShareState({ isOpen: true, siteName, content: markdown });
-    } catch {
-      setShareState({
-        isOpen: true,
-        siteName,
-        content: "Failed to extract conversation content.",
+  const extractViaPostMessage = useCallback(
+    (siteName: string, contentExtractor: ContentExtractor): Promise<ConversationData | null> => {
+      return new Promise((resolve) => {
+        const iframes = document.querySelectorAll<HTMLIFrameElement>("iframe");
+        const normalizeHost = (h: string) => h.toLowerCase().replace(/^www\./, "");
+
+        const site = siteList.find((s) => s.name === siteName);
+        if (!site) {
+          resolve(null);
+          return;
+        }
+
+        let resolved = false;
+        const timeoutId = setTimeout(() => {
+          if (!resolved) {
+            resolved = true;
+            window.removeEventListener("message", handler);
+            resolve(null);
+          }
+        }, 5000);
+
+        const handler = (event: MessageEvent) => {
+          if (
+            !event.data ||
+            typeof event.data !== "object" ||
+            event.data.type !== "EXTRACTED_CONTENT" ||
+            event.data.siteName !== siteName
+          ) {
+            return;
+          }
+          if (!resolved) {
+            resolved = true;
+            clearTimeout(timeoutId);
+            window.removeEventListener("message", handler);
+            resolve(event.data.success ? (event.data.data as ConversationData) : null);
+          }
+        };
+
+        window.addEventListener("message", handler);
+
+        try {
+          const siteHost = normalizeHost(new URL(site.url).hostname);
+          for (const iframe of iframes) {
+            try {
+              const iframeHost = normalizeHost(new URL(iframe.src).hostname);
+              if (
+                iframeHost === siteHost ||
+                iframeHost.endsWith(`.${siteHost}`) ||
+                siteHost.endsWith(`.${iframeHost}`)
+              ) {
+                iframe.contentWindow?.postMessage(
+                  { type: "EXTRACT_CONTENT_VIA_POST", siteName, contentExtractor },
+                  "*",
+                );
+                return;
+              }
+            } catch {
+              /* invalid iframe URL */
+            }
+          }
+        } catch {
+          /* invalid site URL */
+        }
+
+        if (!resolved) {
+          resolved = true;
+          clearTimeout(timeoutId);
+          window.removeEventListener("message", handler);
+          resolve(null);
+        }
       });
+    },
+    [siteList],
+  );
+
+  const handleShareAll = useCallback(async () => {
+    const enabledSites = siteList.filter((s) => s.enabled);
+    if (enabledSites.length === 0) return;
+
+    const results: Array<{ siteName: string; data: ConversationData }> = [];
+
+    for (const site of enabledSites) {
+      const config = siteConfigs.find((c) => c.name === site.name);
+      if (!config?.contentExtractor) {
+        results.push({ siteName: site.name, data: { messages: [] } });
+        continue;
+      }
+      const data = await extractViaPostMessage(site.name, config.contentExtractor);
+      results.push({ siteName: site.name, data: data ?? { messages: [] } });
     }
-  }, []);
+
+    const markdown = formatAllConversations(results);
+    setShareState({ isOpen: true, siteName: "All Sites", content: markdown });
+  }, [siteList, siteConfigs, extractViaPostMessage]);
+
+  const handleShare = useCallback(
+    async (siteName: string) => {
+      try {
+        const config = siteConfigs.find((c) => c.name === siteName);
+        if (!config?.contentExtractor) {
+          setShareState({
+            isOpen: true,
+            siteName,
+            content: "No content extractor configured for this site.",
+          });
+          return;
+        }
+
+        const data = await extractViaPostMessage(siteName, config.contentExtractor);
+        let markdown = "No conversation content extracted yet.";
+
+        if (data && data.messages && data.messages.length > 0) {
+          markdown = formatConversation(data);
+        }
+
+        setShareState({ isOpen: true, siteName, content: markdown });
+      } catch {
+        setShareState({
+          isOpen: true,
+          siteName,
+          content: "Failed to extract conversation content.",
+        });
+      }
+    },
+    [siteConfigs, extractViaPostMessage],
+  );
 
   const renderIframe = useCallback(
     (site: { name: string; url: string }) => {
@@ -255,6 +422,7 @@ export default function BatchSearchPage() {
           columns={settings.gridColumns}
           onLayoutChange={handleLayoutChange}
           onColumnsChange={handleColumnsChange}
+          onShareAll={handleShareAll}
           sites={siteList}
           renderIframe={renderIframe}
         />
@@ -269,7 +437,7 @@ export default function BatchSearchPage() {
               disabled={isQuerying}
             />
           </div>
-          <FileUploadButton enabledSites={enabledSiteNames} disabled={isQuerying} />
+          <FileUploadButton onFilesSelected={handleFileUpload} disabled={isQuerying} />
         </div>
       </div>
       <SharePopup
@@ -277,6 +445,7 @@ export default function BatchSearchPage() {
         onClose={() => setShareState((prev) => ({ ...prev, isOpen: false }))}
         siteName={shareState.siteName}
         markdownContent={shareState.content}
+        exportAllTemplates={settings.exportAllTemplates}
       />
     </div>
   );

@@ -10,7 +10,11 @@
     "searchEngines": "Mecanismos de Busca",
     "searchEnginesDesc": "Ativar ou desativar sites LLM",
     "promptTemplates": "Modelos de Prompt",
-    "promptTemplatesDesc": "Gerenciar modelos de consulta",
+    "promptTemplatesDesc": "Modelos aplicados ao enviar consultas para os LLMs.",
+    "promptTemplatesHint": "será substituído pela sua pergunta. Selecione um modelo na barra de pesquisa antes de enviar.",
+    "exportAllTemplates": "Modelos de exportação geral",
+    "exportAllTemplatesDesc": "Modelos para envolver as respostas combinadas dos LLMs. Útil para colar em outro LLM para analisar ou comparar todas as respostas.",
+    "exportAllTemplatesHint": "será substituído pelas conversas exportadas. Selecione um modelo ao exportar para envolver a saída.",
     "language": "Idioma",
     "languageDesc": "Escolher idioma de exibição",
     "addTemplate": "Adicionar Modelo",
@@ -19,6 +23,7 @@
     "templateName": "Nome do Modelo",
     "templateText": "Texto do Modelo",
     "templatePlaceholder": "Use {query} como espaço reservado para sua consulta",
+    "templateQueryRequired": "O modelo deve incluir {query} como espaço reservado.",
     "save": "Salvar",
     "cancel": "Cancelar",
     "confirmDelete": "Tem certeza de que deseja excluir este modelo?",
@@ -33,13 +38,16 @@
   },
   "batch": {
     "inputPlaceholder": "Pergunte a todos os LLMs...",
+    "templateActivePlaceholder": "Digite sua pergunta (o modelo \"{{name}}\" será aplicado)",
     "send": "Enviar",
     "sending": "Enviando...",
     "columns": "Colunas",
     "noSitesEnabled": "Nenhum site ativado. Vá para Configurações para ativar sites LLM.",
     "loading": "Carregando...",
     "ready": "Pronto",
-    "querying": "Consultando..."
+    "querying": "Consultando...",
+    "attachFile": "Anexar arquivo",
+    "fileTooLarge": "{{name}} é muito grande (máx. 10MB)"
   },
   "history": {
     "title": "Histórico",
@@ -57,7 +65,9 @@
     "download": "Baixar .md",
     "close": "Fechar",
     "extracting": "Extraindo conversa...",
-    "extractFailed": "Falha ao extrair conversa"
+    "extractFailed": "Falha ao extrair conversa",
+    "exportAll": "Exportar tudo",
+    "wrapWith": "Aplicar modelo:"
   },
   "error": {
     "loadFailed": "Falha ao carregar {{siteName}}",

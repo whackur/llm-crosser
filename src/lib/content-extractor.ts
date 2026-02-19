@@ -51,6 +51,9 @@ function extractContentFromContainer(
       return stripUiArtifacts(stripExcluded(contentEl, excludeSelectors)).innerHTML;
     }
   }
+  const cleaned = stripUiArtifacts(stripExcluded(container, excludeSelectors));
+  const text = cleaned.textContent?.trim();
+  if (text) return cleaned.innerHTML;
   return null;
 }
 
@@ -103,7 +106,8 @@ export function extractConversation(config: ContentExtractor): ConversationData 
   const thinkingBlockFilters = config.thinkingBlockFilters ?? [];
 
   for (let i = 0; i < containers.length; i++) {
-    const container = containers[i];
+    const container = containers[i] as Element | undefined;
+    if (!container) continue;
 
     if (config.editModeCheck && queryShadow(container, config.editModeCheck)) {
       continue;

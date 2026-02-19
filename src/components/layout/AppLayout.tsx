@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
+import BatchSearchPage from "@/src/pages/BatchSearchPage";
 import { useSettings } from "@/src/hooks/useSettings";
 import { useTheme } from "@/src/hooks/useTheme";
 import { i18n } from "@/src/i18n";
@@ -8,7 +9,10 @@ import { i18n } from "@/src/i18n";
 export default function AppLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { settings } = useSettings();
+  const location = useLocation();
   useTheme(settings?.theme);
+
+  const isBatchSearch = location.pathname === "/";
 
   useEffect(() => {
     if (settings?.language) {
@@ -23,7 +27,11 @@ export default function AppLayout() {
         onToggleCollapse={() => setSidebarCollapsed((prev) => !prev)}
       />
       <main className="flex-1 overflow-hidden flex flex-col">
-        <Outlet />
+        {/* BatchSearchPage stays mounted — hidden via CSS to preserve iframe state */}
+        <div className={isBatchSearch ? "flex-1 min-h-0 flex flex-col" : "hidden"}>
+          <BatchSearchPage />
+        </div>
+        {!isBatchSearch && <Outlet />}
       </main>
     </div>
   );

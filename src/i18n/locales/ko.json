@@ -10,7 +10,11 @@
     "searchEngines": "검색 엔진",
     "searchEnginesDesc": "LLM 사이트 활성화/비활성화",
     "promptTemplates": "프롬프트 템플릿",
-    "promptTemplatesDesc": "질의 템플릿 관리",
+    "promptTemplatesDesc": "LLM에 질의를 보낼 때 적용되는 템플릿입니다.",
+    "promptTemplatesHint": "부분이 질문으로 대체됩니다. 검색창에서 템플릿을 선택한 후 전송하세요.",
+    "exportAllTemplates": "전체 내보내기 템플릿",
+    "exportAllTemplatesDesc": "여러 LLM의 응답을 합쳐서 감싸는 템플릿입니다. 다른 LLM에 붙여넣어 모든 응답을 한번에 분석하거나 비교할 때 유용합니다.",
+    "exportAllTemplatesHint": "부분이 내보낸 대화 내용으로 대체됩니다. 내보내기 시 템플릿을 선택하면 출력이 감싸집니다.",
     "language": "언어",
     "languageDesc": "표시 언어 선택",
     "addTemplate": "템플릿 추가",
@@ -19,6 +23,7 @@
     "templateName": "템플릿 이름",
     "templateText": "템플릿 내용",
     "templatePlaceholder": "{query}를 질의 자리표시자로 사용하세요",
+    "templateQueryRequired": "템플릿에 반드시 {query} 자리표시자를 포함해야 합니다.",
     "save": "저장",
     "cancel": "취소",
     "confirmDelete": "이 템플릿을 삭제하시겠습니까?",
@@ -33,13 +38,16 @@
   },
   "batch": {
     "inputPlaceholder": "모든 LLM에게 질문하기...",
+    "templateActivePlaceholder": "질문을 입력하세요 (\"{{name}}\" 템플릿이 적용됩니다)",
     "send": "전송",
     "sending": "전송 중...",
     "columns": "컬럼",
     "noSitesEnabled": "활성화된 사이트가 없습니다. 설정에서 LLM 사이트를 활성화하세요.",
     "loading": "로딩 중...",
     "ready": "준비",
-    "querying": "질의 중..."
+    "querying": "질의 중...",
+    "attachFile": "파일 첨부",
+    "fileTooLarge": "{{name}} 파일이 너무 큽니다 (최대 10MB)"
   },
   "history": {
     "title": "히스토리",
@@ -58,7 +66,9 @@
     "download": ".md 다운로드",
     "close": "닫기",
     "extracting": "대화 추출 중...",
-    "extractFailed": "대화 추출 실패"
+    "extractFailed": "대화 추출 실패",
+    "exportAll": "전체 내보내기",
+    "wrapWith": "템플릿 적용:"
   },
   "error": {
     "loadFailed": "{{siteName}} 로딩 실패",

@@ -10,7 +10,11 @@
     "searchEngines": "Search Engines",
     "searchEnginesDesc": "Enable or disable LLM sites",
     "promptTemplates": "Prompt Templates",
-    "promptTemplatesDesc": "Manage query templates",
+    "promptTemplatesDesc": "Templates applied when sending queries to LLMs.",
+    "promptTemplatesHint": "will be replaced with your question. Select a template in the search bar before sending.",
+    "exportAllTemplates": "Export All Templates",
+    "exportAllTemplatesDesc": "Templates for wrapping combined LLM responses. Useful for pasting into another LLM to analyze or compare all responses at once.",
+    "exportAllTemplatesHint": "will be replaced with the exported conversations. Select a template when exporting to wrap the output.",
     "language": "Language",
     "languageDesc": "Choose display language",
     "addTemplate": "Add Template",
@@ -19,6 +23,7 @@
     "templateName": "Template Name",
     "templateText": "Template Text",
     "templatePlaceholder": "Use {query} as placeholder for your query",
+    "templateQueryRequired": "Template must include {query} as a placeholder for the user's input.",
     "save": "Save",
     "cancel": "Cancel",
     "confirmDelete": "Are you sure you want to delete this template?",
@@ -33,13 +38,16 @@
   },
   "batch": {
     "inputPlaceholder": "Ask all LLMs...",
+    "templateActivePlaceholder": "Type your query (template \"{{name}}\" will be applied)",
     "send": "Send",
     "sending": "Sending...",
     "columns": "Columns",
     "noSitesEnabled": "No sites enabled. Go to Settings to enable LLM sites.",
     "loading": "Loading...",
     "ready": "Ready",
-    "querying": "Querying..."
+    "querying": "Querying...",
+    "attachFile": "Attach file",
+    "fileTooLarge": "{{name}} is too large (max 10MB)"
   },
   "history": {
     "title": "History",
@@ -58,7 +66,9 @@
     "download": "Download .md",
     "close": "Close",
     "extracting": "Extracting conversation...",
-    "extractFailed": "Failed to extract conversation"
+    "extractFailed": "Failed to extract conversation",
+    "exportAll": "Export All",
+    "wrapWith": "Wrap with:"
   },
   "error": {
     "loadFailed": "Failed to load {{siteName}}",
