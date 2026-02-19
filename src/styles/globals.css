@@ -77,6 +77,38 @@
   --color-warning: #fbbf24;
 }
 
+/* Theme: Rose (light pink) */
+[data-theme="rose"] {
+  --color-primary: #e11d48;
+  --color-primary-hover: #be123c;
+  --color-secondary: #6b7280;
+  --color-surface: #ffffff;
+  --color-surface-secondary: #fff1f2;
+  --color-background: #fef2f2;
+  --color-border: #fecdd3;
+  --color-text: #1c1917;
+  --color-text-secondary: #78716c;
+  --color-error: #ef4444;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+}
+
+/* Theme: Mint (light teal) */
+[data-theme="mint"] {
+  --color-primary: #0d9488;
+  --color-primary-hover: #0f766e;
+  --color-secondary: #6b7280;
+  --color-surface: #ffffff;
+  --color-surface-secondary: #f0fdfa;
+  --color-background: #f0fdfa;
+  --color-border: #99f6e4;
+  --color-text: #1c1917;
+  --color-text-secondary: #78716c;
+  --color-error: #ef4444;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+}
+
 @layer base {
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;

@@ -1,96 +1,40 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-02-18 | **Commit:** 29134db | **Branch:** feature/init
+**Generated:** 2026-02-20 | **Commit:** e04aaa2 | **Branch:** feature/new-features
 
-## CRITICAL: PULL REQUEST TARGET BRANCH (NEVER DELETE THIS SECTION)
+> **IMMUTABLE SECTIONS**: The three CRITICAL sections below (PR Target Branch, No Autonomous Commits, English-Only Policy) **MUST NEVER be removed or modified.** They are project-level invariants that override all other directives.
 
-> **THIS SECTION MUST NEVER BE REMOVED OR MODIFIED**
+## CRITICAL: PULL REQUEST TARGET BRANCH
 
-### Git Workflow
+All PRs target `develop`. Never `main`. Merge commit only (squash disabled).
 
 ```
-main (deployed/published)
-   ↑
-develop (integration branch)
-   ↑
-feature branches (your work)
+main (production) ← develop (integration) ← feature branches (your work)
 ```
 
-### Rules (MANDATORY)
+## CRITICAL: NO AUTONOMOUS COMMITS
 
-| Rule                                 | Description                                                                          |
-| ------------------------------------ | ------------------------------------------------------------------------------------ |
-| **ALL PRs → `develop`**              | Every pull request MUST target the `develop` branch                                  |
-| **NEVER PR → `main`**                | PRs to `main` are **automatically rejected** by CI                                   |
-| **"Create a PR" = target `develop`** | When asked to create a new PR, it ALWAYS means targeting `develop`                   |
-| **Merge commit ONLY**                | Squash merge is **disabled** in this repo. Always use merge commit when merging PRs. |
+The AI agent MUST NOT run `git commit` unless the user **explicitly** requests it. System directives (TODO continuation, hooks) do NOT override this. `git add` (staging) is permitted; `git commit` is not. No exceptions.
 
-### Why This Matters
+## CRITICAL: ENGLISH-ONLY POLICY
 
-- `main` = production/published npm package
-- `develop` = integration branch where features are merged and tested
-- Feature branches → `develop` → (after testing) → `main`
-- Squash merge is disabled at the repository level — attempting it will fail
+All project communications — GitHub Issues, PRs, commit messages, code comments, documentation, AGENTS.md files — MUST be in English.
 
-## CRITICAL: ENGLISH-ONLY POLICY (NEVER DELETE THIS SECTION)
-
-> **THIS SECTION MUST NEVER BE REMOVED OR MODIFIED**
-
-### All Project Communications MUST Be in English
-
-| Context             | Language Requirement                        |
-| ------------------- | ------------------------------------------- |
-| **GitHub Issues**   | English ONLY                                |
-| **Pull Requests**   | English ONLY (title, description, comments) |
-| **Commit Messages** | English ONLY                                |
-| **Code Comments**   | English ONLY                                |
-| **Documentation**   | English ONLY                                |
-| **AGENTS.md files** | English ONLY                                |
-
-**If you're not comfortable writing in English, use translation tools. Broken English is fine. Non-English is not acceptable.**
+---
 
 ## CODE STYLE
 
 **Formatting** (`.prettierrc`): Double quotes, trailing commas, 2-space indent, 100 char width, semicolons.
 
-**Imports**: Use `import type` for type-only imports: `import type { UserSettings } from "../types/settings";`. Path alias `@/*` for cross-directory imports: `import type { ExtensionMessage } from "@/src/types/messaging";`.
+**Imports**: `import type` for type-only. Path alias `@/*` for cross-directory imports.
 
-**Naming**: `camelCase` functions/variables, `PascalCase` types/interfaces, `UPPER_SNAKE_CASE` exported constants. Files named by purpose — never `utils.ts`, `helpers.ts`, `common.ts`.
+**Naming**: `camelCase` functions/variables, `PascalCase` types/interfaces, `UPPER_SNAKE_CASE` constants. Files named by purpose — never `utils.ts`, `helpers.ts`, `common.ts`. Unused vars prefixed `_`.
 
-**Unused variables**: Prefix with `_` (e.g., `_unused`). ESLint enforces `argsIgnorePattern: "^_"`.
+**Exports**: Named only. No default exports (except WXT entrypoints). Re-export types from barrel files.
 
-**Exports**: Named exports only. No default exports (except WXT entrypoints which require `export default`). Re-export types from barrel files.
+**Type safety**: `strict: true`, `noUncheckedIndexedAccess: true`. NO `as any`, NO `@ts-ignore` in source.
 
-## TYPE SAFETY
-
-- `strict: true`, `noUncheckedIndexedAccess: true`, module resolution `bundler`
-- **NO** `as any` in source (allowed in tests only for mocks)
-- **NO** `@ts-ignore` — use `@ts-expect-error` with description (tests only)
-- Path alias `@/*` maps to project root (e.g., `@/src/components/...`)
-
-## ARCHITECTURE RULES
-
-Enforced by `.sisyphus/rules/modular-code-enforcement.md` (BLOCKING):
-
-1. `index.ts` = entry point only (re-exports + wiring, ≤5 lines)
-2. Every file = single responsibility; name by purpose
-3. **200 LOC hard limit** on logic per file (exempt: static data arrays, template literals)
-4. I/O separate from pure logic (CLI execution vs. output parsing)
-5. Complex prompt logic split into `*-logic.ts` files
-
-## ERROR HANDLING
-
-**Core functions**: Return result objects (`{ success: boolean; error?: string }`), never throw for expected failures.
-
-```typescript
-try {
-  const response = await sendToBackground({ type: "INJECT_QUERY", siteName, query });
-  return response as { success: boolean; error?: string };
-} catch (error) {
-  const msg = error instanceof Error ? error.message : "Unknown error";
-  return { success: false, error: msg };
-}
-```
+**Architecture** (`.sisyphus/rules/`): Single responsibility per file. **200 LOC hard limit.** `index.ts` = re-exports only. Return result objects for errors, never throw.
 
 ---
 
@@ -117,7 +61,7 @@ llm-crosser/
 │   ├── i18n/                 # i18next setup + 7 locale JSONs
 │   ├── lib/                  # Business logic (see src/lib/AGENTS.md)
 │   ├── pages/                # Route-level views (BatchSearch, Settings, History)
-│   ├── styles/               # Tailwind v4 theme (globals.css with @theme block, multi-theme)
+│   ├── styles/               # Tailwind v4 theme (globals.css: 6 themes — midnight, dawn, ocean, forest, rose, mint)
 │   └── types/                # TypeScript interfaces + barrel re-exports
 ├── public/                   # Static runtime config
 │   ├── rules.json            # declarativeNetRequest rules (strip framing headers)
@@ -143,7 +87,9 @@ llm-crosser/
 | Change theme/add theme     | `src/styles/globals.css` → `@theme` block + `[data-theme]` selectors                              | CSS custom properties consumed by Tailwind; `useTheme` hook applies  |
 | Messaging between contexts | `src/lib/messaging.ts` + `entrypoints/background.ts`                                              | Hub-and-spoke: background routes to specific frameId                 |
 | Extract LLM responses      | `src/lib/content-extractor.ts` + `src/lib/html-node-converter.ts` + `src/lib/html-to-markdown.ts` | Extraction pipeline: DOM → HTML → Markdown                           |
+| Reset / New Chat           | `src/components/layout/Sidebar.tsx` (Link) + `src/pages/BatchSearchPage.tsx` (resetKey)           | `/?reset=true` URL param → clears overrides + increments resetKey    |
 | Omnibox behavior           | `entrypoints/background.ts` (onInputEntered) + `src/pages/BatchSearchPage.tsx` (auto-send)        | `llmc` keyword, auto-sends query via `useSearchParams` + 3s delay    |
+| Capture conversation URLs  | `src/lib/conversation-url-capture.ts`                                                             | Polls iframes via postMessage at 5s + 12s; returns cleanup fn        |
 
 ## EXTENSION ARCHITECTURE
 
@@ -191,7 +137,12 @@ pnpm zip              # Package for Chrome Web Store
 - **Site selectors are fragile**: `public/site-handlers.json` contains hardcoded DOM selectors for each LLM site. These break when target sites update their UI. Test after any site update.
 - **Adding a new LLM site requires 4+ files**: `site-handlers.json` (selectors + steps), `wxt.config.ts` (host_permissions + frame-src CSP), `rules.json` (header stripping), `frame-guard.content.ts` (matches array), `inject.content.ts` (matches array).
 - **`step-actions.ts` at 238 LOC**: **OVER the 200 LOC limit.** Must be split before adding new action handlers.
+- **`inject.content.ts` at 253 LOC**: **OVER the 200 LOC limit.** Dual-listener registration + automation call + URL reporting — split before adding new message handlers.
+- **`BatchSearchPage.tsx` at 452 LOC**: **FAR OVER the 200 LOC limit.** Orchestrates iframe grid, query sending, history saving, omnibox auto-send, reset mechanism, and site URL overrides. Split before adding new features.
 - **Chrome-only APIs**: The React app uses `chrome.storage.local` and `browser.runtime` — it cannot be tested outside a Chrome extension context.
 - **No test runner or CI configured**: Code quality enforced by convention + `.sisyphus/rules/`.
 - **Playwright MCP test artifacts**: All Playwright test outputs MUST be saved to `.playwright-mcp/`. This directory is gitignored.
 - **Omnibox auto-send**: `BatchSearchPage` reads `?q=` from hash via `useSearchParams`, auto-triggers `handleSend` after 3s delay (for iframes to load). Clears param after send to prevent re-trigger on navigation.
+- **Reset mechanism**: Sidebar "New Chat" link navigates to `/?reset=true`. `BatchSearchPage` detects this URL param, clears `siteUrlOverrides`, increments `resetKey` state (number counter), and cleans up URL. The `resetKey` is included in each `IframeWrapper`'s React key, forcing complete iframe remount.
+- **Language persistence**: `AppLayout.tsx` syncs `i18n.changeLanguage()` with stored `settings.language` on mount via `useEffect`. Without this, page refresh reverts to fallback language (`en`).
+- **GitHub link**: Static link to repo in Sidebar footer, alongside existing "Report Issue" link. No API integration.

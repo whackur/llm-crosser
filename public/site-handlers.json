@@ -52,9 +52,16 @@
         ]
       },
       "contentExtractor": {
-        "messageContainer": "[data-message-author-role=\"assistant\"]",
-        "contentSelectors": [".markdown.prose"],
-        "thinkingSelector": ":scope > div:not(.markdown)",
+        "messageContainer": "[data-message-author-role]",
+        "contentSelectors": [".markdown.prose", ".whitespace-pre-wrap"],
+        "userMessageSelector": "[data-message-author-role='user']",
+        "excludeSelectors": [
+          "button",
+          "[class*='copy']",
+          "[class*='action']",
+          "[data-testid='copy-turn-action-button']"
+        ],
+        "thinkingSelector": "details",
         "extractThinking": true,
         "urlExtractor": {
           "pattern": "chatgpt.com/c/"
@@ -116,15 +123,15 @@
         ]
       },
       "contentExtractor": {
-        "messageContainer": ".conversation-container",
-        "contentSelectors": ["model-response .model-response-text"]
-      },
-      "historyHandler": {
-        "urlFeature": "/app/"
-      },
-      "userPromptButton": {
-        "containerSelector": "[contenteditable=\"true\"]",
-        "textSelector": "[contenteditable=\"true\"]"
+        "messageContainer": "user-query, model-response",
+        "contentSelectors": [".model-response-text .markdown", ".user-query-container"],
+        "userMessageSelector": "user-query",
+        "excludeSelectors": [
+          "button",
+          ".cdk-visually-hidden",
+          "[class*='copy']",
+          "[class*='action']"
+        ]
       }
     },
     {
@@ -190,11 +197,12 @@
         ]
       },
       "contentExtractor": {
-        "messageContainer": "[data-message-author-role=\"assistant\"]",
-        "contentSelectors": [
-          ".response-content-markdown.markdown",
-          ".response-content-markdown",
-          ".markdown"
+        "messageContainer": "#last-reply-container > .flex.flex-col.items-center",
+        "contentSelectors": [".message-bubble"],
+        "userMessageSelector": "[class*='items-end']",
+        "excludeSelectors": [
+          "button",
+          "[class*='items-center'][class*='gap-'][class*='rounded-lg'][class*='text-xs']"
         ]
       },
       "historyHandler": {
@@ -252,8 +260,13 @@
         ]
       },
       "contentExtractor": {
-        "messageContainer": "[class*=\"message\"]",
-        "contentSelectors": [".markdown", "[class*=\"message\"]", "[class*=\"response\"]"]
+        "messageContainer": ".qwen-chat-message",
+        "contentSelectors": [".chat-user-message", ".response-message-content"],
+        "userMessageSelector": ".qwen-chat-message-user",
+        "excludeSelectors": [
+          ".message-hoc-container",
+          ".qwen-chat-thinking-tool-status-card-wraper"
+        ]
       },
       "historyHandler": {
         "urlFeature": "/chat/"
@@ -261,8 +274,7 @@
       "userPromptButton": {
         "containerSelector": "textarea",
         "textSelector": "textarea"
-      },
-      "notes": "Selectors need verification - initial configuration"
+      }
     },
     {
       "name": "z.ai",
@@ -321,10 +333,12 @@
         ]
       },
       "contentExtractor": {
-        "messageContainer": "[class*='message'], [class*='conversation'], main",
-        "contentSelectors": ["[class*='message'], [class*='conversation']"],
-        "userMessageSelector": "[class*='user']",
-        "assistantMessageSelector": "[class*='assistant'], [class*='bot']"
+        "messageContainer": ".user-message, [class*='message-'][class*='svelte']",
+        "contentSelectors": [".chat-user", ".chat-assistant .markdown-prose", ".chat-assistant"],
+        "userMessageSelector": ".user-message",
+        "excludeSelectors": ["button", ".edit-user-message-button", "[class*='Regenerate']"],
+        "thinkingSelector": "blockquote",
+        "extractThinking": true
       },
       "historyHandler": {
         "urlFeature": "/c/"
@@ -395,8 +409,16 @@
         ]
       },
       "contentExtractor": {
-        "messageContainer": "[class*=\"message\"], .prose",
-        "contentSelectors": [".prose", ".markdown", "[class*=\"response\"]"]
+        "messageContainer": "[role='tabpanel'] > div > div",
+        "contentSelectors": [".prose", "h1[class*='query']"],
+        "userMessageSelector": "h1[class*='query']",
+        "excludeSelectors": [
+          "button",
+          "[class*='copy']",
+          "[class*='share']",
+          "[class*='action']",
+          "[class*='rewrite']"
+        ]
       },
       "historyHandler": {
         "urlFeature": "/search/"

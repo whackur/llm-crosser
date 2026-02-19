@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import type { PromptTemplate } from "@/src/types/settings";
 
 interface SharePopupProps {
   isOpen: boolean;
   onClose: () => void;
   siteName: string;
   markdownContent: string;
+  exportAllTemplates?: PromptTemplate[];
 }
 
 export const SharePopup: React.FC<SharePopupProps> = ({
@@ -13,9 +15,27 @@ export const SharePopup: React.FC<SharePopupProps> = ({
   onClose,
   siteName,
   markdownContent,
+  exportAllTemplates = [],
 }) => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
+  const [activeTemplateId, setActiveTemplateId] = useState<string | null>(null);
+
+  const isExportAll = siteName === "All Sites";
+  const templates = isExportAll ? exportAllTemplates : [];
+
+  const displayContent = useMemo(() => {
+    if (!activeTemplateId) return markdownContent;
+    const tpl = templates.find((tp) => tp.id === activeTemplateId);
+    if (!tpl) return markdownContent;
+    return tpl.template.replace("{query}", markdownContent);
+  }, [markdownContent, activeTemplateId, templates]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setActiveTemplateId(null);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -43,12 +63,12 @@ export const SharePopup: React.FC<SharePopupProps> = ({
 
   const handleCopy = useCallback(async () => {
     try {
-      await navigator.clipboard.writeText(markdownContent);
+      await navigator.clipboard.writeText(displayContent);
       setCopied(true);
     } catch {
       try {
         const textarea = document.createElement("textarea");
-        textarea.value = markdownContent;
+        textarea.value = displayContent;
         textarea.style.position = "fixed";
         textarea.style.opacity = "0";
         document.body.appendChild(textarea);
@@ -60,12 +80,12 @@ export const SharePopup: React.FC<SharePopupProps> = ({
         /* clipboard fallback — copy failure is non-fatal */
       }
     }
-  }, [markdownContent]);
+  }, [displayContent]);
 
   const handleDownload = useCallback(() => {
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
     const filename = `${siteName}-conversation-${timestamp}.md`;
-    const blob = new Blob([markdownContent], { type: "text/markdown;charset=utf-8" });
+    const blob = new Blob([displayContent], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -74,7 +94,7 @@ export const SharePopup: React.FC<SharePopupProps> = ({
     anchor.click();
     document.body.removeChild(anchor);
     URL.revokeObjectURL(url);
-  }, [siteName, markdownContent]);
+  }, [siteName, displayContent]);
 
   if (!isOpen) return null;
 
@@ -113,9 +133,34 @@ export const SharePopup: React.FC<SharePopupProps> = ({
           </button>
         </div>
 
+        {templates.length > 0 && (
+          <div className="px-5 pt-4 pb-2 flex gap-2 flex-wrap border-b border-border/50">
+            <span className="text-xs text-text-secondary font-medium self-center mr-1">
+              {t("share.wrapWith")}
+            </span>
+            {templates.map((tpl) => {
+              const isActive = activeTemplateId === tpl.id;
+              return (
+                <button
+                  key={tpl.id}
+                  type="button"
+                  onClick={() => setActiveTemplateId(isActive ? null : tpl.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all active:scale-95 ${
+                    isActive
+                      ? "bg-primary text-white border border-primary shadow-sm shadow-primary/20"
+                      : "bg-surface-secondary border border-border text-text-secondary hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                  }`}
+                >
+                  {tpl.name}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         <div className="flex-1 overflow-y-auto p-5">
           <pre className="text-sm font-mono whitespace-pre-wrap break-words bg-surface-secondary/50 rounded-xl p-4 border border-border text-text-secondary selection:bg-primary/20 selection:text-primary">
-            {markdownContent}
+            {displayContent}
           </pre>
         </div>
 

@@ -1,14 +1,22 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import {
   SearchIcon,
   SettingsIcon,
   HistoryIcon,
   IssueIcon,
+  StarIcon,
+  NewChatIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "../ui/Icons";
+import { useGitHubStars } from "@/src/hooks/useGitHubStars";
+
+function formatStarCount(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  return String(n);
+}
 
 interface SidebarProps {
   collapsed: boolean;
@@ -29,6 +37,7 @@ const NAV_ITEMS: NavItem[] = [
 
 export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggleCollapse }) => {
   const { t } = useTranslation();
+  const stars = useGitHubStars();
 
   const itemBase = collapsed ? "justify-center w-12 h-12 mx-auto" : "px-4 py-3";
 
@@ -40,8 +49,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggleCollapse })
         ${collapsed ? "w-[72px]" : "w-64"}
       `}
     >
-      <div
-        className={`flex items-center h-14 border-b border-border/50 shrink-0 ${collapsed ? "justify-center" : "px-5"}`}
+      <Link
+        to="/?reset=true"
+        className={`flex items-center h-14 border-b border-border/50 shrink-0 cursor-pointer hover:bg-surface-secondary/50 transition-colors ${collapsed ? "justify-center" : "px-5"}`}
+        title="LLM Crosser"
       >
         <img
           src="/icons/icon-48.png"
@@ -51,6 +62,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggleCollapse })
         {!collapsed && (
           <span className="font-bold text-primary text-base tracking-tight">LLM Crosser</span>
         )}
+      </Link>
+
+      <div className={`shrink-0 pt-3 pb-1 ${collapsed ? "px-2" : "px-3"}`}>
+        <Link
+          to="/?reset=true"
+          className={`
+            flex items-center rounded-lg transition-all duration-200 group
+            bg-primary/10 text-primary hover:bg-primary/20 font-medium
+            ${itemBase}
+          `}
+          title={collapsed ? t("nav.newChat") : undefined}
+        >
+          <NewChatIcon
+            className={`w-[22px] h-[22px] shrink-0 group-hover:scale-105 transition-transform ${collapsed ? "" : "mr-3"}`}
+          />
+          {!collapsed && <span className="text-sm whitespace-nowrap">{t("nav.newChat")}</span>}
+        </Link>
       </div>
 
       <nav
@@ -96,6 +124,36 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggleCollapse })
             <div className="text-[11px] text-text-secondary/50 select-none">v0.1.0</div>
           </div>
         )}
+
+        <a
+          href="https://github.com/whackur/llm-crosser/stargazers"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`
+            flex items-center rounded-lg transition-all duration-200 group
+            text-amber-500 hover:bg-amber-500/10 hover:text-amber-400
+            ${itemBase}
+          `}
+          title={
+            collapsed
+              ? stars !== null
+                ? `Star us on GitHub! (${formatStarCount(stars)} ⭐)`
+                : "Star us on GitHub!"
+              : undefined
+          }
+        >
+          <StarIcon
+            className={`w-[20px] h-[20px] shrink-0 group-hover:scale-110 transition-transform ${collapsed ? "" : "mr-3"}`}
+          />
+          {!collapsed && (
+            <span className="text-sm whitespace-nowrap font-medium flex-1">Star us!</span>
+          )}
+          {!collapsed && stars !== null && (
+            <span className="ml-auto text-[11px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-500 group-hover:bg-amber-500/25 transition-colors">
+              {formatStarCount(stars)}
+            </span>
+          )}
+        </a>
 
         <a
           href="https://github.com/whackur/llm-crosser/issues/new"

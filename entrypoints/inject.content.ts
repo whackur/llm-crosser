@@ -2,6 +2,7 @@ import { defineContentScript } from "wxt/utils/define-content-script";
 import { browser } from "wxt/browser";
 import { executeSteps } from "../src/lib/automation-engine";
 import { extractConversation } from "../src/lib/content-extractor";
+import { findElement } from "../src/lib/element-finder";
 import type { ExtensionMessage, SiteHandlersConfig } from "../src/types";
 
 export default defineContentScript({
@@ -66,30 +67,55 @@ export default defineContentScript({
       }
 
       if (type === "INJECT_FILE_VIA_POST") {
-        const { fileData, fileUploadHandler, siteName } = event.data as {
-          fileData?: string;
-          fileUploadHandler?: { steps: unknown[] };
+        const { files, focusSelector, siteName } = event.data as {
+          files?: Array<{ arrayBuffer: ArrayBuffer; type: string; fileName: string }>;
+          focusSelector?: string | string[];
           siteName?: string;
         };
-        if (!fileData || !fileUploadHandler?.steps) return;
+        if (!files || !Array.isArray(files) || files.length === 0) return;
 
         (async () => {
           try {
-            const ok = await executeSteps(
-              fileUploadHandler.steps as unknown as Parameters<typeof executeSteps>[0],
-              fileData,
-            );
+            let targetElement: HTMLElement | null = null;
+            if (focusSelector) {
+              targetElement = findElement(focusSelector);
+              if (targetElement) {
+                targetElement.focus();
+                await new Promise((resolve) => setTimeout(resolve, 200));
+              }
+            }
+
+            if (!targetElement) {
+              targetElement = document.activeElement as HTMLElement | null;
+            }
+
+            const dataTransfer = new DataTransfer();
+            for (const fd of files) {
+              const file = new File([fd.arrayBuffer], fd.fileName, { type: fd.type });
+              dataTransfer.items.add(file);
+            }
+
+            const pasteEvent = new ClipboardEvent("paste", {
+              bubbles: true,
+              cancelable: true,
+              clipboardData: dataTransfer,
+            });
+
+            const dispatchTarget = targetElement ?? document.activeElement ?? document;
+            (dispatchTarget as EventTarget).dispatchEvent(pasteEvent);
+
             const source = event.source as Window | null;
             source?.postMessage(
-              {
-                type: "FILE_UPLOAD_STATUS",
-                siteName: siteName ?? "",
-                status: ok ? "done" : "error",
-              },
+              { type: "FILE_UPLOAD_STATUS", siteName: siteName ?? "", status: "done" },
               "*",
             );
           } catch (error) {
-            console.error("[llm-crosser] postMessage file handler error:", error);
+            console.error("[llm-crosser] file paste error:", error);
+            const source = event.source as Window | null;
+            source?.postMessage(
+              { type: "FILE_UPLOAD_STATUS", siteName: siteName ?? "", status: "error" },
+              "*",
+            );
           }
         })();
         return;
