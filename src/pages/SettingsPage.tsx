@@ -114,14 +114,37 @@ export default function SettingsPage() {
 
       <section className="mb-10">
         <h2 className="text-lg font-semibold mb-2 text-text">{t("settings.promptTemplates")}</h2>
-        <p className="text-sm text-text-secondary mb-6 max-w-2xl">
+        <p className="text-sm text-text-secondary mb-4 max-w-2xl">
           {t("settings.promptTemplatesDesc")}
         </p>
+        <div className="mb-4 px-3 py-2.5 rounded-lg bg-primary/5 border border-primary/10 text-xs text-text-secondary leading-relaxed max-w-2xl">
+          <span className="font-semibold text-primary">{"{query}"}</span>{" "}
+          {t("settings.promptTemplatesHint")}
+        </div>
         <div className="bg-surface rounded-xl border border-border p-4 shadow-sm">
           <PromptTemplateEditor
             templates={settings?.promptTemplates ?? []}
             onSave={(templates: PromptTemplate[]) =>
               void updateSettings({ promptTemplates: templates })
+            }
+          />
+        </div>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="text-lg font-semibold mb-2 text-text">{t("settings.exportAllTemplates")}</h2>
+        <p className="text-sm text-text-secondary mb-4 max-w-2xl">
+          {t("settings.exportAllTemplatesDesc")}
+        </p>
+        <div className="mb-4 px-3 py-2.5 rounded-lg bg-primary/5 border border-primary/10 text-xs text-text-secondary leading-relaxed max-w-2xl">
+          <span className="font-semibold text-primary">{"{query}"}</span>{" "}
+          {t("settings.exportAllTemplatesHint")}
+        </div>
+        <div className="bg-surface rounded-xl border border-border p-4 shadow-sm">
+          <PromptTemplateEditor
+            templates={settings?.exportAllTemplates ?? []}
+            onSave={(templates: PromptTemplate[]) =>
+              void updateSettings({ exportAllTemplates: templates })
             }
           />
         </div>

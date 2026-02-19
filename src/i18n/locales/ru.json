@@ -2,14 +2,19 @@
   "nav": {
     "batchSearch": "Пакетный поиск",
     "settings": "Настройки",
-    "history": "История"
+    "history": "История",
+    "newChat": "Новый чат"
   },
   "settings": {
     "title": "Настройки",
     "searchEngines": "Поисковые системы",
     "searchEnginesDesc": "Включить или отключить сайты LLM",
     "promptTemplates": "Шаблоны подсказок",
-    "promptTemplatesDesc": "Управление шаблонами запросов",
+    "promptTemplatesDesc": "Шаблоны, применяемые при отправке запросов в LLM.",
+    "promptTemplatesHint": "будет заменён на ваш вопрос. Выберите шаблон в строке поиска перед отправкой.",
+    "exportAllTemplates": "Шаблоны общего экспорта",
+    "exportAllTemplatesDesc": "Шаблоны для обёртки объединённых ответов LLM. Полезно для вставки в другой LLM для анализа или сравнения всех ответов.",
+    "exportAllTemplatesHint": "будет заменён на экспортированные диалоги. Выберите шаблон при экспорте, чтобы обернуть результат.",
     "language": "Язык",
     "languageDesc": "Выберите язык отображения",
     "addTemplate": "Добавить шаблон",
@@ -18,6 +23,7 @@
     "templateName": "Имя шаблона",
     "templateText": "Текст шаблона",
     "templatePlaceholder": "Используйте {query} как заполнитель для вашего запроса",
+    "templateQueryRequired": "Шаблон должен содержать {query} в качестве заполнителя.",
     "save": "Сохранить",
     "cancel": "Отмена",
     "confirmDelete": "Вы уверены, что хотите удалить этот шаблон?",
@@ -26,17 +32,22 @@
     "themeMidnight": "Полночь",
     "themeDawn": "Рассвет",
     "themeOcean": "Океан",
-    "themeForest": "Лес"
+    "themeForest": "Лес",
+    "themeRose": "Роза",
+    "themeMint": "Мята"
   },
   "batch": {
     "inputPlaceholder": "Спросить все LLM...",
+    "templateActivePlaceholder": "Введите запрос (будет применён шаблон \"{{name}}\")",
     "send": "Отправить",
     "sending": "Отправка...",
     "columns": "Столбцы",
     "noSitesEnabled": "Нет включенных сайтов. Перейдите в Настройки, чтобы включить сайты LLM.",
     "loading": "Загрузка...",
     "ready": "Готово",
-    "querying": "Запрос..."
+    "querying": "Запрос...",
+    "attachFile": "Прикрепить файл",
+    "fileTooLarge": "{{name}} слишком большой (макс. 10 МБ)"
   },
   "history": {
     "title": "История",
@@ -54,7 +65,9 @@
     "download": "Скачать .md",
     "close": "Закрыть",
     "extracting": "Извлечение беседы...",
-    "extractFailed": "Ошибка при извлечении беседы"
+    "extractFailed": "Ошибка при извлечении беседы",
+    "exportAll": "Экспорт всех",
+    "wrapWith": "Применить шаблон:"
   },
   "error": {
     "loadFailed": "Ошибка загрузки {{siteName}}",

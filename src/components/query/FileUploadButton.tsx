@@ -1,76 +1,53 @@
 import React, { useState, useRef, useCallback } from "react";
-import { injectFile } from "@/src/lib/messaging";
+import { useTranslation } from "react-i18next";
 
 interface FileUploadButtonProps {
-  enabledSites: string[];
+  onFilesSelected: (files: File[]) => Promise<void>;
   disabled?: boolean;
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
-const ACCEPTED_TYPES = "image/png,image/jpeg,image/gif,application/pdf,text/plain";
-const STAGGER_MS = 100;
-
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+const ACCEPTED_TYPES =
+  "image/png,image/jpeg,image/gif,image/webp,application/pdf,text/plain,text/csv";
 
 export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
-  enabledSites,
+  onFilesSelected,
   disabled = false,
 }) => {
+  const { t } = useTranslation();
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const readFileAsBase64 = useCallback((file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result;
-        if (typeof result === "string") {
-          resolve(result);
-        } else {
-          reject(new Error("Failed to read file as base64"));
-        }
-      };
-      reader.onerror = () => reject(new Error("FileReader error"));
-      reader.readAsDataURL(file);
-    });
-  }, []);
-
   const handleFileChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
+      const fileList = e.target.files;
+      if (!fileList || fileList.length === 0) return;
 
-      // Reset input so the same file can be re-selected
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
 
       setError(null);
 
-      if (file.size > MAX_FILE_SIZE) {
-        setError("File too large (max 10MB)");
-        return;
+      const validFiles: File[] = [];
+      for (let i = 0; i < fileList.length; i++) {
+        const file = fileList[i];
+        if (!file) continue;
+
+        if (file.size > MAX_FILE_SIZE) {
+          setError(t("batch.fileTooLarge", { name: file.name }));
+          continue;
+        }
+
+        validFiles.push(file);
       }
 
-      if (enabledSites.length === 0) {
-        setError("No sites enabled");
-        return;
-      }
+      if (validFiles.length === 0) return;
 
       setIsUploading(true);
-
       try {
-        const base64String = await readFileAsBase64(file);
-
-        for (let i = 0; i < enabledSites.length; i++) {
-          if (i > 0) {
-            await delay(STAGGER_MS);
-          }
-          await injectFile(enabledSites[i], base64String);
-        }
+        await onFilesSelected(validFiles);
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Upload failed";
         setError(msg);
@@ -78,7 +55,7 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
         setIsUploading(false);
       }
     },
-    [enabledSites, readFileAsBase64],
+    [onFilesSelected, t],
   );
 
   const handleClick = useCallback(() => {
@@ -93,7 +70,7 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
         onClick={handleClick}
         disabled={disabled || isUploading}
         className="p-3 rounded-lg text-text-secondary hover:bg-surface-secondary hover:text-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-transparent hover:border-border active:scale-95"
-        aria-label="Attach file"
+        aria-label={t("batch.attachFile")}
       >
         {isUploading ? (
           <svg
@@ -136,6 +113,7 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
         ref={fileInputRef}
         type="file"
         accept={ACCEPTED_TYPES}
+        multiple
         onChange={handleFileChange}
         className="hidden"
         tabIndex={-1}

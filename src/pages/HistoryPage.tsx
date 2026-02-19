@@ -94,7 +94,7 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="px-12 py-8 mx-auto animate-in fade-in duration-500">
+    <div className="px-12 py-8 max-w-4xl mx-auto animate-in fade-in duration-500">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-text">{t("history.title")}</h1>
         {history.length > 0 && (

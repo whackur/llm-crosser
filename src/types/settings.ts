@@ -2,7 +2,7 @@ export type LanguageCode = "en" | "ko" | "ja" | "zh" | "pt" | "ru" | "fr";
 
 export type GridLayout = "side-by-side" | "grid";
 
-export type ThemeId = "midnight" | "dawn" | "ocean" | "forest";
+export type ThemeId = "midnight" | "dawn" | "ocean" | "forest" | "rose" | "mint";
 
 export interface PromptTemplate {
   id: string;
@@ -18,4 +18,5 @@ export interface UserSettings {
   language: LanguageCode;
   theme: ThemeId;
   promptTemplates: PromptTemplate[];
+  exportAllTemplates: PromptTemplate[];
 }

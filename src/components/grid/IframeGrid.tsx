@@ -7,6 +7,7 @@ interface IframeGridProps {
   columns: 1 | 2 | 3 | 4;
   onLayoutChange: (layout: GridLayout) => void;
   onColumnsChange: (columns: 1 | 2 | 3 | 4) => void;
+  onShareAll?: () => void;
   sites: Array<{ name: string; url: string; enabled: boolean }>;
   renderIframe: (site: { name: string; url: string }) => React.ReactNode;
 }
@@ -16,6 +17,7 @@ export const IframeGrid: React.FC<IframeGridProps> = ({
   columns,
   onLayoutChange,
   onColumnsChange,
+  onShareAll,
   sites,
   renderIframe,
 }) => {
@@ -80,6 +82,18 @@ export const IframeGrid: React.FC<IframeGridProps> = ({
             ))}
           </div>
         )}
+
+        {onShareAll && enabledSites.length > 0 && (
+          <button
+            onClick={onShareAll}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-text-secondary hover:text-primary hover:bg-primary/10 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
+            title={t("share.exportAll")}
+            aria-label={t("share.exportAll")}
+          >
+            <ExportAllIcon />
+            <span className="hidden sm:inline">{t("share.exportAll")}</span>
+          </button>
+        )}
       </div>
 
       {enabledSites.length === 0 ? (
@@ -143,6 +157,24 @@ const EmptyState: React.FC<{ message: string }> = ({ message }) => (
     <h3 className="text-lg font-medium text-text mb-2">No sites enabled</h3>
     <p className="text-sm max-w-xs mx-auto opacity-70">{message}</p>
   </div>
+);
+
+const ExportAllIcon: React.FC = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+    <polyline points="16 6 12 2 8 6" />
+    <line x1="12" y1="2" x2="12" y2="15" />
+  </svg>
 );
 
 const SideBySideIcon: React.FC = () => (

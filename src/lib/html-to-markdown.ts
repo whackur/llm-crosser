@@ -37,3 +37,42 @@ export function formatConversation(data: ConversationData): string {
 
   return collapseWhitespace(parts.join("\n"));
 }
+
+export interface SiteConversation {
+  siteName: string;
+  data: ConversationData;
+}
+
+export function formatAllConversations(sites: SiteConversation[]): string {
+  const timestamp = new Date().toISOString().replace("T", " ").slice(0, 19);
+  const parts: string[] = [`# LLM Crosser — Export All`, `> Exported at ${timestamp}`, ""];
+
+  for (const site of sites) {
+    parts.push(`## ${site.siteName}`);
+    parts.push("");
+
+    if (site.data.messages.length === 0) {
+      parts.push("*No conversation content extracted.*");
+      parts.push("");
+      continue;
+    }
+
+    for (const message of site.data.messages) {
+      const md = htmlToMarkdown(message.contentHtml);
+      const roleLabel = `**${message.role}**`;
+
+      if (message.thinking) {
+        parts.push(`${roleLabel} *(thinking)*: ${message.thinking.content}`);
+        parts.push("");
+      }
+
+      parts.push(`${roleLabel}: ${md.trim()}`);
+      parts.push("");
+    }
+
+    parts.push("---");
+    parts.push("");
+  }
+
+  return collapseWhitespace(parts.join("\n"));
+}

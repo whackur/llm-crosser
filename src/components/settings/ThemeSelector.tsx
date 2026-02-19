@@ -33,6 +33,16 @@ const THEMES: ThemeOption[] = [
     labelKey: "settings.themeForest",
     preview: { bg: "#060d06", surface: "#0f1a10", primary: "#4ade80", text: "#dce8dc" },
   },
+  {
+    id: "rose",
+    labelKey: "settings.themeRose",
+    preview: { bg: "#fef2f2", surface: "#ffffff", primary: "#e11d48", text: "#1c1917" },
+  },
+  {
+    id: "mint",
+    labelKey: "settings.themeMint",
+    preview: { bg: "#f0fdfa", surface: "#ffffff", primary: "#0d9488", text: "#1c1917" },
+  },
 ];
 
 interface ThemeSelectorProps {

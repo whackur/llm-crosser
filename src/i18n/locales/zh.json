@@ -2,14 +2,19 @@
   "nav": {
     "batchSearch": "批量搜索",
     "settings": "设置",
-    "history": "历史"
+    "history": "历史",
+    "newChat": "新对话"
   },
   "settings": {
     "title": "设置",
     "searchEngines": "搜索引擎",
     "searchEnginesDesc": "启用或禁用LLM网站",
     "promptTemplates": "提示词模板",
-    "promptTemplatesDesc": "管理查询模板",
+    "promptTemplatesDesc": "发送查询到LLM时应用的模板。",
+    "promptTemplatesHint": "将被替换为您的问题。在搜索栏中选择模板后发送。",
+    "exportAllTemplates": "全部导出模板",
+    "exportAllTemplatesDesc": "用于包装多个LLM响应的模板。方便粘贴到另一个LLM中一次性分析或比较所有响应。",
+    "exportAllTemplatesHint": "将被替换为导出的对话内容。导出时选择模板可包装输出。",
     "language": "语言",
     "languageDesc": "选择显示语言",
     "addTemplate": "添加模板",
@@ -18,6 +23,7 @@
     "templateName": "模板名称",
     "templateText": "模板文本",
     "templatePlaceholder": "使用{query}作为查询的占位符",
+    "templateQueryRequired": "模板必须包含{query}作为用户输入的占位符。",
     "save": "保存",
     "cancel": "取消",
     "confirmDelete": "确定要删除此模板吗？",
@@ -26,17 +32,22 @@
     "themeMidnight": "午夜",
     "themeDawn": "黎明",
     "themeOcean": "海洋",
-    "themeForest": "森林"
+    "themeForest": "森林",
+    "themeRose": "玫瑰",
+    "themeMint": "薄荷"
   },
   "batch": {
     "inputPlaceholder": "向所有LLM提问...",
+    "templateActivePlaceholder": "输入您的问题（将应用\"{{name}}\"模板）",
     "send": "发送",
     "sending": "发送中...",
     "columns": "列",
     "noSitesEnabled": "没有启用的网站。请转到设置以启用LLM网站。",
     "loading": "加载中...",
     "ready": "就绪",
-    "querying": "查询中..."
+    "querying": "查询中...",
+    "attachFile": "附加文件",
+    "fileTooLarge": "{{name}}文件太大（最大10MB）"
   },
   "history": {
     "title": "历史",
@@ -54,7 +65,9 @@
     "download": "下载.md",
     "close": "关闭",
     "extracting": "正在提取对话...",
-    "extractFailed": "提取对话失败"
+    "extractFailed": "提取对话失败",
+    "exportAll": "全部导出",
+    "wrapWith": "应用模板:"
   },
   "error": {
     "loadFailed": "加载{{siteName}}失败",
