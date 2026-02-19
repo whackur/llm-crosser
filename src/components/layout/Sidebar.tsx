@@ -6,11 +6,17 @@ import {
   SettingsIcon,
   HistoryIcon,
   IssueIcon,
-  GitHubIcon,
+  StarIcon,
   NewChatIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "../ui/Icons";
+import { useGitHubStars } from "@/src/hooks/useGitHubStars";
+
+function formatStarCount(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  return String(n);
+}
 
 interface SidebarProps {
   collapsed: boolean;
@@ -31,6 +37,7 @@ const NAV_ITEMS: NavItem[] = [
 
 export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggleCollapse }) => {
   const { t } = useTranslation();
+  const stars = useGitHubStars();
 
   const itemBase = collapsed ? "justify-center w-12 h-12 mx-auto" : "px-4 py-3";
 
@@ -119,20 +126,33 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggleCollapse })
         )}
 
         <a
-          href="https://github.com/whackur/llm-crosser"
+          href="https://github.com/whackur/llm-crosser/stargazers"
           target="_blank"
           rel="noopener noreferrer"
           className={`
             flex items-center rounded-lg transition-all duration-200 group
-            text-text-secondary hover:bg-surface-secondary hover:text-text
+            text-amber-500 hover:bg-amber-500/10 hover:text-amber-400
             ${itemBase}
           `}
-          title={collapsed ? "GitHub" : undefined}
+          title={
+            collapsed
+              ? stars !== null
+                ? `Star us on GitHub! (${formatStarCount(stars)} ⭐)`
+                : "Star us on GitHub!"
+              : undefined
+          }
         >
-          <GitHubIcon
-            className={`w-[22px] h-[22px] shrink-0 group-hover:scale-105 transition-transform ${collapsed ? "" : "mr-3"}`}
+          <StarIcon
+            className={`w-[20px] h-[20px] shrink-0 group-hover:scale-110 transition-transform ${collapsed ? "" : "mr-3"}`}
           />
-          {!collapsed && <span className="text-sm whitespace-nowrap">GitHub</span>}
+          {!collapsed && (
+            <span className="text-sm whitespace-nowrap font-medium flex-1">Star us!</span>
+          )}
+          {!collapsed && stars !== null && (
+            <span className="ml-auto text-[11px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-500 group-hover:bg-amber-500/25 transition-colors">
+              {formatStarCount(stars)}
+            </span>
+          )}
         </a>
 
         <a

@@ -41,6 +41,7 @@ export default defineConfig({
       "https://chat.qwen.ai/*",
       "https://chat.z.ai/*",
       "https://www.perplexity.ai/*",
+      "https://api.github.com/*",
     ],
     content_security_policy: {
       extension_pages:
