@@ -19,15 +19,17 @@ async function executeStep(step: SearchStep, query: string): Promise<void> {
   const retryInterval = step.retryInterval || 300;
 
   if (step.waitForElement && step.selector) {
-    await waitFor(() => !!findElement(step.selector!), maxAttempts, retryInterval);
+    const selector = step.selector;
+    await waitFor(() => !!findElement(selector), maxAttempts, retryInterval);
   }
 
   const elementActions = ["focus", "setValue", "triggerEvents", "click", "sendKeys", "paste"];
 
   if (elementActions.includes(step.action) && step.selector) {
-    const found = await waitFor(() => !!findElement(step.selector!), maxAttempts, retryInterval);
+    const selector = step.selector;
+    const found = await waitFor(() => !!findElement(selector), maxAttempts, retryInterval);
     if (!found) {
-      console.warn(`[llm-crosser] Element not found for "${step.action}": ${step.selector}`);
+      console.warn(`[llm-crosser] Element not found for "${step.action}": ${selector}`);
       return;
     }
   }

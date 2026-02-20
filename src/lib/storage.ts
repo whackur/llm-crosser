@@ -1,20 +1,8 @@
 import type { UserSettings, PromptTemplate } from "../types/settings";
-import type { HistoryEntry, ExportHistoryEntry } from "../types/history";
+import type { HistoryEntry } from "../types/history";
+import { SETTINGS_KEY, HISTORY_KEY, DEFAULT_SETTINGS } from "./constants";
 
-const SETTINGS_KEY = "llm-crosser-settings";
-const HISTORY_KEY = "llm-crosser-history";
-const EXPORT_HISTORY_KEY = "llm-crosser-export-history";
-
-const DEFAULT_SETTINGS: UserSettings = {
-  enabledSites: ["ChatGPT", "Gemini", "Grok"],
-  gridLayout: "side-by-side",
-  gridColumns: 2,
-  language: "en",
-  theme: "midnight",
-  promptTemplates: [],
-  exportAllTemplates: [],
-  defaultExportName: "",
-};
+export { SETTINGS_KEY, HISTORY_KEY, DEFAULT_SETTINGS } from "./constants";
 
 /**
  * Get current settings, merged with defaults
@@ -145,70 +133,4 @@ export async function getPromptTemplates(): Promise<PromptTemplate[]> {
  */
 export async function savePromptTemplates(templates: PromptTemplate[]): Promise<void> {
   await updateSettings({ promptTemplates: templates });
-}
-
-/**
- * Get export history entries
- */
-export async function getExportHistory(): Promise<ExportHistoryEntry[]> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get([EXPORT_HISTORY_KEY], (result: Record<string, unknown>) => {
-      const stored = result[EXPORT_HISTORY_KEY] as ExportHistoryEntry[] | undefined;
-      resolve(stored || []);
-    });
-  });
-}
-
-/**
- * Add entry to export history (prepend)
- */
-export async function addExportHistoryEntry(entry: ExportHistoryEntry): Promise<void> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get([EXPORT_HISTORY_KEY], (result: Record<string, unknown>) => {
-      const current = result[EXPORT_HISTORY_KEY] as ExportHistoryEntry[] | undefined;
-      const updated = [entry, ...(current || [])];
-      chrome.storage.local.set({ [EXPORT_HISTORY_KEY]: updated }, () => {
-        resolve();
-      });
-    });
-  });
-}
-
-/**
- * Delete export history entry by id
- */
-export async function deleteExportHistoryEntry(id: string): Promise<void> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get([EXPORT_HISTORY_KEY], (result: Record<string, unknown>) => {
-      const current = result[EXPORT_HISTORY_KEY] as ExportHistoryEntry[] | undefined;
-      const updated = (current || []).filter((entry) => entry.id !== id);
-      chrome.storage.local.set({ [EXPORT_HISTORY_KEY]: updated }, () => {
-        resolve();
-      });
-    });
-  });
-}
-
-/**
- * Clear all export history
- */
-export async function clearExportHistory(): Promise<void> {
-  return new Promise((resolve) => {
-    chrome.storage.local.set({ [EXPORT_HISTORY_KEY]: [] }, () => {
-      resolve();
-    });
-  });
-}
-
-/**
- * Search export history by name (case-insensitive)
- */
-export async function searchExportHistory(query: string): Promise<ExportHistoryEntry[]> {
-  const history = await getExportHistory();
-  const lowerQuery = query.toLowerCase();
-  return history.filter(
-    (entry) =>
-      entry.name.toLowerCase().includes(lowerQuery) ||
-      entry.siteName.toLowerCase().includes(lowerQuery),
-  );
 }

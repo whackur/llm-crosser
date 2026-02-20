@@ -5,7 +5,7 @@ import {
   addExportHistoryEntry,
   deleteExportHistoryEntry,
   clearExportHistory,
-} from "../lib/storage";
+} from "../lib/export-history-storage";
 
 interface UseExportHistoryReturn {
   exportHistory: ExportHistoryEntry[];
@@ -48,33 +48,25 @@ export function useExportHistory(): UseExportHistoryReturn {
     };
   }, [handleStorageChange]);
 
-  const handleAddEntry = useCallback(
-    async (entry: ExportHistoryEntry) => {
-      const optimistic = [entry, ...exportHistory];
-      setExportHistory(optimistic);
-      try {
-        await addExportHistoryEntry(entry);
-      } catch {
-        const reloaded = await getExportHistory();
-        setExportHistory(reloaded);
-      }
-    },
-    [exportHistory],
-  );
+  const handleAddEntry = useCallback(async (entry: ExportHistoryEntry) => {
+    setExportHistory((prev) => [entry, ...prev]);
+    try {
+      await addExportHistoryEntry(entry);
+    } catch {
+      const reloaded = await getExportHistory();
+      setExportHistory(reloaded);
+    }
+  }, []);
 
-  const handleDeleteEntry = useCallback(
-    async (id: string) => {
-      const optimistic = exportHistory.filter((e) => e.id !== id);
-      setExportHistory(optimistic);
-      try {
-        await deleteExportHistoryEntry(id);
-      } catch {
-        const reloaded = await getExportHistory();
-        setExportHistory(reloaded);
-      }
-    },
-    [exportHistory],
-  );
+  const handleDeleteEntry = useCallback(async (id: string) => {
+    setExportHistory((prev) => prev.filter((e) => e.id !== id));
+    try {
+      await deleteExportHistoryEntry(id);
+    } catch {
+      const reloaded = await getExportHistory();
+      setExportHistory(reloaded);
+    }
+  }, []);
 
   const handleClearAll = useCallback(async () => {
     setExportHistory([]);

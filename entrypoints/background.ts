@@ -9,19 +9,7 @@ import {
   BATCH_SEARCH_PATH,
 } from "@/src/lib/background-frame-router";
 import { getFloatState, setFloatState, clearFloatState } from "@/src/lib/float-state";
-
-const SETTINGS_KEY = "llm-crosser-settings";
-
-const DEFAULT_SETTINGS: UserSettings = {
-  enabledSites: ["ChatGPT", "Gemini", "Grok"],
-  gridLayout: "side-by-side",
-  gridColumns: 2,
-  language: "en",
-  theme: "midnight",
-  promptTemplates: [],
-  exportAllTemplates: [],
-  defaultExportName: "",
-};
+import { SETTINGS_KEY, DEFAULT_SETTINGS } from "@/src/lib/constants";
 
 async function openOrFocusBatchSearch(hash?: string): Promise<void> {
   const floatState = await getFloatState();

@@ -4,16 +4,19 @@ Custom hooks that wrap `chrome.storage`, `browser.runtime`, and extension APIs b
 
 ## HOOKS
 
-| Hook               | LOC | Wraps                              | Returns                                                 |
-| ------------------ | --- | ---------------------------------- | ------------------------------------------------------- |
-| `useSettings`      | 78  | `chrome.storage.local` (settings)  | `{ settings, updateSettings, loading }`                 |
-| `useHistory`       | 124 | `chrome.storage.local` (history)   | `{ history, addEntry, deleteEntry, clearAll }`          |
-| `useIframeManager` | 109 | Multi-iframe lifecycle             | `{ iframeRefs, statuses, dispatch, extract }`           |
-| `useSiteConfig`    | 42  | `site-handlers.json` fetch         | `{ siteConfigs, loading }`                              |
-| `useTheme`         | 22  | `document.documentElement` dataset | Applies `data-theme` attribute; no return value         |
-| `useFloatMode`     | 47  | `lib/float-state.ts`               | `{ isPopupWindow, isFloatActive, floatState, loading }` |
-| `useExportHistory` | 96  | `chrome.storage.local` (exports)   | `{ exportHistory, addEntry, deleteEntry, clearAll }`    |
-| `useGitHubStars`   | 67  | GitHub API + chrome.storage cache  | `stars: number \| null`                                 |
+| Hook                   | LOC | Wraps                              | Returns                                                          |
+| ---------------------- | --- | ---------------------------------- | ---------------------------------------------------------------- |
+| `useSettings`          | 65  | `chrome.storage.local` (settings)  | `{ settings, updateSettings, loading }`                          |
+| `useHistory`           | 110 | `chrome.storage.local` (history)   | `{ history, addEntry, deleteEntry, clearAll }`                   |
+| `useIframeManager`     | 109 | Multi-iframe lifecycle             | `{ iframeRefs, statuses, dispatch, extract }`                    |
+| `useSiteConfig`        | 28  | `site-handlers.json` fetch         | `{ siteConfigs, loading }`                                       |
+| `useTheme`             | 14  | `document.documentElement` dataset | Applies `data-theme` attribute; no return value                  |
+| `useFloatMode`         | 47  | `lib/float-state.ts`               | `{ isPopupWindow, isFloatActive, floatState, loading }`          |
+| `useExportHistory`     | 88  | `chrome.storage.local` (exports)   | `{ exportHistory, addEntry, deleteEntry, clearAll }`             |
+| `useGitHubStars`       | 67  | GitHub API + chrome.storage cache  | `stars: number \| null`                                          |
+| `useConversationShare` | 189 | Content extraction + formatting    | `{ shareData, extractAll, formatMarkdown, copyToClipboard }`     |
+| `useOmniboxAutoSend`   | 68  | `useSearchParams` (hash ?q= param) | Auto-triggers handleSend on mount if ?q= present; clears after   |
+| `useResetMechanism`    | 33  | `useSearchParams` (hash ?reset)    | `{ resetKey }` — counter incremented on /?reset=true; clears URL |
 
 ## PATTERNS
 
@@ -26,7 +29,7 @@ Custom hooks that wrap `chrome.storage`, `browser.runtime`, and extension APIs b
 
 | Task                    | Hook                | Notes                                                          |
 | ----------------------- | ------------------- | -------------------------------------------------------------- |
-| Add new settings field  | `useSettings.ts`    | Also update `types/settings.ts` + `lib/storage.ts` defaults    |
+| Add new settings field  | `useSettings.ts`    | Also update `types/settings.ts` + `lib/constants.ts` defaults  |
 | Change iframe lifecycle | `useIframeManager`  | Manages load/query/status/extract per iframe                   |
 | Add theme               | `useTheme.ts`       | Applies `[data-theme]` to `<html>`. Add theme in `globals.css` |
 | Float window reactivity | `useFloatMode.ts`   | Reads from `lib/float-state.ts`; detects popup window type     |
@@ -36,7 +39,7 @@ Custom hooks that wrap `chrome.storage`, `browser.runtime`, and extension APIs b
 ## CONVENTIONS
 
 - Hooks consume `lib/` and `types/` — never the other way around.
-- No direct `chrome.*` calls for settings/history — use `lib/storage.ts`. Exception: `useGitHubStars` and `useFloatMode` access `chrome.storage.local` directly for their own isolated keys.
+- No direct `chrome.*` calls for settings/history — use `lib/storage.ts` or `lib/export-history-storage.ts`. Exception: `useGitHubStars` and `useFloatMode` access `chrome.storage.local` directly for their own isolated keys.
 - Hook files are named `use{Feature}.ts` — one hook per file.
 - Return typed interfaces (not inline objects) for complex hooks.
 

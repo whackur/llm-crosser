@@ -10,6 +10,8 @@ components/
 │   ├── IframeGrid.tsx        # Layout engine: side-by-side (flex) vs grid (CSS grid). 244 LOC — OVER LIMIT
 │   ├── IframeWrapper.tsx     # Per-site iframe: loading state, postMessage bridge, status overlay
 │   └── ActiveSitesBar.tsx    # Horizontal favicon toggle bar for enabling/disabling LLM sites
+├── history/
+│   └── ExportHistoryList.tsx # Shared export history entries list (extracted from HistoryPage)
 ├── layout/
 │   ├── AppLayout.tsx         # Shell: Sidebar + <Outlet>. Syncs i18n language on mount.
 │   ├── Sidebar.tsx           # Nav: site toggles, layout toggle, New Chat link
@@ -22,7 +24,8 @@ components/
 │   ├── LanguageSelector.tsx  # Dropdown: 7 locales via i18next
 │   ├── ThemeSelector.tsx     # Visual theme picker (6 themes: midnight/dawn/ocean/forest/rose/mint)
 │   ├── PromptTemplateEditor.tsx # CRUD modal for prompt templates. 202 LOC — AT LIMIT
-│   └── TemplateListItem.tsx  # Single template row with edit/delete actions
+│   ├── TemplateListItem.tsx  # Single template row with edit/delete actions
+│   └── SiteToggleSection.tsx # Enable/disable LLM sites toggle grid (extracted from SettingsPage)
 ├── sidepanel/
 │   ├── SidepanelLayout.tsx   # Side panel shell: header, bottom tab nav (/, /history, /settings)
 │   └── SidepanelHome.tsx     # Quick query input + float window control (open/focus/close)
@@ -30,7 +33,7 @@ components/
 │   └── SharePopup.tsx        # Export modal: copies Markdown or per-site conversation URLs. 229 LOC — OVER LIMIT
 └── ui/
     ├── ErrorBanner.tsx       # Generic dismissible error display
-    └── Icons.tsx             # SVG icon set: GitHubIcon, NewChatIcon, DetachIcon, etc. 207 LOC — OVER LIMIT
+    └── Icons.tsx             # SVG icon set: GitHubIcon, NewChatIcon, DetachIcon, etc. 207 LOC — exempt (static SVG)
 ```
 
 ## FEATURE OWNERSHIP
@@ -38,11 +41,12 @@ components/
 | Group        | Owns                                                | Consumes                                              |
 | ------------ | --------------------------------------------------- | ----------------------------------------------------- |
 | `grid/`      | iframe layout, loading states, postMessage dispatch | `useIframeManager`, `useSiteConfig`                   |
+| `history/`   | export history list display                         | `useExportHistory`                                    |
 | `layout/`    | app shell, sidebar collapse, float placeholder      | `useSettings`, `useTheme`, `useFloatMode`, `<Outlet>` |
 | `query/`     | text input, file input, template selection          | `useSettings` (templates), parent `onSend`            |
-| `settings/`  | all settings UI forms                               | `useSettings`                                         |
+| `settings/`  | all settings UI forms + site toggles                | `useSettings`, `useSiteConfig`                        |
 | `sidepanel/` | side panel shell, quick query, float control        | `useSettings`, `useFloatMode`, `useSiteConfig`        |
-| `share/`     | Markdown export, URL copy                           | `useIframeManager` (extraction results)               |
+| `share/`     | Markdown export, URL copy                           | `useConversationShare` (extraction results)           |
 | `ui/`        | reusable primitives (errors, icons)                 | nothing — zero dependencies                           |
 
 ## LOC STATUS
@@ -51,15 +55,18 @@ components/
 | ----------------------------------- | --- | ------------------------------------------------- |
 | `grid/IframeGrid.tsx`               | 244 | **OVER** — split layout logic before adding modes |
 | `share/SharePopup.tsx`              | 229 | **OVER** — split export format logic              |
-| `ui/Icons.tsx`                      | 207 | **OVER** — exempt if static SVG only              |
+| `ui/Icons.tsx`                      | 207 | Exempt (static SVG definitions only)              |
 | `settings/PromptTemplateEditor.tsx` | 202 | **AT LIMIT** — do not add more logic              |
 | `query/QueryInputBar.tsx`           | 173 | OK                                                |
-| `grid/IframeWrapper.tsx`            | 159 | OK                                                |
+| `grid/IframeWrapper.tsx`            | 161 | OK                                                |
 | `layout/SidebarFooter.tsx`          | 125 | OK                                                |
 | `sidepanel/SidepanelHome.tsx`       | 125 | OK                                                |
 | `sidepanel/SidepanelLayout.tsx`     | 122 | OK                                                |
 | `layout/Sidebar.tsx`                | 118 | OK                                                |
 | `grid/ActiveSitesBar.tsx`           | 94  | OK                                                |
+| `history/ExportHistoryList.tsx`     | ~70 | OK                                                |
+| `settings/SiteToggleSection.tsx`    | ~60 | OK                                                |
+| `settings/TemplateListItem.tsx`     | ~50 | OK                                                |
 
 ## WHERE TO LOOK
 
@@ -90,5 +97,5 @@ components/
 - **Never put business logic in components** — extract to lib or hook.
 - **`IframeGrid.tsx` at 244 LOC** — add layout modes only after splitting.
 - **`SharePopup.tsx` at 229 LOC** — split export format handlers before new export types.
-- **`Icons.tsx` at 207 LOC** — over limit but exempt if only static SVG data. Do not add stateful logic.
+- **`Icons.tsx` at 207 LOC** — exempt (static SVG only). Do not add stateful logic.
 - **Side panel pages are shared** — `sidepanel/main.tsx` imports `SettingsPage`/`HistoryPage` from `src/pages/`. Never duplicate.

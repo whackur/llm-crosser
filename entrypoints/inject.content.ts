@@ -1,9 +1,15 @@
 import { defineContentScript } from "wxt/utils/define-content-script";
 import { browser } from "wxt/browser";
-import { executeSteps } from "../src/lib/automation-engine";
-import { extractConversation } from "../src/lib/content-extractor";
-import { findElement } from "../src/lib/element-finder";
-import type { ExtensionMessage, SiteHandlersConfig } from "../src/types";
+import {
+  handleInjectQuery,
+  handleInjectFile,
+  handleGetUrl,
+  handleExtractContent,
+  handleRuntimeInjectQuery,
+  handleRuntimeInjectFile,
+  handleRuntimeExtractContent,
+} from "../src/lib/content-script-handlers";
+import type { ExtensionMessage } from "../src/types";
 
 export default defineContentScript({
   matches: [
@@ -17,234 +23,87 @@ export default defineContentScript({
   allFrames: true,
   runAt: "document_start",
   main() {
-    const normalizeHostname = (hostname: string): string =>
-      hostname.toLowerCase().replace(/^www\./, "");
-
-    const isCurrentFrameForSite = (siteUrl: string): boolean => {
-      try {
-        const currentHost = normalizeHostname(window.location.hostname);
-        const siteHost = normalizeHostname(new URL(siteUrl).hostname);
-        return (
-          currentHost === siteHost ||
-          currentHost.endsWith(`.${siteHost}`) ||
-          siteHost.endsWith(`.${currentHost}`)
-        );
-      } catch {
-        return false;
-      }
-    };
-
-    // Primary: postMessage-based injection (reliable for iframes within extension pages)
     window.addEventListener("message", (event) => {
       if (!event.data || typeof event.data !== "object") return;
 
       const { type } = event.data as { type?: string };
+      const source = event.source as Window | null;
 
       if (type === "INJECT_QUERY_VIA_POST") {
-        const { query, searchHandler, siteName } = event.data as {
-          query?: string;
-          searchHandler?: { steps: unknown[] };
-          siteName?: string;
-        };
-        if (!query || !searchHandler?.steps || !Array.isArray(searchHandler.steps)) return;
-
         (async () => {
-          try {
-            const ok = await executeSteps(
-              searchHandler.steps as unknown as Parameters<typeof executeSteps>[0],
-              query,
-            );
-            const source = event.source as Window | null;
-            source?.postMessage(
-              { type: "QUERY_STATUS", siteName: siteName ?? "", status: ok ? "done" : "error" },
-              "*",
-            );
-          } catch (error) {
-            console.error("[llm-crosser] postMessage handler error:", error);
-          }
+          const result = await handleInjectQuery(event.data);
+          source?.postMessage(
+            { type: "QUERY_STATUS", siteName: event.data.siteName ?? "", status: result.status },
+            "*",
+          );
         })();
         return;
       }
 
       if (type === "INJECT_FILE_VIA_POST") {
-        const { files, focusSelector, siteName } = event.data as {
-          files?: Array<{ arrayBuffer: ArrayBuffer; type: string; fileName: string }>;
-          focusSelector?: string | string[];
-          siteName?: string;
-        };
-        if (!files || !Array.isArray(files) || files.length === 0) return;
-
         (async () => {
-          try {
-            let targetElement: HTMLElement | null = null;
-            if (focusSelector) {
-              targetElement = findElement(focusSelector);
-              if (targetElement) {
-                targetElement.focus();
-                await new Promise((resolve) => setTimeout(resolve, 200));
-              }
-            }
-
-            if (!targetElement) {
-              targetElement = document.activeElement as HTMLElement | null;
-            }
-
-            const dataTransfer = new DataTransfer();
-            for (const fd of files) {
-              const file = new File([fd.arrayBuffer], fd.fileName, { type: fd.type });
-              dataTransfer.items.add(file);
-            }
-
-            const pasteEvent = new ClipboardEvent("paste", {
-              bubbles: true,
-              cancelable: true,
-              clipboardData: dataTransfer,
-            });
-
-            const dispatchTarget = targetElement ?? document.activeElement ?? document;
-            (dispatchTarget as EventTarget).dispatchEvent(pasteEvent);
-
-            const source = event.source as Window | null;
-            source?.postMessage(
-              { type: "FILE_UPLOAD_STATUS", siteName: siteName ?? "", status: "done" },
-              "*",
-            );
-          } catch (error) {
-            console.error("[llm-crosser] file paste error:", error);
-            const source = event.source as Window | null;
-            source?.postMessage(
-              { type: "FILE_UPLOAD_STATUS", siteName: siteName ?? "", status: "error" },
-              "*",
-            );
-          }
+          const result = await handleInjectFile(event.data);
+          source?.postMessage(
+            {
+              type: "FILE_UPLOAD_STATUS",
+              siteName: event.data.siteName ?? "",
+              status: result.status,
+            },
+            "*",
+          );
         })();
         return;
       }
 
       if (type === "GET_URL_VIA_POST") {
-        const { siteName } = event.data as { siteName?: string };
-        const source = event.source as Window | null;
+        const result = handleGetUrl();
         source?.postMessage(
-          { type: "CURRENT_URL", siteName: siteName ?? "", url: window.location.href },
+          { type: "CURRENT_URL", siteName: event.data.siteName ?? "", url: result.url },
           "*",
         );
         return;
       }
 
       if (type === "EXTRACT_CONTENT_VIA_POST") {
-        const { contentExtractor, siteName } = event.data as {
-          contentExtractor?: Parameters<typeof extractConversation>[0];
-          siteName?: string;
-        };
-        if (!contentExtractor) return;
-
-        try {
-          const data = extractConversation(contentExtractor);
-          const source = event.source as Window | null;
+        const result = handleExtractContent(event.data);
+        if (result.success) {
           source?.postMessage(
-            { type: "EXTRACTED_CONTENT", siteName: siteName ?? "", success: true, data },
+            {
+              type: "EXTRACTED_CONTENT",
+              siteName: event.data.siteName ?? "",
+              success: true,
+              data: result.data,
+            },
             "*",
           );
-        } catch (error) {
-          console.error("[llm-crosser] postMessage extract error:", error);
         }
         return;
       }
     });
 
-    // Fallback: Chrome extension messaging (for non-iframe contexts)
     browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       const msg = message as ExtensionMessage;
 
       if (msg.type === "INJECT_QUERY") {
         (async () => {
-          try {
-            const config = (await browser.runtime.sendMessage({
-              type: "GET_SITE_CONFIG",
-            })) as unknown as SiteHandlersConfig;
-
-            const site = config.sites.find((s) => s.name === msg.siteName);
-
-            if (site) {
-              if (!isCurrentFrameForSite(site.url)) {
-                sendResponse({ success: false, error: "FRAME_SITE_MISMATCH" });
-                return;
-              }
-
-              const ok = await executeSteps(site.searchHandler.steps, msg.query);
-              sendResponse(
-                ok
-                  ? { success: true }
-                  : { success: false, error: "Failed to execute search steps" },
-              );
-            } else {
-              sendResponse({ success: false, error: `Site ${msg.siteName} not found` });
-            }
-          } catch (error) {
-            sendResponse({ success: false, error: String(error) });
-          }
+          const result = await handleRuntimeInjectQuery(msg, browser);
+          sendResponse(result);
         })();
         return true;
       }
 
       if (msg.type === "INJECT_FILE") {
         (async () => {
-          try {
-            const config = (await browser.runtime.sendMessage({
-              type: "GET_SITE_CONFIG",
-            })) as unknown as SiteHandlersConfig;
-
-            const site = config.sites.find((s) => s.name === msg.siteName);
-
-            if (site && site.fileUploadHandler) {
-              if (!isCurrentFrameForSite(site.url)) {
-                sendResponse({ success: false, error: "FRAME_SITE_MISMATCH" });
-                return;
-              }
-
-              const ok = await executeSteps(site.fileUploadHandler.steps, msg.fileData);
-              sendResponse(
-                ok ? { success: true } : { success: false, error: "Failed to execute file steps" },
-              );
-            } else {
-              sendResponse({
-                success: false,
-                error: `Site ${msg.siteName} or file handler not found`,
-              });
-            }
-          } catch (error) {
-            sendResponse({ success: false, error: String(error) });
-          }
+          const result = await handleRuntimeInjectFile(msg, browser);
+          sendResponse(result);
         })();
         return true;
       }
 
       if (msg.type === "EXTRACT_CONTENT") {
         (async () => {
-          try {
-            const config = (await browser.runtime.sendMessage({
-              type: "GET_SITE_CONFIG",
-            })) as unknown as SiteHandlersConfig;
-
-            const site = config.sites.find((s) => s.name === msg.siteName);
-
-            if (site?.contentExtractor) {
-              if (!isCurrentFrameForSite(site.url)) {
-                sendResponse({ success: false, error: "FRAME_SITE_MISMATCH" });
-                return;
-              }
-
-              const data = extractConversation(site.contentExtractor);
-              sendResponse({ success: true, data });
-            } else {
-              sendResponse({
-                success: false,
-                error: `Site ${msg.siteName} or content extractor not found`,
-              });
-            }
-          } catch (error) {
-            sendResponse({ success: false, error: String(error) });
-          }
+          const result = await handleRuntimeExtractContent(msg, browser);
+          sendResponse(result);
         })();
         return true;
       }

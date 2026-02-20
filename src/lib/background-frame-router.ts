@@ -1,12 +1,9 @@
 import type { Browser } from "wxt/browser";
 import type { QueryStatusMessage, SiteReadyMessage } from "@/src/types/messaging";
 import { getFloatState } from "./float-state";
+import { matchesHost } from "./url-utils";
 
 export const BATCH_SEARCH_PATH = "batch-search.html";
-
-function normalizeHostname(hostname: string): string {
-  return hostname.toLowerCase().replace(/^www\./, "");
-}
 
 function isFrameUrlMatchingSite(frameUrl: string | undefined, siteUrl: string): boolean {
   if (!frameUrl) return false;
@@ -16,13 +13,10 @@ function isFrameUrlMatchingSite(frameUrl: string | undefined, siteUrl: string): 
   }
 
   try {
-    const frameHost = normalizeHostname(new URL(frameUrl).hostname);
-    const siteHost = normalizeHostname(new URL(siteUrl).hostname);
-    return (
-      frameHost === siteHost ||
-      frameHost.endsWith(`.${siteHost}`) ||
-      siteHost.endsWith(`.${frameHost}`)
-    );
+    const frameHost = new URL(frameUrl).hostname;
+    const siteHost = new URL(siteUrl).hostname;
+    if (!frameHost || !siteHost) return false;
+    return matchesHost(frameHost, siteHost);
   } catch {
     return false;
   }

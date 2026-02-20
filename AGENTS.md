@@ -1,6 +1,6 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-02-21 | **Commit:** 35fffd6 | **Branch:** feature/sidebar-panel
+**Generated:** 2026-02-21 | **Commit:** 1ad51ad | **Branch:** feature/sidebar-panel
 
 > **IMMUTABLE SECTIONS**: The three CRITICAL sections below (PR Target Branch, No Autonomous Commits, English-Only Policy) **MUST NEVER be removed or modified.** They are project-level invariants that override all other directives.
 
@@ -67,7 +67,7 @@ llm-crosser/
 │       └── main.tsx          # Side panel root: React + i18n + HashRouter
 ├── src/                      # Application source (see src/AGENTS.md)
 │   ├── components/           # UI components grouped by feature
-│   ├── hooks/                # React hooks (settings, history, iframe manager, site config, theme, float mode, export history, GitHub stars)
+│   ├── hooks/                # React hooks (settings, history, iframe manager, site config, theme, float mode, export history, GitHub stars, conversation share, omnibox auto-send, reset mechanism)
 │   ├── i18n/                 # i18next setup + 7 locale JSONs
 │   ├── lib/                  # Business logic (see src/lib/AGENTS.md)
 │   ├── pages/                # Route-level views (BatchSearch, Settings, History)
@@ -84,25 +84,26 @@ llm-crosser/
 
 ## WHERE TO LOOK
 
-| Task                       | Location                                                                                          | Notes                                                                    |
-| -------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Add new LLM site           | `public/site-handlers.json` + `wxt.config.ts` (host_permissions, frame-src) + `public/rules.json` | All three + `frame-guard.content.ts` + `inject.content.ts` matches       |
-| Change grid layout         | `src/components/grid/IframeGrid.tsx`                                                              | Supports `side-by-side` and `grid` modes                                 |
-| Modify query injection     | `src/lib/automation-engine.ts` + `src/lib/step-actions.ts` + `entrypoints/inject.content.ts`      | Engine orchestrates; step-actions implements; content script listens     |
-| Change settings schema     | `src/types/settings.ts` + `src/lib/storage.ts` + `entrypoints/background.ts`                      | Update type, defaults in BOTH storage.ts and background.ts               |
-| Add UI component           | `src/components/{feature}/`                                                                       | One component per file, Tailwind v4 classes                              |
-| Add new page/route         | `entrypoints/batch-search/main.tsx` + `src/pages/`                                                | HashRouter, add route + page component                                   |
-| Modify permissions         | `wxt.config.ts` → `manifest.permissions`                                                          | Rebuild required                                                         |
-| Fix iframe framing         | `entrypoints/frame-guard.content.ts` + `public/rules.json`                                        | Network-level + JS-level bypass                                          |
-| Change theme/add theme     | `src/styles/globals.css` → `@theme` block + `[data-theme]` selectors                              | CSS custom properties consumed by Tailwind; `useTheme` hook applies      |
-| Messaging between contexts | `src/lib/messaging.ts` + `entrypoints/background.ts`                                              | Hub-and-spoke: background routes to specific frameId                     |
-| Extract LLM responses      | `src/lib/content-extractor.ts` + `src/lib/html-node-converter.ts` + `src/lib/html-to-markdown.ts` | Extraction pipeline: DOM → HTML → Markdown                               |
-| Float window mode          | `src/lib/float-state.ts` + `src/hooks/useFloatMode.ts` + `entrypoints/background.ts`              | Detach batch-search into popup window; state in chrome.storage           |
-| Side panel UI              | `entrypoints/sidepanel/` + `src/components/sidepanel/`                                            | Quick query + float window control; bottom tab nav                       |
-| Export history             | `src/hooks/useExportHistory.ts` + `src/lib/storage.ts`                                            | CRUD for shared export entries; storage key `llm-crosser-export-history` |
-| Reset / New Chat           | `src/components/layout/Sidebar.tsx` (Link) + `src/pages/BatchSearchPage.tsx` (resetKey)           | `/?reset=true` URL param → clears overrides + increments resetKey        |
-| Omnibox behavior           | `entrypoints/background.ts` (onInputEntered) + `src/pages/BatchSearchPage.tsx` (auto-send)        | `llmc` keyword, auto-sends query via `useSearchParams` + 3s delay        |
-| Capture conversation URLs  | `src/lib/conversation-url-capture.ts`                                                             | Polls iframes via postMessage at 5s + 12s; returns cleanup fn            |
+| Task                       | Location                                                                                                                | Notes                                                                           |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Add new LLM site           | `public/site-handlers.json` + `wxt.config.ts` (host_permissions, frame-src) + `public/rules.json`                       | All three + `frame-guard.content.ts` + `inject.content.ts` matches              |
+| Change grid layout         | `src/components/grid/IframeGrid.tsx`                                                                                    | Supports `side-by-side` and `grid` modes                                        |
+| Modify query injection     | `src/lib/automation-engine.ts` + `src/lib/step-actions.ts` + `src/lib/input-actions.ts` + `src/lib/keyboard-actions.ts` | Engine orchestrates; step-actions delegates to input-actions + keyboard-actions |
+| Change settings schema     | `src/types/settings.ts` + `src/lib/constants.ts` + `src/lib/storage.ts`                                                 | Update type, then defaults in `constants.ts`, then storage CRUD                 |
+| Add UI component           | `src/components/{feature}/`                                                                                             | One component per file, Tailwind v4 classes                                     |
+| Add new page/route         | `entrypoints/batch-search/main.tsx` + `src/pages/`                                                                      | HashRouter, add route + page component                                          |
+| Modify permissions         | `wxt.config.ts` → `manifest.permissions`                                                                                | Rebuild required                                                                |
+| Fix iframe framing         | `entrypoints/frame-guard.content.ts` + `public/rules.json`                                                              | Network-level + JS-level bypass                                                 |
+| Change theme/add theme     | `src/styles/globals.css` → `@theme` block + `[data-theme]` selectors                                                    | CSS custom properties consumed by Tailwind; `useTheme` hook applies             |
+| Messaging between contexts | `src/lib/messaging.ts` + `entrypoints/background.ts`                                                                    | Hub-and-spoke: background routes to specific frameId                            |
+| Extract LLM responses      | `src/lib/content-extractor.ts` + `src/lib/html-node-converter.ts` + `src/lib/html-to-markdown.ts`                       | Extraction pipeline: DOM → HTML → Markdown                                      |
+| Float window mode          | `src/lib/float-state.ts` + `src/hooks/useFloatMode.ts` + `entrypoints/background.ts`                                    | Detach batch-search into popup window; state in chrome.storage                  |
+| Side panel UI              | `entrypoints/sidepanel/` + `src/components/sidepanel/`                                                                  | Quick query + float window control; bottom tab nav                              |
+| Export history             | `src/hooks/useExportHistory.ts` + `src/lib/export-history-storage.ts`                                                   | CRUD for shared export entries; storage key `llm-crosser-export-history`        |
+| Reset / New Chat           | `src/components/layout/Sidebar.tsx` (Link) + `src/pages/BatchSearchPage.tsx` (resetKey)                                 | `/?reset=true` URL param → clears overrides + increments resetKey               |
+| Omnibox behavior           | `entrypoints/background.ts` (onInputEntered) + `src/pages/BatchSearchPage.tsx` (auto-send)                              | `llmc` keyword, auto-sends query via `useSearchParams` + 3s delay               |
+| Capture conversation URLs  | `src/lib/conversation-url-capture.ts`                                                                                   | Polls iframes via postMessage at 5s + 12s; returns cleanup fn                   |
+| Normalize LLM site URLs    | `src/lib/url-utils.ts`                                                                                                  | Single source for `normalizeHostname()` — used across 4+ modules                |
 
 ## EXTENSION ARCHITECTURE
 
@@ -119,7 +120,7 @@ User submits query (manual or auto-send from omnibox)
         → postMessage(INJECT_QUERY_VIA_POST) to each iframe's contentWindow
             → inject.content.ts receives via window "message" listener
                 → automation-engine.ts executes SearchStep[] from site-handlers.json
-                    → step-actions.ts: focus → setValue → click
+                    → step-actions.ts delegates to input-actions.ts + keyboard-actions.ts
 
 Fallback (if postMessage fails):
     → background.ts receives INJECT_QUERY via browser.runtime.sendMessage
@@ -146,15 +147,13 @@ pnpm zip              # Package for Chrome Web Store
 
 ## NOTES
 
-- **Settings defaults synced in TWO places**: `src/lib/storage.ts` and `entrypoints/background.ts` both define `DEFAULT_SETTINGS`. If you change the schema, update BOTH or settings will silently fall back to stale defaults.
+- **`DEFAULT_SETTINGS` unified**: Single source of truth in `src/lib/constants.ts`. Both `storage.ts` and `background.ts` import from there. No dual-sync needed.
 - **Site selectors are fragile**: `public/site-handlers.json` contains hardcoded DOM selectors for each LLM site. These break when target sites update their UI. Test after any site update.
 - **Adding a new LLM site requires 4+ files**: `site-handlers.json` (selectors + steps), `wxt.config.ts` (host_permissions + frame-src CSP), `rules.json` (header stripping), `frame-guard.content.ts` (matches array), `inject.content.ts` (matches array).
-- **`step-actions.ts` at 238 LOC**: **OVER the 200 LOC limit.** Must be split before adding new action handlers.
-- **`inject.content.ts` at 253 LOC**: **OVER the 200 LOC limit.** Dual-listener registration + automation call + URL reporting — split before adding new message handlers.
-- **`BatchSearchPage.tsx` at 484 LOC**: **FAR OVER the 200 LOC limit.** Orchestrates iframe grid, query sending, history saving, omnibox auto-send, reset mechanism, and site URL overrides. Split before adding new features.
-- **`storage.ts` at 214 LOC**: **OVER the 200 LOC limit.** Added export history CRUD. Must split before adding more storage keys.
-- **`SettingsPage.tsx` at 207 LOC**: **OVER the 200 LOC limit.** Extract section components before adding new settings.
-- **`HistoryPage.tsx` at 207 LOC**: **OVER the 200 LOC limit.** Extract list/filter components before adding features.
+- **`IframeGrid.tsx` at 244 LOC**: **OVER the 200 LOC limit.** Split layout logic before adding new grid modes.
+- **`SharePopup.tsx` at 229 LOC**: **OVER the 200 LOC limit.** Split export format logic before adding new export types.
+- **`Icons.tsx` at 207 LOC**: Exempt from 200 LOC rule (static SVG definitions only).
+- **`PromptTemplateEditor.tsx` at 202 LOC**: **AT the 200 LOC limit.** Do not add more logic without extracting.
 - **Chrome-only APIs**: The React app uses `chrome.storage.local` and `browser.runtime` — it cannot be tested outside a Chrome extension context.
 - **No test runner or CI configured**: Code quality enforced by convention + `.sisyphus/rules/`.
 - **Playwright MCP test artifacts**: All Playwright test outputs MUST be saved to `.playwright-mcp/`. This directory is gitignored.
