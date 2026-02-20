@@ -4,39 +4,47 @@ import type { ExtensionMessage } from "@/src/types/messaging";
 import type { UserSettings } from "@/src/types/settings";
 import { routeToSiteFrame } from "../src/lib/site-frame-message-router";
 import {
-  findBatchSearchTab,
   forwardToExtensionPage,
   fetchSiteConfig,
   BATCH_SEARCH_PATH,
 } from "@/src/lib/background-frame-router";
+import { getFloatState, setFloatState, clearFloatState } from "@/src/lib/float-state";
+import { SETTINGS_KEY, DEFAULT_SETTINGS } from "@/src/lib/constants";
 
-const SETTINGS_KEY = "llm-crosser-settings";
-
-const DEFAULT_SETTINGS: UserSettings = {
-  enabledSites: ["ChatGPT", "Gemini", "Grok"],
-  gridLayout: "side-by-side",
-  gridColumns: 2,
-  language: "en",
-  theme: "midnight",
-  promptTemplates: [],
-  exportAllTemplates: [],
-};
-
-async function openOrFocusBatchSearch(hash?: string): Promise<Browser.tabs.Tab> {
-  const existing = await findBatchSearchTab();
+async function openOrFocusBatchSearch(hash?: string): Promise<void> {
+  const floatState = await getFloatState();
   const url = hash
     ? browser.runtime.getURL(`/${BATCH_SEARCH_PATH}${hash}`)
     : browser.runtime.getURL(`/${BATCH_SEARCH_PATH}`);
 
-  if (existing?.id != null) {
-    await browser.tabs.update(existing.id, { active: true, url: hash ? url : undefined });
-    if (existing.windowId != null) {
-      await browser.windows.update(existing.windowId, { focused: true });
+  if (floatState?.active) {
+    try {
+      await browser.windows.update(floatState.windowId, { focused: true });
+      if (hash && floatState.tabId != null) {
+        await browser.tabs.update(floatState.tabId, { url });
+      }
+      return;
+    } catch {
+      await clearFloatState();
     }
-    return existing;
   }
 
-  return browser.tabs.create({ url });
+  const newWindow = await browser.windows.create({
+    url,
+    type: "popup",
+    width: 1200,
+    height: 800,
+    focused: true,
+  });
+
+  if (newWindow?.id != null && newWindow.tabs?.[0]?.id != null) {
+    await setFloatState({
+      active: true,
+      tabId: newWindow.tabs[0].id,
+      windowId: newWindow.id,
+      originalWindowId: -1,
+    });
+  }
 }
 
 async function getSettings(): Promise<UserSettings> {
@@ -52,18 +60,34 @@ async function updateSettings(partial: Record<string, unknown>): Promise<UserSet
 }
 
 export default defineBackground(() => {
-  try {
-    browser.action.onClicked.addListener(() => {
-      void openOrFocusBatchSearch();
-    });
-  } catch {
-    console.warn("[llm-crosser] browser.action not available, falling back to chrome.action");
+  void getFloatState().then(async (state) => {
+    if (!state?.active) return;
     try {
-      chrome.action.onClicked.addListener(() => {
+      await browser.windows.get(state.windowId);
+    } catch {
+      void clearFloatState();
+    }
+  });
+
+  browser.windows.onRemoved.addListener((windowId) => {
+    void getFloatState().then((state) => {
+      if (state?.active && state.windowId === windowId) {
+        void clearFloatState();
+      }
+    });
+  });
+
+  try {
+    if (typeof chrome !== "undefined" && chrome.sidePanel) {
+      void chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+    }
+  } catch {
+    try {
+      browser.action.onClicked.addListener(() => {
         void openOrFocusBatchSearch();
       });
     } catch {
-      console.error("[llm-crosser] Neither browser.action nor chrome.action available");
+      console.error("[llm-crosser] Neither sidePanel nor action API available");
     }
   }
 
@@ -78,44 +102,12 @@ export default defineBackground(() => {
   });
 
   browser.omnibox.onInputChanged.addListener((text, suggest) => {
-    suggest([
-      {
-        content: text,
-        description: `Search "${text}" across all LLMs`,
-      },
-    ]);
+    suggest([{ content: text, description: `Search "${text}" across all LLMs` }]);
   });
 
-  browser.omnibox.onInputEntered.addListener((text, disposition) => {
+  browser.omnibox.onInputEntered.addListener((text) => {
     const hash = `#/?q=${encodeURIComponent(text)}`;
-    const url = browser.runtime.getURL(`/${BATCH_SEARCH_PATH}${hash}`);
-
-    if (disposition === "currentTab") {
-      void browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-        if (tabs[0]?.id != null) {
-          void browser.tabs.update(tabs[0].id, { url });
-        }
-      });
-    } else if (disposition === "newForegroundTab") {
-      void findBatchSearchTab().then((existing) => {
-        if (existing?.id != null) {
-          void browser.tabs.update(existing.id, { active: true, url });
-          if (existing.windowId != null) {
-            void browser.windows.update(existing.windowId, { focused: true });
-          }
-        } else {
-          void browser.tabs.create({ url, active: true });
-        }
-      });
-    } else if (disposition === "newBackgroundTab") {
-      void findBatchSearchTab().then((existing) => {
-        if (existing?.id != null) {
-          void browser.tabs.update(existing.id, { url });
-        } else {
-          void browser.tabs.create({ url, active: false });
-        }
-      });
-    }
+    void openOrFocusBatchSearch(hash);
   });
 
   browser.runtime.onMessage.addListener(
@@ -136,6 +128,13 @@ export default defineBackground(() => {
         case "INJECT_FILE":
         case "EXTRACT_CONTENT":
           return routeToSiteFrame(message);
+
+        case "DETACH_BATCH_SEARCH":
+          return openOrFocusBatchSearch(
+            "query" in message && typeof message.query === "string"
+              ? `#/?q=${encodeURIComponent(message.query)}`
+              : undefined,
+          ) as Promise<unknown>;
 
         case "QUERY_STATUS":
         case "SITE_READY":

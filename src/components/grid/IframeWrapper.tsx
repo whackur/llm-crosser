@@ -8,7 +8,7 @@ interface IframeWrapperProps {
   onRetry?: (siteName: string) => void;
 }
 
-export const IframeWrapper: React.FC<IframeWrapperProps> = ({
+const IframeWrapperInner: React.FC<IframeWrapperProps> = ({
   siteName,
   siteUrl,
   onShare,
@@ -157,3 +157,5 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = ({
     </div>
   );
 };
+
+export const IframeWrapper = React.memo(IframeWrapperInner);

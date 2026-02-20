@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import type { UserSettings } from "../types/settings";
 import { getSettings, updateSettings } from "../lib/storage";
+import { SETTINGS_KEY } from "../lib/constants";
 
 interface UseSettingsReturn {
   settings: UserSettings | null;
@@ -14,8 +15,8 @@ export function useSettings(): UseSettingsReturn {
 
   const handleStorageChange = useCallback(
     (changes: Record<string, chrome.storage.StorageChange>) => {
-      if ("llm-crosser-settings" in changes) {
-        const newSettings = changes["llm-crosser-settings"].newValue as UserSettings | undefined;
+      if (SETTINGS_KEY in changes) {
+        const newSettings = changes[SETTINGS_KEY].newValue as UserSettings | undefined;
         if (newSettings) {
           setSettings(newSettings);
         }
@@ -41,23 +42,20 @@ export function useSettings(): UseSettingsReturn {
     };
   }, [handleStorageChange]);
 
-  const handleUpdateSettings = useCallback(
-    async (partial: Partial<UserSettings>) => {
-      if (!settings) return;
+  const handleUpdateSettings = useCallback(async (partial: Partial<UserSettings>) => {
+    setSettings((prev) => {
+      if (!prev) return prev;
+      return { ...prev, ...partial };
+    });
 
-      const optimistic = { ...settings, ...partial };
-      setSettings(optimistic);
-
-      try {
-        await updateSettings(partial);
-      } catch (error) {
-        const reloaded = await getSettings();
-        setSettings(reloaded);
-        throw error;
-      }
-    },
-    [settings],
-  );
+    try {
+      await updateSettings(partial);
+    } catch (error) {
+      const reloaded = await getSettings();
+      setSettings(reloaded);
+      throw error;
+    }
+  }, []);
 
   return {
     settings,

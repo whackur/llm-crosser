@@ -22,7 +22,7 @@ interface TemplateListItemProps {
   onMoveDown: (index: number) => void;
 }
 
-export const TemplateListItem: React.FC<TemplateListItemProps> = ({
+const TemplateListItemInner: React.FC<TemplateListItemProps> = ({
   item,
   index,
   isLast,
@@ -107,3 +107,5 @@ export const TemplateListItem: React.FC<TemplateListItemProps> = ({
     </div>
   );
 };
+
+export const TemplateListItem = React.memo(TemplateListItemInner);

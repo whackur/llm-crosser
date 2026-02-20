@@ -19,4 +19,5 @@ export interface UserSettings {
   theme: ThemeId;
   promptTemplates: PromptTemplate[];
   exportAllTemplates: PromptTemplate[];
+  defaultExportName: string;
 }

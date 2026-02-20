@@ -3,7 +3,8 @@
     "batchSearch": "일괄 검색",
     "settings": "설정",
     "history": "히스토리",
-    "newChat": "새 대화"
+    "newChat": "새 대화",
+    "floatWindow": "일괄 검색"
   },
   "settings": {
     "title": "설정",
@@ -27,6 +28,9 @@
     "save": "저장",
     "cancel": "취소",
     "confirmDelete": "이 템플릿을 삭제하시겠습니까?",
+    "defaultExportName": "기본 저장 이름",
+    "defaultExportNameDesc": "내보내기 저장 시 사용할 기본 이름을 설정합니다. 비워두면 자동 생성됩니다.",
+    "defaultExportNamePlaceholder": "예: 내 내보내기",
     "theme": "테마",
     "themeDesc": "인터페이스 색상 테마를 선택하세요",
     "themeMidnight": "미드나이트",
@@ -57,7 +61,10 @@
     "confirmClear": "모든 기록을 삭제하시겠습니까?",
     "noResults": "일치하는 항목이 없습니다",
     "timeAgo": "{{time}} 전",
-    "sites": "사이트"
+    "sites": "사이트",
+    "searchTab": "검색",
+    "exportTab": "내보내기",
+    "exportEmpty": "내보내기 기록이 없습니다"
   },
   "share": {
     "title": "대화 공유",
@@ -68,7 +75,8 @@
     "extracting": "대화 추출 중...",
     "extractFailed": "대화 추출 실패",
     "exportAll": "전체 내보내기",
-    "wrapWith": "템플릿 적용:"
+    "wrapWith": "템플릿 적용:",
+    "exportName": "저장 이름"
   },
   "error": {
     "loadFailed": "{{siteName}} 로딩 실패",
@@ -78,6 +86,19 @@
     "retry": "재시도",
     "openInNewTab": "새 탭에서 열기",
     "injectionFailed": "{{siteName}}에 질의 전송 실패"
+  },
+  "float": {
+    "placeholder": {
+      "title": "배치 검색이 플로팅 모드입니다",
+      "description": "플로팅 창을 닫으면 여기에 배치 검색이 돌아옵니다"
+    }
+  },
+  "sidepanel": {
+    "tip": "질문을 입력하고 일괄 검색을 클릭하여 여러 LLM의 답변을 나란히 비교하세요.",
+    "windowActive": "일괄 검색이 실행 중입니다",
+    "focusWindow": "창 보기",
+    "closeWindow": "창 닫기",
+    "openWindow": "배치 검색 창 열기"
   },
   "disclaimer": {
     "tos": "본 도구는 임베디드 LLM 사이트의 이용약관(ToS)을 위반할 수 있습니다. 사용에 따른 책임은 본인에게 있습니다."

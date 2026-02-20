@@ -3,7 +3,8 @@
     "batchSearch": "Busca em Lote",
     "settings": "Configurações",
     "history": "Histórico",
-    "newChat": "Nova conversa"
+    "newChat": "Nova conversa",
+    "floatWindow": "Busca em Lote"
   },
   "settings": {
     "title": "Configurações",
@@ -27,6 +28,9 @@
     "save": "Salvar",
     "cancel": "Cancelar",
     "confirmDelete": "Tem certeza de que deseja excluir este modelo?",
+    "defaultExportName": "Nome padrão de exportação",
+    "defaultExportNameDesc": "Defina um nome padrão para exportações salvas. Deixe em branco para nomes auto-gerados.",
+    "defaultExportNamePlaceholder": "ex: Minha Exportação",
     "theme": "Tema",
     "themeDesc": "Escolher um tema de cores para a interface",
     "themeMidnight": "Meia-noite",
@@ -56,7 +60,10 @@
     "clear": "Limpar Tudo",
     "confirmClear": "Tem certeza de que deseja limpar todo o histórico?",
     "timeAgo": "{{time}} atrás",
-    "sites": "Sites"
+    "sites": "Sites",
+    "searchTab": "Busca",
+    "exportTab": "Exportação",
+    "exportEmpty": "Nenhum histórico de exportação ainda"
   },
   "share": {
     "title": "Compartilhar Conversa",
@@ -67,7 +74,8 @@
     "extracting": "Extraindo conversa...",
     "extractFailed": "Falha ao extrair conversa",
     "exportAll": "Exportar tudo",
-    "wrapWith": "Aplicar modelo:"
+    "wrapWith": "Aplicar modelo:",
+    "exportName": "Nome da exportação"
   },
   "error": {
     "loadFailed": "Falha ao carregar {{siteName}}",
@@ -77,6 +85,19 @@
     "retry": "Tentar Novamente",
     "openInNewTab": "Abrir em Nova Aba",
     "injectionFailed": "Falha ao enviar consulta para {{siteName}}"
+  },
+  "float": {
+    "placeholder": {
+      "title": "A busca em lote está no modo flutuante",
+      "description": "Feche a janela flutuante para retornar a busca aqui"
+    }
+  },
+  "sidepanel": {
+    "tip": "Digite uma consulta e clique em Busca em Lote para comparar respostas de varios LLMs lado a lado.",
+    "windowActive": "Busca em Lote em execucao",
+    "focusWindow": "Mostrar Janela",
+    "closeWindow": "Fechar Janela",
+    "openWindow": "Abrir Janela de Pesquisa"
   },
   "disclaimer": {
     "tos": "Esta ferramenta pode violar os Termos de Servico dos sites LLM incorporados. Use por sua conta e risco."

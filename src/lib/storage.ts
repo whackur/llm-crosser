@@ -1,18 +1,8 @@
 import type { UserSettings, PromptTemplate } from "../types/settings";
 import type { HistoryEntry } from "../types/history";
+import { SETTINGS_KEY, HISTORY_KEY, DEFAULT_SETTINGS } from "./constants";
 
-const SETTINGS_KEY = "llm-crosser-settings";
-const HISTORY_KEY = "llm-crosser-history";
-
-const DEFAULT_SETTINGS: UserSettings = {
-  enabledSites: ["ChatGPT", "Gemini", "Grok"],
-  gridLayout: "side-by-side",
-  gridColumns: 2,
-  language: "en",
-  theme: "midnight",
-  promptTemplates: [],
-  exportAllTemplates: [],
-};
+export { SETTINGS_KEY, HISTORY_KEY, DEFAULT_SETTINGS } from "./constants";
 
 /**
  * Get current settings, merged with defaults
