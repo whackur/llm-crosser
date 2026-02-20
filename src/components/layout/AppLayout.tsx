@@ -31,7 +31,11 @@ export default function AppLayout() {
         <div className={isBatchSearch ? "flex-1 min-h-0 flex flex-col" : "hidden"}>
           <BatchSearchPage />
         </div>
-        {!isBatchSearch && <Outlet />}
+        {!isBatchSearch && (
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <Outlet />
+          </div>
+        )}
       </main>
     </div>
   );
