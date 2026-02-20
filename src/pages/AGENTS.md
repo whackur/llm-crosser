@@ -6,14 +6,14 @@ One page per HashRouter route. Pages orchestrate components and wire hooks — t
 
 ```
 pages/
-├── BatchSearchPage.tsx   # Main view: iframe grid + query bar + omnibox auto-send + reset. 452 LOC — FAR OVER LIMIT
-├── SettingsPage.tsx      # Settings: site toggles, layout, language, theme, prompt templates. 183 LOC
-└── HistoryPage.tsx       # History: browse/search/delete past queries. 165 LOC
+├── BatchSearchPage.tsx   # Main view: iframe grid + query bar + omnibox auto-send + reset. 484 LOC — FAR OVER LIMIT
+├── SettingsPage.tsx      # Settings: site toggles, layout, language, theme, prompt templates. 207 LOC — OVER LIMIT
+└── HistoryPage.tsx       # History: browse/search/delete past queries. 207 LOC — OVER LIMIT
 ```
 
 Routes registered in `entrypoints/batch-search/main.tsx` (HashRouter).
 
-## BatchSearchPage.tsx (452 LOC — FAR OVER LIMIT)
+## BatchSearchPage.tsx (484 LOC — FAR OVER LIMIT)
 
 The primary orchestrator. Owns:
 
@@ -25,7 +25,7 @@ The primary orchestrator. Owns:
 
 **Must split before adding new features.** Suggested extractions: omnibox logic → `useOmniboxAutoSend`, reset logic → `useResetMechanism`, send logic → `useQueryDispatch`.
 
-## SettingsPage.tsx (183 LOC)
+## SettingsPage.tsx (207 LOC — OVER LIMIT)
 
 Renders settings UI in sections:
 
@@ -37,12 +37,18 @@ Renders settings UI in sections:
 
 All settings written via `useSettings().updateSettings()` (persists to `chrome.storage.local`).
 
-## HistoryPage.tsx (165 LOC)
+**Must extract section components** (e.g., `SiteToggleSection`, `LayoutSection`) before adding new settings.
+
+## HistoryPage.tsx (207 LOC — OVER LIMIT)
 
 - Loads history via `useHistory` hook.
 - Local search filter (client-side, no API).
 - Delete single entry or clear all.
 - Clicking a history entry navigates to `/?q=<query>` to re-run.
+
+**Must extract list/filter components** before adding new features.
+
+**Both pages are shared** — imported by both `batch-search/main.tsx` and `sidepanel/main.tsx`.
 
 ## WHERE TO LOOK
 
@@ -64,5 +70,8 @@ All settings written via `useSettings().updateSettings()` (persists to `chrome.s
 ## ANTI-PATTERNS
 
 - **Never add business logic to pages** — extract to lib or hook.
-- **`BatchSearchPage.tsx` at 452 LOC** — do NOT add features until it is split.
-- **Never add a route directly here** — routes live in `entrypoints/batch-search/main.tsx`.
+- **`BatchSearchPage.tsx` at 484 LOC** — do NOT add features until it is split.
+- **`SettingsPage.tsx` at 207 LOC** — OVER the 200 LOC limit. Extract sections before adding settings.
+- **`HistoryPage.tsx` at 207 LOC** — OVER the 200 LOC limit. Extract list/filter before adding features.
+- **Never add a route directly here** — routes live in `entrypoints/batch-search/main.tsx` and `entrypoints/sidepanel/main.tsx`.
+- **Never duplicate pages for sidepanel** — sidepanel imports the same page components.

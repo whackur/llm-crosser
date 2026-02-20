@@ -7,18 +7,22 @@ The React SPA that powers the batch-search dashboard. Renders inside `entrypoint
 ```
 src/
 ├── components/           # UI grouped by feature domain
-│   ├── grid/             # IframeGrid (layout modes), IframeWrapper (per-site frame)
-│   ├── layout/           # AppLayout (shell + Outlet), Sidebar (nav + collapse)
+│   ├── grid/             # IframeGrid (layout modes), IframeWrapper (per-site frame), ActiveSitesBar
+│   ├── layout/           # AppLayout (shell), Sidebar (nav), SidebarFooter, FloatModePlaceholder
 │   ├── query/            # QueryInputBar (bottom input), FileUploadButton
 │   ├── settings/         # LanguageSelector, PromptTemplateEditor, TemplateListItem, ThemeSelector
 │   ├── share/            # SharePopup (export results modal)
+│   ├── sidepanel/        # SidepanelLayout (shell + bottom nav), SidepanelHome (quick query + float control)
 │   └── ui/               # ErrorBanner (generic error), Icons (SVG icon set: GitHubIcon, NewChatIcon, etc.)
-├── hooks/                # State encapsulation
+├── hooks/                # State encapsulation (see hooks/AGENTS.md)
 │   ├── useSettings.ts    # Reactive chrome.storage.local wrapper (settings)
 │   ├── useHistory.ts     # CRUD for search history entries
 │   ├── useIframeManager.ts # Multi-iframe lifecycle: load/query/status/extract
 │   ├── useSiteConfig.ts  # Fetches site-handlers.json from extension bundle
-│   └── useTheme.ts       # Applies data-theme attribute to document root
+│   ├── useTheme.ts       # Applies data-theme attribute to document root
+│   ├── useFloatMode.ts   # Float window state: isPopupWindow, isFloatActive
+│   ├── useExportHistory.ts # CRUD for export history entries (optimistic updates)
+│   └── useGitHubStars.ts # GitHub star count with 12h cache in chrome.storage
 ├── i18n/                 # i18next config + 7 locale JSONs (en/ko/ja/zh/pt/ru/fr)
 ├── lib/                  # Pure logic + side-effect handlers (see lib/AGENTS.md)
 │   ├── automation-engine.ts       # Step orchestrator: delegates to step-actions
@@ -32,7 +36,8 @@ src/
 │   ├── site-frame-message-router.ts # Routes messages from background to correct iframe
 │   ├── messaging.ts               # Typed wrapper around browser.runtime messaging
 │   ├── conversation-url-capture.ts # Polls iframes for per-site conversation URLs post-query
-│   └── storage.ts                 # chrome.storage.local CRUD (settings + history)
+│   ├── float-state.ts             # Float window state: get/set/clear/onChange (chrome.storage)
+│   └── storage.ts                 # chrome.storage.local CRUD (settings + history + export history)
 ├── pages/                # Route-level views (one per HashRouter route)
 │   ├── BatchSearchPage.tsx   # Main: IframeGrid + QueryInputBar + omnibox auto-send
 │   ├── SettingsPage.tsx      # Site toggles, layout, language, theme, prompt templates
@@ -74,6 +79,9 @@ Pages (orchestrate) → Components (render) → Hooks (state) → Lib (logic) �
 | Find elements (Shadow DOM) | `lib/element-finder.ts`                                         | Pierces shadow roots recursively                                  |
 | Wire new message type      | `types/messaging.ts` → `lib/messaging.ts`                       | Add type, then handler in background.ts                           |
 | Capture conversation URLs  | `lib/conversation-url-capture.ts`                               | Single export `startConversationUrlCapture()`; returns cleanup fn |
+| Float window state         | `lib/float-state.ts` → `hooks/useFloatMode.ts`                  | State in `chrome.storage`; hook provides reactive access          |
+| Export history             | `lib/storage.ts` → `hooks/useExportHistory.ts`                  | Storage key `llm-crosser-export-history`; optimistic updates      |
+| Side panel UI              | `components/sidepanel/`                                         | Reuses `SettingsPage`/`HistoryPage`; own `SidepanelHome`          |
 
 ## CONVENTIONS
 

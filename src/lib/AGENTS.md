@@ -32,17 +32,19 @@ content-extractor.ts  →  html-node-converter.ts  →  html-to-markdown.ts
 - `html-node-converter.ts` (233 LOC): Transforms DOM nodes to clean HTML. Exempt from 200 LOC rule (static conversion mapping).
 - `html-to-markdown.ts`: Final stage — converts clean HTML to Markdown for export/sharing.
 
-### 3. Extension Bridge (messaging + routing + storage)
+### 3. Extension Bridge (messaging + routing + storage + float state)
 
 ```
 messaging.ts  ←→  background-frame-router.ts  ←→  site-frame-message-router.ts
 storage.ts         (tab + frame discovery)          (message routing to iframes)
+float-state.ts     (float window lifecycle)
 ```
 
 - `messaging.ts` (53 LOC): Typed wrappers around `browser.runtime.sendMessage`. Four operations: `sendToBackground`, `getSiteConfig`, `injectQuery`, `extractContent`.
 - `background-frame-router.ts` (54 LOC): Finds the batch-search tab, resolves `siteName` → `{tabId, frameId}` using `webNavigation.getAllFrames()`.
 - `site-frame-message-router.ts` (85 LOC): Routes `INJECT_QUERY`/`INJECT_FILE`/`EXTRACT_CONTENT` messages from background to the correct iframe. Tries direct frame first, then iterates all frames as fallback (skips `FRAME_SITE_MISMATCH` responses).
-- `storage.ts` (125 LOC): CRUD for `chrome.storage.local`. Keys: `llm-crosser-settings`, `llm-crosser-history`. Contains `DEFAULT_SETTINGS` (must stay in sync with `entrypoints/background.ts`).
+- `float-state.ts` (33 LOC): Float window state CRUD via `chrome.storage.local`. Key: `llm-crosser-float-state`. Exports `getFloatState`, `setFloatState`, `clearFloatState`, `onFloatStateChanged`. Type: `FloatState { active, tabId, windowId, originalWindowId }`.
+- `storage.ts` (214 LOC): **OVER 200 LOC limit — must split.** CRUD for `chrome.storage.local`. Keys: `llm-crosser-settings`, `llm-crosser-history`, `llm-crosser-export-history`. Contains `DEFAULT_SETTINGS` (must stay in sync with `entrypoints/background.ts`). Added export history CRUD.
 
 ### 4. URL Capture (conversation permalink tracking)
 
@@ -56,16 +58,18 @@ BatchSearchPage → startConversationUrlCapture() → postMessage(GET_URL_VIA_PO
 
 ## WHERE TO LOOK
 
-| Task                      | File                                              | Notes                                                         |
-| ------------------------- | ------------------------------------------------- | ------------------------------------------------------------- |
-| Add new action type       | `step-actions.ts` + `automation-engine.ts` switch | step-actions at 238 LOC — **MUST split first**                |
-| Fix element not found     | `element-finder.ts`                               | Check Shadow DOM piercing logic                               |
-| Fix rich editor input     | `contenteditable-handler.ts`                      | Lexical vs Tiptap vs generic — different strategies           |
-| Fix content extraction    | `content-extractor.ts`                            | Config-driven — check `site-handlers.json` selectors          |
-| Add new message type      | `messaging.ts`                                    | Also add to `types/messaging.ts` + `background.ts` handler    |
-| Fix message routing       | `site-frame-message-router.ts`                    | Direct frame → fallback iteration with mismatch filtering     |
-| Change storage schema     | `storage.ts`                                      | Must also update `entrypoints/background.ts` DEFAULT_SETTINGS |
-| Capture conversation URLs | `conversation-url-capture.ts`                     | Polls at 5s+12s; inject.content.ts handles `GET_URL_VIA_POST` |
+| Task                      | File                                              | Notes                                                                     |
+| ------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------- |
+| Add new action type       | `step-actions.ts` + `automation-engine.ts` switch | step-actions at 238 LOC — **MUST split first**                            |
+| Fix element not found     | `element-finder.ts`                               | Check Shadow DOM piercing logic                                           |
+| Fix rich editor input     | `contenteditable-handler.ts`                      | Lexical vs Tiptap vs generic — different strategies                       |
+| Fix content extraction    | `content-extractor.ts`                            | Config-driven — check `site-handlers.json` selectors                      |
+| Add new message type      | `messaging.ts`                                    | Also add to `types/messaging.ts` + `background.ts` handler                |
+| Fix message routing       | `site-frame-message-router.ts`                    | Direct frame → fallback iteration with mismatch filtering                 |
+| Change storage schema     | `storage.ts`                                      | Must also update `entrypoints/background.ts` DEFAULT_SETTINGS             |
+| Capture conversation URLs | `conversation-url-capture.ts`                     | Polls at 5s+12s; inject.content.ts handles `GET_URL_VIA_POST`             |
+| Float window state        | `float-state.ts`                                  | CRUD + onChange listener; consumed by `useFloatMode` hook                 |
+| Export history CRUD       | `storage.ts`                                      | `addExportHistoryEntry`, `deleteExportHistoryEntry`, `clearExportHistory` |
 
 ## CONVENTIONS
 
@@ -77,5 +81,6 @@ BatchSearchPage → startConversationUrlCapture() → postMessage(GET_URL_VIA_PO
 ## ANTI-PATTERNS
 
 - **Never import React** in this directory — lib is framework-agnostic.
-- **Never call `chrome.*` directly** — use `browser` from `wxt/browser` (polyfilled).
+- **Never call `chrome.*` directly** — use `browser` from `wxt/browser` (polyfilled). Exception: `float-state.ts` uses `chrome.storage` directly (no `browser` polyfill needed for storage).
 - **`step-actions.ts` at 238 LOC**: **OVER the 200 LOC limit.** Must split before adding new actions. Suggested grouping: input actions (`setValue`/`paste`), keyboard actions (`sendKeys`/`triggerEvents`), element actions (`focus`/`click`/`wait`).
+- **`storage.ts` at 214 LOC**: **OVER the 200 LOC limit.** Must split before adding more storage keys. Suggested: extract export history CRUD to `export-history-storage.ts`.
