@@ -26,12 +26,8 @@ export default defineConfig({
     permissions: [
       "storage",
       "declarativeNetRequest",
-      "declarativeNetRequestWithHostAccess",
-      "cookies",
       "webNavigation",
-      "activeTab",
       "tabs",
-      "clipboardRead",
       "omnibox",
       "sidePanel",
     ],
@@ -45,7 +41,6 @@ export default defineConfig({
       "https://chat.qwen.ai/*",
       "https://chat.z.ai/*",
       "https://www.perplexity.ai/*",
-      "https://api.github.com/*",
     ],
     content_security_policy: {
       extension_pages:
@@ -58,7 +53,14 @@ export default defineConfig({
     web_accessible_resources: [
       {
         resources: ["icons/*", "site-handlers.json"],
-        matches: ["<all_urls>"],
+        matches: [
+          "https://chatgpt.com/*",
+          "https://gemini.google.com/*",
+          "https://grok.com/*",
+          "https://chat.qwen.ai/*",
+          "https://chat.z.ai/*",
+          "https://www.perplexity.ai/*",
+        ],
       },
     ],
   },

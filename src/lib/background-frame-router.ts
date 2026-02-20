@@ -78,8 +78,3 @@ export async function forwardToExtensionPage(
     await browser.tabs.sendMessage(tab.id, message);
   }
 }
-
-export async function getCookiesForDomain(domain: string): Promise<string> {
-  const cookies = await browser.cookies.getAll({ domain });
-  return cookies.map((c) => `${c.name}=${c.value}`).join("; ");
-}
