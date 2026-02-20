@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useHistory } from "@/src/hooks/useHistory";
+import { useFloatMode } from "@/src/hooks/useFloatMode";
 import type { HistoryEntry } from "@/src/types/history";
 
 function getRelativeTime(timestamp: number): string {
@@ -21,16 +22,28 @@ function getRelativeTime(timestamp: number): string {
   return new Date(timestamp).toLocaleDateString();
 }
 
-function HistoryCard({ entry, onClick }: { entry: HistoryEntry; onClick: () => void }) {
+function HistoryCard({
+  entry,
+  onClick,
+  disabled = false,
+}: {
+  entry: HistoryEntry;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
   return (
     <div
       role="button"
-      tabIndex={0}
-      onClick={onClick}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") onClick();
-      }}
-      className="p-4 bg-surface rounded-xl border border-border hover:border-primary/30 hover:shadow-md cursor-pointer transition-all mb-3 group animate-in fade-in slide-in-from-bottom-2"
+      tabIndex={disabled ? -1 : 0}
+      onClick={disabled ? undefined : onClick}
+      onKeyDown={
+        disabled
+          ? undefined
+          : (e) => {
+              if (e.key === "Enter" || e.key === " ") onClick();
+            }
+      }
+      className={`p-4 bg-surface rounded-xl border border-border transition-all mb-3 group animate-in fade-in slide-in-from-bottom-2 ${disabled ? "opacity-50 cursor-not-allowed" : "hover:border-primary/30 hover:shadow-md cursor-pointer"}`}
     >
       <div className="flex items-center justify-between gap-4">
         <p className="font-medium truncate min-w-0 text-text group-hover:text-primary transition-colors">
@@ -71,6 +84,7 @@ export default function HistoryPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { history, loading, clearHistory } = useHistory();
+  const { isFloatActive } = useFloatMode();
   const [searchText, setSearchText] = useState("");
 
   const filteredEntries = useMemo(() => {
@@ -155,7 +169,12 @@ export default function HistoryPage() {
             <HistoryCard
               key={entry.id}
               entry={entry}
-              onClick={() => navigate("/?historyId=" + encodeURIComponent(entry.id))}
+              onClick={
+                isFloatActive
+                  ? () => {}
+                  : () => navigate("/?historyId=" + encodeURIComponent(entry.id))
+              }
+              disabled={isFloatActive}
             />
           ))}
         </div>

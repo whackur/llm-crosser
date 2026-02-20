@@ -3,7 +3,8 @@
     "batchSearch": "Batch Search",
     "settings": "Settings",
     "history": "History",
-    "newChat": "New Chat"
+    "newChat": "New Chat",
+    "floatWindow": "Float Window"
   },
   "settings": {
     "title": "Settings",
@@ -78,6 +79,12 @@
     "retry": "Retry",
     "openInNewTab": "Open in New Tab",
     "injectionFailed": "Failed to send query to {{siteName}}"
+  },
+  "float": {
+    "placeholder": {
+      "title": "Batch Search is in floating mode",
+      "description": "Close the floating window to return batch search here"
+    }
   },
   "disclaimer": {
     "tos": "This tool may violate the Terms of Service of embedded LLM sites. Use at your own risk."

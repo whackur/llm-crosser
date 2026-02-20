@@ -3,7 +3,8 @@
     "batchSearch": "Recherche par lot",
     "settings": "Paramètres",
     "history": "Historique",
-    "newChat": "Nouveau chat"
+    "newChat": "Nouveau chat",
+    "floatWindow": "Fenêtre flottante"
   },
   "settings": {
     "title": "Paramètres",
@@ -77,6 +78,12 @@
     "retry": "Réessayer",
     "openInNewTab": "Ouvrir dans un nouvel onglet",
     "injectionFailed": "Échec de l'envoi de la requête à {{siteName}}"
+  },
+  "float": {
+    "placeholder": {
+      "title": "La recherche par lot est en mode flottant",
+      "description": "Fermez la fenêtre flottante pour retrouver la recherche ici"
+    }
   },
   "disclaimer": {
     "tos": "Cet outil peut enfreindre les conditions d'utilisation des sites LLM intégrés. Utilisez-le à vos propres risques."

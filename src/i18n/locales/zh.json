@@ -3,7 +3,8 @@
     "batchSearch": "批量搜索",
     "settings": "设置",
     "history": "历史",
-    "newChat": "新对话"
+    "newChat": "新对话",
+    "floatWindow": "浮动窗口"
   },
   "settings": {
     "title": "设置",
@@ -77,6 +78,12 @@
     "retry": "重试",
     "openInNewTab": "在新标签页中打开",
     "injectionFailed": "向{{siteName}}发送查询失败"
+  },
+  "float": {
+    "placeholder": {
+      "title": "批量搜索处于浮动模式",
+      "description": "关闭浮动窗口后，批量搜索将返回此处"
+    }
   },
   "disclaimer": {
     "tos": "本工具可能违反嵌入式LLM网站的服务条款。使用风险自负。"

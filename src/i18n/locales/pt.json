@@ -3,7 +3,8 @@
     "batchSearch": "Busca em Lote",
     "settings": "Configurações",
     "history": "Histórico",
-    "newChat": "Nova conversa"
+    "newChat": "Nova conversa",
+    "floatWindow": "Janela flutuante"
   },
   "settings": {
     "title": "Configurações",
@@ -77,6 +78,12 @@
     "retry": "Tentar Novamente",
     "openInNewTab": "Abrir em Nova Aba",
     "injectionFailed": "Falha ao enviar consulta para {{siteName}}"
+  },
+  "float": {
+    "placeholder": {
+      "title": "A busca em lote está no modo flutuante",
+      "description": "Feche a janela flutuante para retornar a busca aqui"
+    }
   },
   "disclaimer": {
     "tos": "Esta ferramenta pode violar os Termos de Servico dos sites LLM incorporados. Use por sua conta e risco."

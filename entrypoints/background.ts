@@ -9,6 +9,7 @@ import {
   fetchSiteConfig,
   BATCH_SEARCH_PATH,
 } from "@/src/lib/background-frame-router";
+import { getFloatState, setFloatState, clearFloatState } from "@/src/lib/float-state";
 
 const SETTINGS_KEY = "llm-crosser-settings";
 
@@ -51,7 +52,57 @@ async function updateSettings(partial: Record<string, unknown>): Promise<UserSet
   return merged;
 }
 
+async function handleDetachBatchSearch(): Promise<void> {
+  const existing = await getFloatState();
+  if (existing?.active) return;
+
+  const tab = await findBatchSearchTab();
+  if (!tab?.id) return;
+
+  const originalWindowId = tab.windowId;
+
+  await browser.tabs.create({
+    url: browser.runtime.getURL(`/${BATCH_SEARCH_PATH}`),
+    windowId: originalWindowId,
+    active: true,
+  });
+
+  const newWindow = await browser.windows.create({
+    tabId: tab.id,
+    type: "popup",
+    width: 1200,
+    height: 800,
+    focused: true,
+  });
+
+  if (newWindow?.id == null || originalWindowId == null) return;
+
+  await setFloatState({
+    active: true,
+    tabId: tab.id,
+    windowId: newWindow.id,
+    originalWindowId,
+  });
+}
+
 export default defineBackground(() => {
+  void getFloatState().then(async (state) => {
+    if (!state?.active) return;
+    try {
+      await browser.windows.get(state.windowId);
+    } catch {
+      void clearFloatState();
+    }
+  });
+
+  browser.windows.onRemoved.addListener((windowId) => {
+    void getFloatState().then((state) => {
+      if (state?.active && state.windowId === windowId) {
+        void clearFloatState();
+      }
+    });
+  });
+
   try {
     browser.action.onClicked.addListener(() => {
       void openOrFocusBatchSearch();
@@ -78,12 +129,7 @@ export default defineBackground(() => {
   });
 
   browser.omnibox.onInputChanged.addListener((text, suggest) => {
-    suggest([
-      {
-        content: text,
-        description: `Search "${text}" across all LLMs`,
-      },
-    ]);
+    suggest([{ content: text, description: `Search "${text}" across all LLMs` }]);
   });
 
   browser.omnibox.onInputEntered.addListener((text, disposition) => {
@@ -136,6 +182,9 @@ export default defineBackground(() => {
         case "INJECT_FILE":
         case "EXTRACT_CONTENT":
           return routeToSiteFrame(message);
+
+        case "DETACH_BATCH_SEARCH":
+          return handleDetachBatchSearch() as Promise<unknown>;
 
         case "QUERY_STATUS":
         case "SITE_READY":
