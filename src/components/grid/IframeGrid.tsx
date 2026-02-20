@@ -10,6 +10,7 @@ interface IframeGridProps {
   onShareAll?: () => void;
   sites: Array<{ name: string; url: string; enabled: boolean }>;
   renderIframe: (site: { name: string; url: string }) => React.ReactNode;
+  headerSlot?: React.ReactNode;
 }
 
 export const IframeGrid: React.FC<IframeGridProps> = ({
@@ -20,18 +21,21 @@ export const IframeGrid: React.FC<IframeGridProps> = ({
   onShareAll,
   sites,
   renderIframe,
+  headerSlot,
 }) => {
   const { t } = useTranslation();
   const enabledSites = sites.filter((site) => site.enabled);
 
   return (
     <div className="flex flex-col h-full w-full bg-background">
-      <div className="flex items-center justify-center gap-3 p-2 border-b border-border bg-surface/50 backdrop-blur-sm">
-        <div className="flex items-center gap-1 bg-surface-secondary rounded-lg p-1">
+      <div className="flex items-center gap-2 px-2 py-1 border-b border-border bg-surface/50 backdrop-blur-sm">
+        {headerSlot && <div className="flex items-center gap-1.5 shrink-0">{headerSlot}</div>}
+        <div className="flex-1" />
+        <div className="flex items-center gap-1 bg-surface-secondary rounded-lg p-0.5">
           <button
             onClick={() => onLayoutChange("side-by-side")}
             className={`
-              w-8 h-8 flex items-center justify-center rounded-md transition-all cursor-pointer
+              w-7 h-7 flex items-center justify-center rounded-md transition-all cursor-pointer
               ${
                 layout === "side-by-side"
                   ? "bg-primary text-white shadow-sm shadow-primary/20"
@@ -46,7 +50,7 @@ export const IframeGrid: React.FC<IframeGridProps> = ({
           <button
             onClick={() => onLayoutChange("grid")}
             className={`
-              w-8 h-8 flex items-center justify-center rounded-md transition-all cursor-pointer
+              w-7 h-7 flex items-center justify-center rounded-md transition-all cursor-pointer
               ${
                 layout === "grid"
                   ? "bg-primary text-white shadow-sm shadow-primary/20"
@@ -61,13 +65,13 @@ export const IframeGrid: React.FC<IframeGridProps> = ({
         </div>
 
         {layout === "grid" && (
-          <div className="flex items-center gap-1 bg-surface-secondary rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-surface-secondary rounded-lg p-0.5">
             {([1, 2, 3, 4] as const).map((col) => (
               <button
                 key={col}
                 onClick={() => onColumnsChange(col)}
                 className={`
-                  w-8 h-8 flex items-center justify-center rounded-md transition-all cursor-pointer
+                  w-7 h-7 flex items-center justify-center rounded-md transition-all cursor-pointer
                   ${
                     columns === col
                       ? "bg-primary text-white shadow-sm shadow-primary/20"
@@ -86,7 +90,7 @@ export const IframeGrid: React.FC<IframeGridProps> = ({
         {onShareAll && enabledSites.length > 0 && (
           <button
             onClick={onShareAll}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-text-secondary hover:text-primary hover:bg-primary/10 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-text-secondary hover:text-primary hover:bg-primary/10 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
             title={t("share.exportAll")}
             aria-label={t("share.exportAll")}
           >

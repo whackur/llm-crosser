@@ -1,4 +1,5 @@
 import type { SiteResult } from "../types/history";
+import { matchesHost } from "./url-utils";
 
 const POLL_DELAYS_MS = [5000, 12000];
 const COLLECT_TIMEOUT_MS = 2000;
@@ -8,17 +9,12 @@ interface CaptureOptions {
   onCaptured: (siteResults: SiteResult[]) => void;
 }
 
-const normalizeHost = (hostname: string): string => hostname.toLowerCase().replace(/^www\./, "");
-
 function matchIframeToSite(iframe: HTMLIFrameElement, siteUrl: string): boolean {
   try {
-    const iframeHost = normalizeHost(new URL(iframe.src).hostname);
-    const siteHost = normalizeHost(new URL(siteUrl).hostname);
-    return (
-      iframeHost === siteHost ||
-      iframeHost.endsWith(`.${siteHost}`) ||
-      siteHost.endsWith(`.${iframeHost}`)
-    );
+    const iframeHost = new URL(iframe.src).hostname;
+    const siteHost = new URL(siteUrl).hostname;
+    if (!iframeHost || !siteHost) return false;
+    return matchesHost(iframeHost, siteHost);
   } catch {
     return false;
   }

@@ -6,7 +6,8 @@ export type MessageType =
   | "SITE_READY"
   | "GET_SITE_CONFIG"
   | "GET_SETTINGS"
-  | "UPDATE_SETTINGS";
+  | "UPDATE_SETTINGS"
+  | "DETACH_BATCH_SEARCH";
 
 export interface InjectQueryMessage {
   type: "INJECT_QUERY";
@@ -51,6 +52,11 @@ export interface UpdateSettingsMessage {
   settings: Record<string, unknown>;
 }
 
+export interface DetachBatchSearchMessage {
+  type: "DETACH_BATCH_SEARCH";
+  query?: string;
+}
+
 export type ExtensionMessage =
   | InjectQueryMessage
   | InjectFileMessage
@@ -59,4 +65,5 @@ export type ExtensionMessage =
   | SiteReadyMessage
   | GetSiteConfigMessage
   | GetSettingsMessage
-  | UpdateSettingsMessage;
+  | UpdateSettingsMessage
+  | DetachBatchSearchMessage;

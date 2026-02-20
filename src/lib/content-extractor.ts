@@ -114,11 +114,15 @@ export function extractConversation(config: ContentExtractor): ConversationData 
     }
 
     const role = determineRole(container, i, config.userMessageSelector);
+    const effectiveExcludes =
+      shouldExtractThinking && thinkingSelector
+        ? [...excludeSelectors, thinkingSelector]
+        : excludeSelectors;
     const contentHtml = extractContentFromContainer(
       container,
       contentSelectors,
       fallbackSelectors,
-      excludeSelectors,
+      effectiveExcludes,
     );
 
     if (contentHtml === null) continue;

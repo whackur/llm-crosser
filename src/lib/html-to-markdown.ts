@@ -26,11 +26,6 @@ export function formatConversation(data: ConversationData): string {
     const md = htmlToMarkdown(message.contentHtml);
     const roleLabel = `**${message.role}**`;
 
-    if (message.thinking) {
-      parts.push(`${roleLabel} *(thinking)*: ${message.thinking.content}`);
-      parts.push("");
-    }
-
     parts.push(`${roleLabel}: ${md.trim()}`);
     parts.push("\n---\n");
   }
@@ -60,11 +55,6 @@ export function formatAllConversations(sites: SiteConversation[]): string {
     for (const message of site.data.messages) {
       const md = htmlToMarkdown(message.contentHtml);
       const roleLabel = `**${message.role}**`;
-
-      if (message.thinking) {
-        parts.push(`${roleLabel} *(thinking)*: ${message.thinking.content}`);
-        parts.push("");
-      }
 
       parts.push(`${roleLabel}: ${md.trim()}`);
       parts.push("");

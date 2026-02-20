@@ -6,8 +6,8 @@ import {
   updateHistoryEntry,
   deleteHistoryEntry,
   clearHistory,
-  searchHistory,
 } from "../lib/storage";
+import { HISTORY_KEY } from "../lib/constants";
 
 interface UseHistoryReturn {
   history: HistoryEntry[];
@@ -16,7 +16,6 @@ interface UseHistoryReturn {
   updateEntry: (id: string, updates: Partial<HistoryEntry>) => Promise<void>;
   deleteEntry: (id: string) => Promise<void>;
   clearHistory: () => Promise<void>;
-  searchHistory: (query: string) => Promise<HistoryEntry[]>;
 }
 
 export function useHistory(): UseHistoryReturn {
@@ -25,8 +24,8 @@ export function useHistory(): UseHistoryReturn {
 
   const handleStorageChange = useCallback(
     (changes: Record<string, chrome.storage.StorageChange>) => {
-      if ("llm-crosser-history" in changes) {
-        const newHistory = changes["llm-crosser-history"].newValue as HistoryEntry[] | undefined;
+      if (HISTORY_KEY in changes) {
+        const newHistory = changes[HISTORY_KEY].newValue as HistoryEntry[] | undefined;
         if (newHistory !== undefined) {
           setHistory(newHistory);
         }
@@ -52,21 +51,17 @@ export function useHistory(): UseHistoryReturn {
     };
   }, [handleStorageChange]);
 
-  const handleAddEntry = useCallback(
-    async (entry: HistoryEntry) => {
-      const optimistic = [entry, ...history];
-      setHistory(optimistic);
+  const handleAddEntry = useCallback(async (entry: HistoryEntry) => {
+    setHistory((prev) => [entry, ...prev]);
 
-      try {
-        await addHistoryEntry(entry);
-      } catch (error) {
-        const reloaded = await getHistory();
-        setHistory(reloaded);
-        throw error;
-      }
-    },
-    [history],
-  );
+    try {
+      await addHistoryEntry(entry);
+    } catch (error) {
+      const reloaded = await getHistory();
+      setHistory(reloaded);
+      throw error;
+    }
+  }, []);
 
   const handleUpdateEntry = useCallback(async (id: string, updates: Partial<HistoryEntry>) => {
     setHistory((prev) => prev.map((e) => (e.id === id ? { ...e, ...updates } : e)));
@@ -80,21 +75,17 @@ export function useHistory(): UseHistoryReturn {
     }
   }, []);
 
-  const handleDeleteEntry = useCallback(
-    async (id: string) => {
-      const optimistic = history.filter((entry) => entry.id !== id);
-      setHistory(optimistic);
+  const handleDeleteEntry = useCallback(async (id: string) => {
+    setHistory((prev) => prev.filter((entry) => entry.id !== id));
 
-      try {
-        await deleteHistoryEntry(id);
-      } catch (error) {
-        const reloaded = await getHistory();
-        setHistory(reloaded);
-        throw error;
-      }
-    },
-    [history],
-  );
+    try {
+      await deleteHistoryEntry(id);
+    } catch (error) {
+      const reloaded = await getHistory();
+      setHistory(reloaded);
+      throw error;
+    }
+  }, []);
 
   const handleClearHistory = useCallback(async () => {
     setHistory([]);
@@ -108,10 +99,6 @@ export function useHistory(): UseHistoryReturn {
     }
   }, []);
 
-  const handleSearchHistory = useCallback(async (query: string) => {
-    return searchHistory(query);
-  }, []);
-
   return {
     history,
     loading,
@@ -119,6 +106,5 @@ export function useHistory(): UseHistoryReturn {
     updateEntry: handleUpdateEntry,
     deleteEntry: handleDeleteEntry,
     clearHistory: handleClearHistory,
-    searchHistory: handleSearchHistory,
   };
 }

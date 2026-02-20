@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { PlusIcon } from "../ui/Icons";
 import { TemplateListItem, TemplateItem } from "./TemplateListItem";
@@ -29,7 +29,7 @@ export const PromptTemplateEditor: React.FC<PromptTemplateEditorProps> = ({
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const sorted = [...templates].sort((a, b) => a.order - b.order);
+  const sorted = useMemo(() => [...templates].sort((a, b) => a.order - b.order), [templates]);
 
   const handleAdd = () => {
     setEditingId(null);

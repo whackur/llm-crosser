@@ -8,6 +8,8 @@ interface SharePopupProps {
   siteName: string;
   markdownContent: string;
   exportAllTemplates?: PromptTemplate[];
+  defaultExportName?: string;
+  onSave?: (name: string, content: string, siteName: string) => void;
 }
 
 export const SharePopup: React.FC<SharePopupProps> = ({
@@ -16,10 +18,14 @@ export const SharePopup: React.FC<SharePopupProps> = ({
   siteName,
   markdownContent,
   exportAllTemplates = [],
+  defaultExportName = "",
+  onSave,
 }) => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [activeTemplateId, setActiveTemplateId] = useState<string | null>(null);
+  const [exportName, setExportName] = useState("");
 
   const isExportAll = siteName === "All Sites";
   const templates = isExportAll ? exportAllTemplates : [];
@@ -34,16 +40,18 @@ export const SharePopup: React.FC<SharePopupProps> = ({
   useEffect(() => {
     if (!isOpen) {
       setActiveTemplateId(null);
+      setSaved(false);
+      return;
     }
-  }, [isOpen]);
+    const timestamp = new Date().toISOString().slice(0, 10);
+    setExportName(defaultExportName || `${siteName} - ${timestamp}`);
+  }, [isOpen, defaultExportName, siteName]);
 
   useEffect(() => {
     if (!isOpen) return;
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
@@ -61,6 +69,12 @@ export const SharePopup: React.FC<SharePopupProps> = ({
     [onClose],
   );
 
+  const saveToHistory = useCallback(() => {
+    if (saved || !onSave) return;
+    onSave(exportName.trim() || siteName, displayContent, siteName);
+    setSaved(true);
+  }, [saved, onSave, exportName, displayContent, siteName]);
+
   const handleCopy = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(displayContent);
@@ -77,10 +91,11 @@ export const SharePopup: React.FC<SharePopupProps> = ({
         document.body.removeChild(textarea);
         setCopied(true);
       } catch {
-        /* clipboard fallback — copy failure is non-fatal */
+        /* clipboard fallback failed */
       }
     }
-  }, [displayContent]);
+    saveToHistory();
+  }, [displayContent, saveToHistory]);
 
   const handleDownload = useCallback(() => {
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
@@ -94,7 +109,8 @@ export const SharePopup: React.FC<SharePopupProps> = ({
     anchor.click();
     document.body.removeChild(anchor);
     URL.revokeObjectURL(url);
-  }, [siteName, displayContent]);
+    saveToHistory();
+  }, [siteName, displayContent, saveToHistory]);
 
   if (!isOpen) return null;
 
@@ -107,19 +123,18 @@ export const SharePopup: React.FC<SharePopupProps> = ({
       aria-label={`Export — ${siteName}`}
     >
       <div className="bg-surface rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col border border-border animate-in zoom-in-95 duration-200">
-        <div className="flex items-center justify-between p-5 border-b border-border">
-          <h2 className="font-semibold text-text text-lg">
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <h2 className="font-semibold text-text text-base">
             {t("share.title")} — {siteName}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-text-secondary hover:text-text hover:bg-surface-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="p-1.5 rounded-lg text-text-secondary hover:text-text hover:bg-surface-secondary transition-colors"
             aria-label="Close"
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -134,7 +149,7 @@ export const SharePopup: React.FC<SharePopupProps> = ({
         </div>
 
         {templates.length > 0 && (
-          <div className="px-5 pt-4 pb-2 flex gap-2 flex-wrap border-b border-border/50">
+          <div className="px-4 pt-3 pb-2 flex gap-2 flex-wrap border-b border-border/50">
             <span className="text-xs text-text-secondary font-medium self-center mr-1">
               {t("share.wrapWith")}
             </span>
@@ -145,11 +160,7 @@ export const SharePopup: React.FC<SharePopupProps> = ({
                   key={tpl.id}
                   type="button"
                   onClick={() => setActiveTemplateId(isActive ? null : tpl.id)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all active:scale-95 ${
-                    isActive
-                      ? "bg-primary text-white border border-primary shadow-sm shadow-primary/20"
-                      : "bg-surface-secondary border border-border text-text-secondary hover:bg-primary/10 hover:text-primary hover:border-primary/30"
-                  }`}
+                  className={`px-2.5 py-1 rounded-full text-xs font-medium cursor-pointer transition-all active:scale-95 ${isActive ? "bg-primary text-white border border-primary shadow-sm shadow-primary/20" : "bg-surface-secondary border border-border text-text-secondary hover:bg-primary/10 hover:text-primary hover:border-primary/30"}`}
                 >
                   {tpl.name}
                 </button>
@@ -158,21 +169,27 @@ export const SharePopup: React.FC<SharePopupProps> = ({
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto p-5">
-          <pre className="text-sm font-mono whitespace-pre-wrap break-words bg-surface-secondary/50 rounded-xl p-4 border border-border text-text-secondary selection:bg-primary/20 selection:text-primary">
+        <div className="flex-1 overflow-y-auto p-4">
+          <pre className="text-sm font-mono whitespace-pre-wrap break-words bg-surface-secondary/50 rounded-xl p-3 border border-border text-text-secondary selection:bg-primary/20 selection:text-primary">
             {displayContent}
           </pre>
         </div>
 
-        <div className="flex items-center justify-end gap-3 p-5 border-t border-border bg-surface-secondary/30 rounded-b-2xl">
+        <div className="flex items-center gap-2.5 p-4 border-t border-border bg-surface-secondary/30 rounded-b-2xl">
+          <input
+            type="text"
+            value={exportName}
+            onChange={(e) => setExportName(e.target.value)}
+            placeholder={t("share.exportName")}
+            className="flex-1 min-w-0 px-3 py-2 bg-surface border border-border rounded-lg text-sm text-text placeholder:text-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+          />
           <button
             onClick={handleDownload}
-            className="bg-surface text-text px-4 py-2.5 rounded-lg text-sm border border-border hover:bg-surface-secondary hover:border-primary/30 transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 flex items-center gap-2 font-medium shadow-sm"
+            className="bg-surface text-text px-3 py-2 rounded-lg text-sm border border-border hover:bg-surface-secondary hover:border-primary/30 transition-all flex items-center gap-1.5 font-medium shadow-sm shrink-0"
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
+              width="15"
+              height="15"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -188,12 +205,11 @@ export const SharePopup: React.FC<SharePopupProps> = ({
           </button>
           <button
             onClick={handleCopy}
-            className="bg-primary text-white px-4 py-2.5 rounded-lg text-sm hover:bg-primary-hover transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 flex items-center gap-2 font-medium shadow-lg shadow-primary/20 active:scale-95"
+            className="bg-primary text-white px-3 py-2 rounded-lg text-sm hover:bg-primary-hover transition-all flex items-center gap-1.5 font-medium shadow-lg shadow-primary/20 active:scale-95 shrink-0"
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
+              width="15"
+              height="15"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

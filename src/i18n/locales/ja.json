@@ -3,7 +3,8 @@
     "batchSearch": "一括検索",
     "settings": "設定",
     "history": "履歴",
-    "newChat": "新しい会話"
+    "newChat": "新しい会話",
+    "floatWindow": "一括検索"
   },
   "settings": {
     "title": "設定",
@@ -27,6 +28,9 @@
     "save": "保存",
     "cancel": "キャンセル",
     "confirmDelete": "このテンプレートを削除してもよろしいですか？",
+    "defaultExportName": "デフォルトエクスポート名",
+    "defaultExportNameDesc": "エクスポート保存時のデフォルト名を設定します。空欄の場合は自動生成されます。",
+    "defaultExportNamePlaceholder": "例: マイエクスポート",
     "theme": "テーマ",
     "themeDesc": "インターフェースのカラーテーマを選択",
     "themeMidnight": "ミッドナイト",
@@ -56,7 +60,10 @@
     "clear": "すべてクリア",
     "confirmClear": "すべての履歴をクリアしてもよろしいですか？",
     "timeAgo": "{{time}}前",
-    "sites": "サイト"
+    "sites": "サイト",
+    "searchTab": "検索",
+    "exportTab": "エクスポート",
+    "exportEmpty": "エクスポート履歴がまだありません"
   },
   "share": {
     "title": "会話を共有",
@@ -67,7 +74,8 @@
     "extracting": "会話を抽出中...",
     "extractFailed": "会話の抽出に失敗しました",
     "exportAll": "すべてエクスポート",
-    "wrapWith": "テンプレート適用:"
+    "wrapWith": "テンプレート適用:",
+    "exportName": "エクスポート名"
   },
   "error": {
     "loadFailed": "{{siteName}}の読み込みに失敗しました",
@@ -77,6 +85,19 @@
     "retry": "再試行",
     "openInNewTab": "新しいタブで開く",
     "injectionFailed": "{{siteName}}へのクエリ送信に失敗しました"
+  },
+  "float": {
+    "placeholder": {
+      "title": "バッチ検索はフローティングモードです",
+      "description": "フローティングウィンドウを閉じると、ここにバッチ検索が戻ります"
+    }
+  },
+  "sidepanel": {
+    "tip": "クエリを入力し、一括検索をクリックして複数のLLMの回答を並べて比較しましょう。",
+    "windowActive": "一括検索が実行中です",
+    "focusWindow": "ウィンドウを表示",
+    "closeWindow": "ウィンドウを閉じる",
+    "openWindow": "バッチ検索ウィンドウを開く"
   },
   "disclaimer": {
     "tos": "このツールは埋め込まれたLLMサイトの利用規約に違反する可能性があります。ご自身の責任でご利用ください。"
