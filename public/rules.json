@@ -23,7 +23,14 @@
       ]
     },
     "condition": {
-      "urlFilter": "*://*/*",
+      "requestDomains": [
+        "chatgpt.com",
+        "gemini.google.com",
+        "grok.com",
+        "chat.qwen.ai",
+        "chat.z.ai",
+        "www.perplexity.ai"
+      ],
       "resourceTypes": ["main_frame", "sub_frame"]
     }
   }
