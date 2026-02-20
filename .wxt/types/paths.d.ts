@@ -15,6 +15,7 @@ declare module "wxt/browser" {
     | "/icons/icon-48.png"
     | "/icons/icon.svg"
     | "/rules.json"
+    | "/sidepanel.html"
     | "/site-handlers.json"
   type HtmlPublicPath = Extract<PublicPath, `${string}.html`>
   export interface WxtRuntime {

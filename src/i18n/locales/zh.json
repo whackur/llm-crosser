@@ -4,7 +4,7 @@
     "settings": "设置",
     "history": "历史",
     "newChat": "新对话",
-    "floatWindow": "浮动窗口"
+    "floatWindow": "批量搜索"
   },
   "settings": {
     "title": "设置",
@@ -28,6 +28,9 @@
     "save": "保存",
     "cancel": "取消",
     "confirmDelete": "确定要删除此模板吗？",
+    "defaultExportName": "默认导出名称",
+    "defaultExportNameDesc": "设置导出保存时的默认名称。留空则自动生成。",
+    "defaultExportNamePlaceholder": "例如：我的导出",
     "theme": "主题",
     "themeDesc": "选择界面颜色主题",
     "themeMidnight": "午夜",
@@ -57,7 +60,10 @@
     "clear": "全部清除",
     "confirmClear": "确定要清除所有历史记录吗？",
     "timeAgo": "{{time}}前",
-    "sites": "网站"
+    "sites": "网站",
+    "searchTab": "搜索",
+    "exportTab": "导出",
+    "exportEmpty": "还没有导出历史"
   },
   "share": {
     "title": "分享对话",
@@ -68,7 +74,8 @@
     "extracting": "正在提取对话...",
     "extractFailed": "提取对话失败",
     "exportAll": "全部导出",
-    "wrapWith": "应用模板:"
+    "wrapWith": "应用模板:",
+    "exportName": "导出名称"
   },
   "error": {
     "loadFailed": "加载{{siteName}}失败",
@@ -84,6 +91,13 @@
       "title": "批量搜索处于浮动模式",
       "description": "关闭浮动窗口后，批量搜索将返回此处"
     }
+  },
+  "sidepanel": {
+    "tip": "输入查询并点击批量搜索，即可并排比较多个LLM的回答。",
+    "windowActive": "批量搜索正在运行",
+    "focusWindow": "显示窗口",
+    "closeWindow": "关闭窗口",
+    "openWindow": "打开批量搜索窗口"
   },
   "disclaimer": {
     "tos": "本工具可能违反嵌入式LLM网站的服务条款。使用风险自负。"

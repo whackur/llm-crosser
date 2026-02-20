@@ -4,7 +4,7 @@
     "settings": "Settings",
     "history": "History",
     "newChat": "New Chat",
-    "floatWindow": "Float Window"
+    "floatWindow": "Batch Search"
   },
   "settings": {
     "title": "Settings",
@@ -28,6 +28,9 @@
     "save": "Save",
     "cancel": "Cancel",
     "confirmDelete": "Are you sure you want to delete this template?",
+    "defaultExportName": "Default Export Name",
+    "defaultExportNameDesc": "Set a default name for saved exports. Leave blank for auto-generated names.",
+    "defaultExportNamePlaceholder": "e.g. My Export",
     "theme": "Theme",
     "themeDesc": "Choose a color theme for the interface",
     "themeMidnight": "Midnight",
@@ -58,7 +61,10 @@
     "confirmClear": "Are you sure you want to clear all history?",
     "noResults": "No matching entries found",
     "timeAgo": "{{time}} ago",
-    "sites": "Sites"
+    "sites": "Sites",
+    "searchTab": "Search",
+    "exportTab": "Export",
+    "exportEmpty": "No export history yet"
   },
   "share": {
     "title": "Share Conversation",
@@ -69,7 +75,8 @@
     "extracting": "Extracting conversation...",
     "extractFailed": "Failed to extract conversation",
     "exportAll": "Export All",
-    "wrapWith": "Wrap with:"
+    "wrapWith": "Wrap with:",
+    "exportName": "Export name"
   },
   "error": {
     "loadFailed": "Failed to load {{siteName}}",
@@ -85,6 +92,13 @@
       "title": "Batch Search is in floating mode",
       "description": "Close the floating window to return batch search here"
     }
+  },
+  "sidepanel": {
+    "tip": "Type a query and click Batch Search to compare responses from multiple LLMs side by side.",
+    "windowActive": "Batch Search is running",
+    "focusWindow": "Show Window",
+    "closeWindow": "Close Window",
+    "openWindow": "Open Batch Search Window"
   },
   "disclaimer": {
     "tos": "This tool may violate the Terms of Service of embedded LLM sites. Use at your own risk."

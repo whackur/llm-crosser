@@ -14,7 +14,7 @@ export type {
 
 export type { LanguageCode, PromptTemplate, UserSettings } from "./settings";
 
-export type { SiteResult, HistoryEntry } from "./history";
+export type { SiteResult, HistoryEntry, ExportHistoryEntry, ExportType } from "./history";
 
 export type {
   MessageType,

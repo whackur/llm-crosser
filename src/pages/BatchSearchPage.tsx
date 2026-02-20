@@ -5,19 +5,22 @@ import { FileUploadButton } from "@/src/components/query/FileUploadButton";
 import { IframeGrid } from "@/src/components/grid/IframeGrid";
 import { IframeWrapper } from "@/src/components/grid/IframeWrapper";
 import { SharePopup } from "@/src/components/share/SharePopup";
+import { NewChatIcon } from "@/src/components/ui/Icons";
 import { useSettings } from "@/src/hooks/useSettings";
 import { useHistory } from "@/src/hooks/useHistory";
+import { useExportHistory } from "@/src/hooks/useExportHistory";
 import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 import { startConversationUrlCapture } from "@/src/lib/conversation-url-capture";
 import { formatConversation, formatAllConversations } from "@/src/lib/html-to-markdown";
 import type { ConversationData } from "@/src/lib/content-extractor";
-import type { HistoryEntry } from "@/src/types/history";
+import type { HistoryEntry, ExportHistoryEntry } from "@/src/types/history";
 import type { GridLayout } from "@/src/types/settings";
 import type { ContentExtractor } from "@/src/types/site";
 
 export default function BatchSearchPage() {
   const { settings, loading: settingsLoading, updateSettings } = useSettings();
   const { history, addEntry, updateEntry } = useHistory();
+  const { addEntry: addExportEntry } = useExportHistory();
   const { siteConfigs, loading: configLoading } = useSiteConfig();
   const [isQuerying, setIsQuerying] = useState(false);
   const [siteUrlOverrides, setSiteUrlOverrides] = useState<Record<string, string>>({});
@@ -391,6 +394,21 @@ export default function BatchSearchPage() {
     [siteConfigs, extractViaPostMessage],
   );
 
+  const handleExportSave = useCallback(
+    (name: string, content: string, exportSiteName: string) => {
+      const entry: ExportHistoryEntry = {
+        id: crypto.randomUUID(),
+        name,
+        siteName: exportSiteName,
+        content,
+        timestamp: Date.now(),
+        exportType: exportSiteName === "All Sites" ? "all" : "single",
+      };
+      void addExportEntry(entry);
+    },
+    [addExportEntry],
+  );
+
   const renderIframe = useCallback(
     (site: { name: string; url: string }) => {
       const effectiveUrl = siteUrlOverrides[site.name] || site.url;
@@ -425,10 +443,22 @@ export default function BatchSearchPage() {
           onShareAll={handleShareAll}
           sites={siteList}
           renderIframe={renderIframe}
+          headerSlot={
+            <>
+              <img src="/icons/icon-48.png" alt="" className="w-4 h-4" />
+              <a
+                href="#/?reset=true"
+                className="w-7 h-7 flex items-center justify-center rounded-md text-text-secondary hover:text-primary hover:bg-primary/10 transition-all"
+                title="New Chat"
+              >
+                <NewChatIcon className="w-3.5 h-3.5" />
+              </a>
+            </>
+          }
         />
       </div>
-      <div className="p-4 border-t border-border bg-surface/95 backdrop-blur-sm shrink-0">
-        <div className="flex items-start gap-2 max-w-5xl mx-auto w-full">
+      <div className="px-2 py-1.5 border-t border-border bg-surface/95 backdrop-blur-sm shrink-0">
+        <div className="flex items-start gap-1.5 max-w-5xl mx-auto w-full">
           <div className="flex-1 min-w-0">
             <QueryInputBar
               onSend={handleSend}
@@ -446,6 +476,8 @@ export default function BatchSearchPage() {
         siteName={shareState.siteName}
         markdownContent={shareState.content}
         exportAllTemplates={settings.exportAllTemplates}
+        defaultExportName={settings.defaultExportName}
+        onSave={handleExportSave}
       />
     </div>
   );

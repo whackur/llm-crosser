@@ -33,7 +33,11 @@ export default defineConfig({
       "tabs",
       "clipboardRead",
       "omnibox",
+      "sidePanel",
     ],
+    side_panel: {
+      default_path: "sidepanel.html",
+    },
     host_permissions: [
       "https://chatgpt.com/*",
       "https://gemini.google.com/*",

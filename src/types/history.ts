@@ -10,3 +10,14 @@ export interface HistoryEntry {
   timestamp: number;
   siteResults: SiteResult[];
 }
+
+export type ExportType = "single" | "all";
+
+export interface ExportHistoryEntry {
+  id: string;
+  name: string;
+  siteName: string;
+  content: string;
+  timestamp: number;
+  exportType: ExportType;
+}

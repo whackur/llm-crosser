@@ -4,7 +4,6 @@ import type { ExtensionMessage } from "@/src/types/messaging";
 import type { UserSettings } from "@/src/types/settings";
 import { routeToSiteFrame } from "../src/lib/site-frame-message-router";
 import {
-  findBatchSearchTab,
   forwardToExtensionPage,
   fetchSiteConfig,
   BATCH_SEARCH_PATH,
@@ -21,23 +20,43 @@ const DEFAULT_SETTINGS: UserSettings = {
   theme: "midnight",
   promptTemplates: [],
   exportAllTemplates: [],
+  defaultExportName: "",
 };
 
-async function openOrFocusBatchSearch(hash?: string): Promise<Browser.tabs.Tab> {
-  const existing = await findBatchSearchTab();
+async function openOrFocusBatchSearch(hash?: string): Promise<void> {
+  const floatState = await getFloatState();
   const url = hash
     ? browser.runtime.getURL(`/${BATCH_SEARCH_PATH}${hash}`)
     : browser.runtime.getURL(`/${BATCH_SEARCH_PATH}`);
 
-  if (existing?.id != null) {
-    await browser.tabs.update(existing.id, { active: true, url: hash ? url : undefined });
-    if (existing.windowId != null) {
-      await browser.windows.update(existing.windowId, { focused: true });
+  if (floatState?.active) {
+    try {
+      await browser.windows.update(floatState.windowId, { focused: true });
+      if (hash && floatState.tabId != null) {
+        await browser.tabs.update(floatState.tabId, { url });
+      }
+      return;
+    } catch {
+      await clearFloatState();
     }
-    return existing;
   }
 
-  return browser.tabs.create({ url });
+  const newWindow = await browser.windows.create({
+    url,
+    type: "popup",
+    width: 1200,
+    height: 800,
+    focused: true,
+  });
+
+  if (newWindow?.id != null && newWindow.tabs?.[0]?.id != null) {
+    await setFloatState({
+      active: true,
+      tabId: newWindow.tabs[0].id,
+      windowId: newWindow.id,
+      originalWindowId: -1,
+    });
+  }
 }
 
 async function getSettings(): Promise<UserSettings> {
@@ -50,39 +69,6 @@ async function updateSettings(partial: Record<string, unknown>): Promise<UserSet
   const merged: UserSettings = { ...current, ...partial } as UserSettings;
   await browser.storage.local.set({ [SETTINGS_KEY]: merged });
   return merged;
-}
-
-async function handleDetachBatchSearch(): Promise<void> {
-  const existing = await getFloatState();
-  if (existing?.active) return;
-
-  const tab = await findBatchSearchTab();
-  if (!tab?.id) return;
-
-  const originalWindowId = tab.windowId;
-
-  await browser.tabs.create({
-    url: browser.runtime.getURL(`/${BATCH_SEARCH_PATH}`),
-    windowId: originalWindowId,
-    active: true,
-  });
-
-  const newWindow = await browser.windows.create({
-    tabId: tab.id,
-    type: "popup",
-    width: 1200,
-    height: 800,
-    focused: true,
-  });
-
-  if (newWindow?.id == null || originalWindowId == null) return;
-
-  await setFloatState({
-    active: true,
-    tabId: tab.id,
-    windowId: newWindow.id,
-    originalWindowId,
-  });
 }
 
 export default defineBackground(() => {
@@ -104,17 +90,16 @@ export default defineBackground(() => {
   });
 
   try {
-    browser.action.onClicked.addListener(() => {
-      void openOrFocusBatchSearch();
-    });
+    if (typeof chrome !== "undefined" && chrome.sidePanel) {
+      void chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+    }
   } catch {
-    console.warn("[llm-crosser] browser.action not available, falling back to chrome.action");
     try {
-      chrome.action.onClicked.addListener(() => {
+      browser.action.onClicked.addListener(() => {
         void openOrFocusBatchSearch();
       });
     } catch {
-      console.error("[llm-crosser] Neither browser.action nor chrome.action available");
+      console.error("[llm-crosser] Neither sidePanel nor action API available");
     }
   }
 
@@ -132,36 +117,9 @@ export default defineBackground(() => {
     suggest([{ content: text, description: `Search "${text}" across all LLMs` }]);
   });
 
-  browser.omnibox.onInputEntered.addListener((text, disposition) => {
+  browser.omnibox.onInputEntered.addListener((text) => {
     const hash = `#/?q=${encodeURIComponent(text)}`;
-    const url = browser.runtime.getURL(`/${BATCH_SEARCH_PATH}${hash}`);
-
-    if (disposition === "currentTab") {
-      void browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-        if (tabs[0]?.id != null) {
-          void browser.tabs.update(tabs[0].id, { url });
-        }
-      });
-    } else if (disposition === "newForegroundTab") {
-      void findBatchSearchTab().then((existing) => {
-        if (existing?.id != null) {
-          void browser.tabs.update(existing.id, { active: true, url });
-          if (existing.windowId != null) {
-            void browser.windows.update(existing.windowId, { focused: true });
-          }
-        } else {
-          void browser.tabs.create({ url, active: true });
-        }
-      });
-    } else if (disposition === "newBackgroundTab") {
-      void findBatchSearchTab().then((existing) => {
-        if (existing?.id != null) {
-          void browser.tabs.update(existing.id, { url });
-        } else {
-          void browser.tabs.create({ url, active: false });
-        }
-      });
-    }
+    void openOrFocusBatchSearch(hash);
   });
 
   browser.runtime.onMessage.addListener(
@@ -184,7 +142,11 @@ export default defineBackground(() => {
           return routeToSiteFrame(message);
 
         case "DETACH_BATCH_SEARCH":
-          return handleDetachBatchSearch() as Promise<unknown>;
+          return openOrFocusBatchSearch(
+            "query" in message && typeof message.query === "string"
+              ? `#/?q=${encodeURIComponent(message.query)}`
+              : undefined,
+          ) as Promise<unknown>;
 
         case "QUERY_STATUS":
         case "SITE_READY":

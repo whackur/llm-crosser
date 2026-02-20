@@ -4,7 +4,7 @@
     "settings": "Paramètres",
     "history": "Historique",
     "newChat": "Nouveau chat",
-    "floatWindow": "Fenêtre flottante"
+    "floatWindow": "Recherche par lot"
   },
   "settings": {
     "title": "Paramètres",
@@ -28,6 +28,9 @@
     "save": "Enregistrer",
     "cancel": "Annuler",
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce modèle ?",
+    "defaultExportName": "Nom d'exportation par défaut",
+    "defaultExportNameDesc": "Définir un nom par défaut pour les exportations. Laissez vide pour un nom auto-généré.",
+    "defaultExportNamePlaceholder": "ex : Mon exportation",
     "theme": "Thème",
     "themeDesc": "Choisir un thème de couleurs pour l'interface",
     "themeMidnight": "Minuit",
@@ -57,7 +60,10 @@
     "clear": "Tout effacer",
     "confirmClear": "Êtes-vous sûr de vouloir effacer tout l'historique ?",
     "timeAgo": "il y a {{time}}",
-    "sites": "Sites"
+    "sites": "Sites",
+    "searchTab": "Recherche",
+    "exportTab": "Exportation",
+    "exportEmpty": "Aucun historique d'exportation"
   },
   "share": {
     "title": "Partager la conversation",
@@ -68,7 +74,8 @@
     "extracting": "Extraction de la conversation...",
     "extractFailed": "Échec de l'extraction de la conversation",
     "exportAll": "Tout exporter",
-    "wrapWith": "Envelopper avec :"
+    "wrapWith": "Envelopper avec :",
+    "exportName": "Nom de l'exportation"
   },
   "error": {
     "loadFailed": "Échec du chargement de {{siteName}}",
@@ -84,6 +91,13 @@
       "title": "La recherche par lot est en mode flottant",
       "description": "Fermez la fenêtre flottante pour retrouver la recherche ici"
     }
+  },
+  "sidepanel": {
+    "tip": "Saisissez une requete et cliquez sur Recherche par lot pour comparer les reponses de plusieurs LLM cote a cote.",
+    "windowActive": "Recherche par lot en cours",
+    "focusWindow": "Afficher la fenetre",
+    "closeWindow": "Fermer la fenetre",
+    "openWindow": "Ouvrir la fenêtre de recherche"
   },
   "disclaimer": {
     "tos": "Cet outil peut enfreindre les conditions d'utilisation des sites LLM intégrés. Utilisez-le à vos propres risques."

@@ -54,6 +54,7 @@ export interface UpdateSettingsMessage {
 
 export interface DetachBatchSearchMessage {
   type: "DETACH_BATCH_SEARCH";
+  query?: string;
 }
 
 export type ExtensionMessage =
