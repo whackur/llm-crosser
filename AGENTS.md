@@ -104,6 +104,7 @@ llm-crosser/
 | Omnibox behavior           | `entrypoints/background.ts` (onInputEntered) + `src/pages/BatchSearchPage.tsx` (auto-send)                              | `llmc` keyword, auto-sends query via `useSearchParams` + 3s delay               |
 | Capture conversation URLs  | `src/lib/conversation-url-capture.ts`                                                                                   | Polls iframes via postMessage at 5s + 12s; returns cleanup fn                   |
 | Normalize LLM site URLs    | `src/lib/url-utils.ts`                                                                                                  | Single source for `normalizeHostname()` — used across 4+ modules                |
+| Viral comparison examples  | `src/lib/viral-comparison-examples.ts` + `src/components/sidepanel/ViralExampleCard.tsx`                                | 100 queries, 8 categories; sidepanel card triggers `DETACH_BATCH_SEARCH`        |
 
 ## EXTENSION ARCHITECTURE
 
@@ -162,3 +163,4 @@ pnpm zip              # Package for Chrome Web Store
 - **Reset mechanism**: Sidebar "New Chat" link navigates to `/?reset=true`. `BatchSearchPage` detects this URL param, clears `siteUrlOverrides`, increments `resetKey` state (number counter), and cleans up URL. The `resetKey` is included in each `IframeWrapper`'s React key, forcing complete iframe remount.
 - **Language persistence**: `AppLayout.tsx` syncs `i18n.changeLanguage()` with stored `settings.language` on mount via `useEffect`. Without this, page refresh reverts to fallback language (`en`).
 - **GitHub link**: Static link to repo in Sidebar footer, alongside existing "Report Issue" link. No API integration.
+- **Viral comparison examples**: 100 curated LLM comparison queries across 8 categories (Brain Teaser, AI Identity, Creative Writing, Coding Challenge, Practical Advice, Knowledge Test, Hot Take, Fun & Personality). Displayed randomly one-at-a-time in sidepanel via `ViralExampleCard`. Clicking "Try this" triggers `DETACH_BATCH_SEARCH` — reuses existing omnibox pipeline. Static data only, no API. `viral-comparison-examples.ts` is exempt from 200 LOC rule (static data, like `Icons.tsx`).
