@@ -105,6 +105,20 @@
   "disclaimer": {
     "tos": "본 도구는 임베디드 LLM 사이트의 이용약관(ToS)을 위반할 수 있습니다. 사용에 따른 책임은 본인에게 있습니다."
   },
+  "viral": {
+    "tryThis": "이걸로 비교해보기",
+    "shuffle": "다른 질문",
+    "category": {
+      "brainTeaser": "두뇌 퍼즐",
+      "aiIdentity": "AI 정체성",
+      "creative": "창작 글쓰기",
+      "coding": "코딩 챌린지",
+      "advice": "실용 조언",
+      "knowledge": "지식 테스트",
+      "hotTake": "핫 테이크",
+      "fun": "재미 & 개성"
+    }
+  },
   "common": {
     "enabled": "활성화",
     "disabled": "비활성화",

@@ -104,6 +104,20 @@
   "disclaimer": {
     "tos": "Cet outil peut enfreindre les conditions d'utilisation des sites LLM intégrés. Utilisez-le à vos propres risques."
   },
+  "viral": {
+    "tryThis": "Essayer cette comparaison",
+    "shuffle": "Mélanger",
+    "category": {
+      "brainTeaser": "Casse-tête",
+      "aiIdentity": "Identité IA",
+      "creative": "Écriture créative",
+      "coding": "Défi de code",
+      "advice": "Conseil pratique",
+      "knowledge": "Test de connaissances",
+      "hotTake": "Avis tranché",
+      "fun": "Fun & Personnalité"
+    }
+  },
   "common": {
     "enabled": "Activé",
     "disabled": "Désactivé",
