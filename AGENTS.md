@@ -151,13 +151,14 @@ pnpm zip              # Package for Chrome Web Store
 - **Site selectors are fragile**: `public/site-handlers.json` contains hardcoded DOM selectors for each LLM site. These break when target sites update their UI. Test after any site update.
 - **Adding a new LLM site requires 4+ files**: `site-handlers.json` (selectors + steps), `wxt.config.ts` (host_permissions + frame-src CSP), `rules.json` (header stripping), `frame-guard.content.ts` (matches array), `inject.content.ts` (matches array).
 - **`IframeGrid.tsx` at 244 LOC**: **OVER the 200 LOC limit.** Split layout logic before adding new grid modes.
-- **`SharePopup.tsx` at 229 LOC**: **OVER the 200 LOC limit.** Split export format logic before adding new export types.
+- **`SharePopup.tsx` at 248 LOC**: **OVER the 200 LOC limit.** Split export format logic before adding new export types. Has explicit "Save to History" button (Copy/Download no longer auto-save).
 - **`Icons.tsx` at 207 LOC**: Exempt from 200 LOC rule (static SVG definitions only).
 - **`PromptTemplateEditor.tsx` at 202 LOC**: **AT the 200 LOC limit.** Do not add more logic without extracting.
 - **Chrome-only APIs**: The React app uses `chrome.storage.local` and `browser.runtime` — it cannot be tested outside a Chrome extension context.
 - **No test runner or CI configured**: Code quality enforced by convention + `.sisyphus/rules/`.
 - **Playwright MCP test artifacts**: All Playwright test outputs MUST be saved to `.playwright-mcp/`. This directory is gitignored.
 - **Omnibox auto-send**: `BatchSearchPage` reads `?q=` from hash via `useSearchParams`, auto-triggers `handleSend` after 3s delay (for iframes to load). Clears param after send to prevent re-trigger on navigation.
+- **History session restore**: Clicking a search history entry navigates to `/?historyId=<id>`. `useOmniboxAutoSend` waits for history data to load (race condition safe), extracts per-site `conversationUrl`s from the entry, sets `siteUrlOverrides` to reload iframes with those URLs, and restores the original query text in the input bar.
 - **Reset mechanism**: Sidebar "New Chat" link navigates to `/?reset=true`. `BatchSearchPage` detects this URL param, clears `siteUrlOverrides`, increments `resetKey` state (number counter), and cleans up URL. The `resetKey` is included in each `IframeWrapper`'s React key, forcing complete iframe remount.
 - **Language persistence**: `AppLayout.tsx` syncs `i18n.changeLanguage()` with stored `settings.language` on mount via `useEffect`. Without this, page refresh reverts to fallback language (`en`).
 - **GitHub link**: Static link to repo in Sidebar footer, alongside existing "Report Issue" link. No API integration.
