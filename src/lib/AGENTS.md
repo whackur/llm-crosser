@@ -63,6 +63,10 @@ BatchSearchPage → startConversationUrlCapture() → postMessage(GET_URL_VIA_PO
 
 - `conversation-url-capture.ts` (72 LOC): Polls all iframes via postMessage at 5s and 12s after query. Collects `CURRENT_URL` replies per site, fires `onCaptured(SiteResult[])` callback. Returns cleanup fn (removes listener + cancels timers).
 
+### 5. Viral Comparison Examples (sidepanel content)
+
+- `viral-comparison-examples.ts` (~450 LOC): Static data module — 100 curated LLM comparison queries across 8 categories (Brain Teaser, AI Identity, Creative Writing, Coding Challenge, Practical Advice, Knowledge Test, Hot Take, Fun & Personality). Exports `VIRAL_CATEGORIES` record, `VIRAL_EXAMPLES` array, and `getRandomExample()` utility. No React imports — consumed by `ViralExampleCard.tsx` in sidepanel.
+
 ## WHERE TO LOOK
 
 | Task                      | File                                                            | Notes                                                                     |
@@ -78,6 +82,7 @@ BatchSearchPage → startConversationUrlCapture() → postMessage(GET_URL_VIA_PO
 | Float window state        | `float-state.ts`                                                | CRUD + onChange listener; consumed by `useFloatMode` hook                 |
 | Export history CRUD       | `export-history-storage.ts`                                     | `addExportHistoryEntry`, `deleteExportHistoryEntry`, `clearExportHistory` |
 | Normalize site URLs       | `url-utils.ts`                                                  | Single `normalizeHostname()` — used across 4+ modules                     |
+| Add/edit viral queries    | `viral-comparison-examples.ts`                                  | 100 queries, 8 categories; consumed by sidepanel `ViralExampleCard`       |
 
 ## CONVENTIONS
 
