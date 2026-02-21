@@ -75,7 +75,9 @@
     "extractFailed": "Échec de l'extraction de la conversation",
     "exportAll": "Tout exporter",
     "wrapWith": "Envelopper avec :",
-    "exportName": "Nom de l'exportation"
+    "exportName": "Nom de l'exportation",
+    "saveToHistory": "Enregistrer",
+    "saved": "Enregistré !"
   },
   "error": {
     "loadFailed": "Échec du chargement de {{siteName}}",

@@ -75,7 +75,9 @@
     "extractFailed": "提取对话失败",
     "exportAll": "全部导出",
     "wrapWith": "应用模板:",
-    "exportName": "导出名称"
+    "exportName": "导出名称",
+    "saveToHistory": "保存",
+    "saved": "已保存！"
   },
   "error": {
     "loadFailed": "加载{{siteName}}失败",

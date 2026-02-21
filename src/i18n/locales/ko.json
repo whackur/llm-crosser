@@ -76,7 +76,9 @@
     "extractFailed": "대화 추출 실패",
     "exportAll": "전체 내보내기",
     "wrapWith": "템플릿 적용:",
-    "exportName": "저장 이름"
+    "exportName": "저장 이름",
+    "saveToHistory": "저장",
+    "saved": "저장됨!"
   },
   "error": {
     "loadFailed": "{{siteName}} 로딩 실패",

@@ -75,7 +75,9 @@
     "extractFailed": "Ошибка при извлечении беседы",
     "exportAll": "Экспорт всех",
     "wrapWith": "Применить шаблон:",
-    "exportName": "Имя экспорта"
+    "exportName": "Имя экспорта",
+    "saveToHistory": "Сохранить",
+    "saved": "Сохранено!"
   },
   "error": {
     "loadFailed": "Ошибка загрузки {{siteName}}",
