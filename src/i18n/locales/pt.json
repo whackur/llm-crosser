@@ -75,7 +75,9 @@
     "extractFailed": "Falha ao extrair conversa",
     "exportAll": "Exportar tudo",
     "wrapWith": "Aplicar modelo:",
-    "exportName": "Nome da exportação"
+    "exportName": "Nome da exportação",
+    "saveToHistory": "Salvar",
+    "saved": "Salvo!"
   },
   "error": {
     "loadFailed": "Falha ao carregar {{siteName}}",

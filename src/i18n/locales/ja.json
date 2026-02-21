@@ -75,7 +75,9 @@
     "extractFailed": "会話の抽出に失敗しました",
     "exportAll": "すべてエクスポート",
     "wrapWith": "テンプレート適用:",
-    "exportName": "エクスポート名"
+    "exportName": "エクスポート名",
+    "saveToHistory": "保存",
+    "saved": "保存済み！"
   },
   "error": {
     "loadFailed": "{{siteName}}の読み込みに失敗しました",

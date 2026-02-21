@@ -19,7 +19,7 @@ The primary orchestrator. Owns:
 
 - **`siteUrlOverrides`** (state): Per-site custom URLs, overriding defaults from `site-handlers.json`. Cleared on reset.
 - **`handleSend(query, files)`**: Iterates enabled sites, dispatches `postMessage(INJECT_QUERY_VIA_POST)` to each `IframeWrapper` via ref, saves to history, starts `startConversationUrlCapture()`.
-- **`useOmniboxAutoSend`** (hook): Reads `?q=` from hash via `useSearchParams`. If present, fires `handleSend` after 3s delay (iframe load time), then clears param.
+- **`useOmniboxAutoSend`** (hook): Reads `?q=` (omnibox) and `?historyId=` (session restore) from hash. For `?q=`, fires `handleSend` after 3s delay. For `?historyId=`, waits for history to load, restores `siteUrlOverrides` (conversation URLs) and query text, then clears param.
 - **`useResetMechanism`** (hook): Detects `/?reset=true` URL param → clears `siteUrlOverrides`, returns `resetKey` counter for iframe remount.
 - **`useConversationShare`** (hook): Manages share popup state, content extraction, formatting.
 
@@ -45,7 +45,7 @@ Previously 207 LOC — `SiteToggleSection` extracted to `src/components/settings
 - Loads export history via `useExportHistory` hook.
 - Local search filter (client-side, no API).
 - Delete single entry or clear all.
-- Clicking a history entry navigates to `/?q=<query>` to re-run.
+- Clicking a history entry navigates to `/?historyId=<id>` to restore the session (conversation URLs + query text via `useOmniboxAutoSend`).
 - Export history list delegated to `ExportHistoryList` component.
 
 Previously 207 LOC — `ExportHistoryList` extracted to `src/components/history/`.

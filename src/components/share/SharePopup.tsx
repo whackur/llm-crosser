@@ -94,8 +94,7 @@ export const SharePopup: React.FC<SharePopupProps> = ({
         /* clipboard fallback failed */
       }
     }
-    saveToHistory();
-  }, [displayContent, saveToHistory]);
+  }, [displayContent]);
 
   const handleDownload = useCallback(() => {
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
@@ -109,8 +108,7 @@ export const SharePopup: React.FC<SharePopupProps> = ({
     anchor.click();
     document.body.removeChild(anchor);
     URL.revokeObjectURL(url);
-    saveToHistory();
-  }, [siteName, displayContent, saveToHistory]);
+  }, [siteName, displayContent]);
 
   if (!isOpen) return null;
 
@@ -183,6 +181,27 @@ export const SharePopup: React.FC<SharePopupProps> = ({
             placeholder={t("share.exportName")}
             className="flex-1 min-w-0 px-3 py-2 bg-surface border border-border rounded-lg text-sm text-text placeholder:text-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
           />
+          <button
+            onClick={saveToHistory}
+            disabled={saved || !onSave}
+            className="bg-surface text-text px-3 py-2 rounded-lg text-sm border border-border hover:bg-surface-secondary hover:border-primary/30 transition-all flex items-center gap-1.5 font-medium shadow-sm shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+            {saved ? t("share.saved") : t("share.saveToHistory")}
+          </button>
           <button
             onClick={handleDownload}
             className="bg-surface text-text px-3 py-2 rounded-lg text-sm border border-border hover:bg-surface-secondary hover:border-primary/30 transition-all flex items-center gap-1.5 font-medium shadow-sm shrink-0"

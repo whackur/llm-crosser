@@ -76,7 +76,9 @@
     "extractFailed": "Failed to extract conversation",
     "exportAll": "Export All",
     "wrapWith": "Wrap with:",
-    "exportName": "Export name"
+    "exportName": "Export name",
+    "saveToHistory": "Save",
+    "saved": "Saved!"
   },
   "error": {
     "loadFailed": "Failed to load {{siteName}}",
