@@ -105,6 +105,20 @@
   "disclaimer": {
     "tos": "This tool may violate the Terms of Service of embedded LLM sites. Use at your own risk."
   },
+  "viral": {
+    "tryThis": "Try this comparison",
+    "shuffle": "Shuffle",
+    "category": {
+      "brainTeaser": "Brain Teaser",
+      "aiIdentity": "AI Identity",
+      "creative": "Creative Writing",
+      "coding": "Coding Challenge",
+      "advice": "Practical Advice",
+      "knowledge": "Knowledge Test",
+      "hotTake": "Hot Take",
+      "fun": "Fun & Personality"
+    }
+  },
   "common": {
     "enabled": "Enabled",
     "disabled": "Disabled",

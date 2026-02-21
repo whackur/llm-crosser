@@ -13,7 +13,7 @@ src/
 │   ├── query/            # QueryInputBar (bottom input), FileUploadButton
 │   ├── settings/         # LanguageSelector, PromptTemplateEditor, TemplateListItem, ThemeSelector, SiteToggleSection
 │   ├── share/            # SharePopup (export results modal)
-│   ├── sidepanel/        # SidepanelLayout (shell + bottom nav), SidepanelHome (quick query + float control)
+│   ├── sidepanel/        # SidepanelLayout (shell + bottom nav), SidepanelHome (quick query + viral card)
 │   └── ui/               # ErrorBanner (generic error), Icons (SVG icon set: GitHubIcon, NewChatIcon, etc.)
 ├── hooks/                # State encapsulation (see hooks/AGENTS.md)
 │   ├── useSettings.ts    # Reactive chrome.storage.local wrapper (settings)
@@ -47,7 +47,8 @@ src/
 │   ├── conversation-url-capture.ts # Polls iframes for per-site conversation URLs post-query
 │   ├── float-state.ts             # Float window state: get/set/clear/onChange (chrome.storage)
 │   ├── storage.ts                 # chrome.storage.local CRUD (settings + history)
-│   └── export-history-storage.ts  # Export history CRUD (split from storage.ts)
+│   ├── export-history-storage.ts  # Export history CRUD (split from storage.ts)
+│   └── viral-comparison-examples.ts # 100 curated LLM comparison queries (8 categories) for sidepanel
 ├── pages/                # Route-level views (one per HashRouter route)
 │   ├── BatchSearchPage.tsx   # Main: IframeGrid + QueryInputBar + omnibox auto-send
 │   ├── SettingsPage.tsx      # Site toggles, layout, language, theme, prompt templates
@@ -77,21 +78,22 @@ Pages (orchestrate) → Components (render) → Hooks (state) → Lib (logic) �
 
 ## WHERE TO LOOK
 
-| Task                       | File(s)                                                                     | Notes                                                             |
-| -------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Add a new component        | `components/{feature}/NewComponent.tsx`                                     | One file per component, Tailwind classes                          |
-| Change grid behavior       | `components/grid/IframeGrid.tsx`                                            | `side-by-side` (flex-row) vs `grid` (CSS grid)                    |
-| Add settings field         | `types/settings.ts` → `lib/constants.ts` → `hooks/useSettings.ts`           | Update type, default in constants, then hook                      |
-| Change theme               | `styles/globals.css` @theme block + `[data-theme]` selectors                | CSS vars: `--color-*`, `--spacing-*`, `--radius-*`                |
-| Reset / New Chat           | `components/layout/Sidebar.tsx` + `pages/BatchSearchPage.tsx`               | `/?reset=true` param → resetKey counter → iframe remount          |
-| Add translation key        | `i18n/locales/*.json` (all 7) + `types/i18n.ts`                             | Key must exist in all locales                                     |
-| Add automation action      | `lib/step-actions.ts` + `lib/input-actions.ts` or `lib/keyboard-actions.ts` | Router in step-actions, impl in input/keyboard                    |
-| Find elements (Shadow DOM) | `lib/element-finder.ts`                                                     | Pierces shadow roots recursively                                  |
-| Wire new message type      | `types/messaging.ts` → `lib/messaging.ts`                                   | Add type, then handler in background.ts                           |
-| Capture conversation URLs  | `lib/conversation-url-capture.ts`                                           | Single export `startConversationUrlCapture()`; returns cleanup fn |
-| Float window state         | `lib/float-state.ts` → `hooks/useFloatMode.ts`                              | State in `chrome.storage`; hook provides reactive access          |
-| Export history             | `lib/export-history-storage.ts` → `hooks/useExportHistory.ts`               | Storage key `llm-crosser-export-history`; optimistic updates      |
-| Side panel UI              | `components/sidepanel/`                                                     | Reuses `SettingsPage`/`HistoryPage`; own `SidepanelHome`          |
+| Task                       | File(s)                                                                          | Notes                                                             |
+| -------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Add a new component        | `components/{feature}/NewComponent.tsx`                                          | One file per component, Tailwind classes                          |
+| Change grid behavior       | `components/grid/IframeGrid.tsx`                                                 | `side-by-side` (flex-row) vs `grid` (CSS grid)                    |
+| Add settings field         | `types/settings.ts` → `lib/constants.ts` → `hooks/useSettings.ts`                | Update type, default in constants, then hook                      |
+| Change theme               | `styles/globals.css` @theme block + `[data-theme]` selectors                     | CSS vars: `--color-*`, `--spacing-*`, `--radius-*`                |
+| Reset / New Chat           | `components/layout/Sidebar.tsx` + `pages/BatchSearchPage.tsx`                    | `/?reset=true` param → resetKey counter → iframe remount          |
+| Add translation key        | `i18n/locales/*.json` (all 7) + `types/i18n.ts`                                  | Key must exist in all locales                                     |
+| Add automation action      | `lib/step-actions.ts` + `lib/input-actions.ts` or `lib/keyboard-actions.ts`      | Router in step-actions, impl in input/keyboard                    |
+| Find elements (Shadow DOM) | `lib/element-finder.ts`                                                          | Pierces shadow roots recursively                                  |
+| Wire new message type      | `types/messaging.ts` → `lib/messaging.ts`                                        | Add type, then handler in background.ts                           |
+| Capture conversation URLs  | `lib/conversation-url-capture.ts`                                                | Single export `startConversationUrlCapture()`; returns cleanup fn |
+| Float window state         | `lib/float-state.ts` → `hooks/useFloatMode.ts`                                   | State in `chrome.storage`; hook provides reactive access          |
+| Export history             | `lib/export-history-storage.ts` → `hooks/useExportHistory.ts`                    | Storage key `llm-crosser-export-history`; optimistic updates      |
+| Side panel UI              | `components/sidepanel/`                                                          | Reuses `SettingsPage`/`HistoryPage`; own `SidepanelHome`          |
+| Viral comparison examples  | `lib/viral-comparison-examples.ts` + `components/sidepanel/ViralExampleCard.tsx` | 100 queries, 8 categories; triggers `DETACH_BATCH_SEARCH`         |
 
 ## CONVENTIONS
 

@@ -104,6 +104,20 @@
   "disclaimer": {
     "tos": "このツールは埋め込まれたLLMサイトの利用規約に違反する可能性があります。ご自身の責任でご利用ください。"
   },
+  "viral": {
+    "tryThis": "これで比較する",
+    "shuffle": "シャッフル",
+    "category": {
+      "brainTeaser": "脳トレ",
+      "aiIdentity": "AIの正体",
+      "creative": "創作ライティング",
+      "coding": "コーディング",
+      "advice": "実用アドバイス",
+      "knowledge": "知識テスト",
+      "hotTake": "ホットテイク",
+      "fun": "お楽しみ"
+    }
+  },
   "common": {
     "enabled": "有効",
     "disabled": "無効",
