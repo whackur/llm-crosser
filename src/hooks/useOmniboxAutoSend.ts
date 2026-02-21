@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import type { HistoryEntry } from "@/src/types/history";
 
@@ -8,6 +8,7 @@ interface UseOmniboxAutoSendOptions {
   configLoading: boolean;
   settingsReady: boolean;
   history: HistoryEntry[];
+  historyLoading: boolean;
   onHistoryRestore: (overrides: Record<string, string>) => void;
 }
 
@@ -17,9 +18,11 @@ interface UseOmniboxAutoSendReturn {
 }
 
 export function useOmniboxAutoSend(options: UseOmniboxAutoSendOptions): UseOmniboxAutoSendReturn {
-  const { handleSendRef, settingsLoading, configLoading, settingsReady, history } = options;
+  const { handleSendRef, settingsLoading, configLoading, settingsReady, history, historyLoading } =
+    options;
   const [searchParams, setSearchParams] = useSearchParams();
-  const urlQuery = searchParams.get("q") || "";
+  const [restoredQuery, setRestoredQuery] = useState("");
+  const urlQueryParam = searchParams.get("q") || "";
   const historyId = searchParams.get("historyId") || "";
   const autoSentQueryRef = useRef<string>("");
   const appliedHistoryIdRef = useRef<string>("");
@@ -28,26 +31,34 @@ export function useOmniboxAutoSend(options: UseOmniboxAutoSendOptions): UseOmnib
   onHistoryRestoreRef.current = options.onHistoryRestore;
 
   useEffect(() => {
-    if (!urlQuery || settingsLoading || configLoading || !settingsReady) return;
-    if (autoSentQueryRef.current === urlQuery) return;
-    autoSentQueryRef.current = urlQuery;
+    if (!urlQueryParam || settingsLoading || configLoading || !settingsReady) return;
+    if (autoSentQueryRef.current === urlQueryParam) return;
+    autoSentQueryRef.current = urlQueryParam;
 
     const timer = setTimeout(() => {
-      handleSendRef.current(urlQuery);
+      handleSendRef.current(urlQueryParam);
       setSearchParams({}, { replace: true });
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [urlQuery, settingsLoading, configLoading, settingsReady, setSearchParams, handleSendRef]);
+  }, [
+    urlQueryParam,
+    settingsLoading,
+    configLoading,
+    settingsReady,
+    setSearchParams,
+    handleSendRef,
+  ]);
 
   useEffect(() => {
-    if (!historyId || settingsLoading || configLoading || !settingsReady) return;
+    if (!historyId || settingsLoading || configLoading || !settingsReady || historyLoading) return;
     if (appliedHistoryIdRef.current === historyId) return;
 
     const entry = history.find((e) => e.id === historyId);
     if (!entry) return;
 
     appliedHistoryIdRef.current = historyId;
+    setRestoredQuery(entry.query);
 
     const overrides: Record<string, string> = {};
     for (const result of entry.siteResults) {
@@ -57,12 +68,21 @@ export function useOmniboxAutoSend(options: UseOmniboxAutoSendOptions): UseOmnib
     }
     onHistoryRestoreRef.current(overrides);
     setSearchParams({}, { replace: true });
-  }, [historyId, history, settingsLoading, configLoading, settingsReady, setSearchParams]);
+  }, [
+    historyId,
+    history,
+    settingsLoading,
+    configLoading,
+    settingsReady,
+    historyLoading,
+    setSearchParams,
+  ]);
 
   const resetAutoSendState = useCallback(() => {
     autoSentQueryRef.current = "";
     appliedHistoryIdRef.current = "";
+    setRestoredQuery("");
   }, []);
 
-  return { urlQuery, resetAutoSendState };
+  return { urlQuery: urlQueryParam || restoredQuery, resetAutoSendState };
 }

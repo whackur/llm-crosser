@@ -20,60 +20,90 @@ type Site = { name: string; url: string; enabled: boolean };
 
 export default function BatchSearchPage() {
   const { settings, loading: settingsLoading, updateSettings } = useSettings();
-  const { history, addEntry, updateEntry } = useHistory();
+  const { history, loading: historyLoading, addEntry, updateEntry } = useHistory();
   const { addEntry: addExportEntry } = useExportHistory();
   const { siteConfigs, loading: configLoading } = useSiteConfig();
   const [isQuerying, setIsQuerying] = useState(false);
   const urlCaptureCleanupRef = useRef<(() => void) | null>(null);
-  const siteList = useMemo<Site[]>(() => siteConfigs.map((site) => ({
-    name: site.name, url: String(site.url),
-    enabled: settings?.enabledSites.includes(site.name) ?? false,
-  })), [siteConfigs, settings?.enabledSites]);
+  const siteList = useMemo<Site[]>(
+    () =>
+      siteConfigs.map((site) => ({
+        name: site.name,
+        url: String(site.url),
+        enabled: settings?.enabledSites.includes(site.name) ?? false,
+      })),
+    [siteConfigs, settings?.enabledSites],
+  );
 
-  const postMessageToSiteIframe = useCallback((siteName: string, msg: Record<string, unknown>) => {
-    const site = siteList.find((s) => s.name === siteName);
-    if (!site) return false;
-    try {
-      const siteHost = new URL(site.url).hostname;
-      if (!siteHost) return false;
-      for (const iframe of document.querySelectorAll<HTMLIFrameElement>("iframe")) {
-        try {
-          const h = new URL(iframe.src).hostname;
-          if (h && matchesHost(h, siteHost)) { iframe.contentWindow?.postMessage(msg, "*"); return true; }
-        } catch { /* skip */ }
-      }
-    } catch { /* skip */ }
-    return false;
-  }, [siteList]);
-
-  const handleSend = useCallback(async (query: string) => {
-    const enabledSites = siteList.filter((s) => s.enabled);
-    if (enabledSites.length === 0) return;
-    setIsQuerying(true);
-    await Promise.all(enabledSites.map((site, i) => new Promise<void>((resolve) => {
-      setTimeout(() => {
-        const config = siteConfigs.find((c) => c.name === site.name);
-        if (config?.searchHandler) {
-          postMessageToSiteIframe(site.name, {
-            type: "INJECT_QUERY_VIA_POST", siteName: site.name, query,
-            searchHandler: config.searchHandler,
-          });
+  const postMessageToSiteIframe = useCallback(
+    (siteName: string, msg: Record<string, unknown>) => {
+      const site = siteList.find((s) => s.name === siteName);
+      if (!site) return false;
+      try {
+        const siteHost = new URL(site.url).hostname;
+        if (!siteHost) return false;
+        for (const iframe of document.querySelectorAll<HTMLIFrameElement>("iframe")) {
+          try {
+            const h = new URL(iframe.src).hostname;
+            if (h && matchesHost(h, siteHost)) {
+              iframe.contentWindow?.postMessage(msg, "*");
+              return true;
+            }
+          } catch {
+            /* skip */
+          }
         }
-        resolve();
-      }, i * 200);
-    })));
-    const entryId = crypto.randomUUID();
-    await addEntry({ id: entryId, query, timestamp: Date.now(),
-      siteResults: enabledSites.map((s) => ({ siteName: s.name })) });
-    setIsQuerying(false);
-    urlCaptureCleanupRef.current?.();
-    urlCaptureCleanupRef.current = startConversationUrlCapture({
-      sites: enabledSites,
-      onCaptured: (siteResults) => {
-        if (siteResults.some((r) => r.conversationUrl)) void updateEntry(entryId, { siteResults });
-      },
-    });
-  }, [siteList, siteConfigs, addEntry, updateEntry, postMessageToSiteIframe]);
+      } catch {
+        /* skip */
+      }
+      return false;
+    },
+    [siteList],
+  );
+
+  const handleSend = useCallback(
+    async (query: string) => {
+      const enabledSites = siteList.filter((s) => s.enabled);
+      if (enabledSites.length === 0) return;
+      setIsQuerying(true);
+      await Promise.all(
+        enabledSites.map(
+          (site, i) =>
+            new Promise<void>((resolve) => {
+              setTimeout(() => {
+                const config = siteConfigs.find((c) => c.name === site.name);
+                if (config?.searchHandler) {
+                  postMessageToSiteIframe(site.name, {
+                    type: "INJECT_QUERY_VIA_POST",
+                    siteName: site.name,
+                    query,
+                    searchHandler: config.searchHandler,
+                  });
+                }
+                resolve();
+              }, i * 200);
+            }),
+        ),
+      );
+      const entryId = crypto.randomUUID();
+      await addEntry({
+        id: entryId,
+        query,
+        timestamp: Date.now(),
+        siteResults: enabledSites.map((s) => ({ siteName: s.name })),
+      });
+      setIsQuerying(false);
+      urlCaptureCleanupRef.current?.();
+      urlCaptureCleanupRef.current = startConversationUrlCapture({
+        sites: enabledSites,
+        onCaptured: (siteResults) => {
+          if (siteResults.some((r) => r.conversationUrl))
+            void updateEntry(entryId, { siteResults });
+        },
+      });
+    },
+    [siteList, siteConfigs, addEntry, updateEntry, postMessageToSiteIframe],
+  );
 
   const handleSendRef = useRef(handleSend);
   handleSendRef.current = handleSend;
@@ -86,74 +116,119 @@ export default function BatchSearchPage() {
     },
   });
   const { urlQuery, resetAutoSendState } = useOmniboxAutoSend({
-    handleSendRef, settingsLoading, configLoading,
-    settingsReady: !!settings, history, onHistoryRestore: setSiteUrlOverrides,
+    handleSendRef,
+    settingsLoading,
+    configLoading,
+    settingsReady: !!settings,
+    history,
+    historyLoading,
+    onHistoryRestore: setSiteUrlOverrides,
   });
   const { shareState, handleShare, handleShareAll, handleExportSave, closeSharePopup } =
     useConversationShare({ siteList, siteConfigs, addExportEntry });
-  const handleLayoutChange = useCallback((l: GridLayout) =>
-    void updateSettings({ gridLayout: l }), [updateSettings]);
-  const handleColumnsChange = useCallback((c: 1 | 2 | 3 | 4) =>
-    void updateSettings({ gridColumns: c }), [updateSettings]);
-
-  const handleFileUpload = useCallback(async (files: File[]) => {
-    if (files.length === 0) return;
-    const enabledSites = siteList.filter((s) => s.enabled);
-    if (enabledSites.length === 0) return;
-    const fileDataArray = await Promise.all(files.map(async (file) => ({
-      arrayBuffer: await file.arrayBuffer(), type: file.type, fileName: file.name,
-    })));
-    for (let i = 0; i < enabledSites.length; i++) {
-      const site = enabledSites[i];
-      if (!site) continue;
-      const config = siteConfigs.find((c) => c.name === site.name);
-      postMessageToSiteIframe(site.name, {
-        type: "INJECT_FILE_VIA_POST", siteName: site.name, files: fileDataArray,
-        focusSelector: config?.fileUploadHandler?.steps?.[0]?.selector,
-      });
-      if (i < enabledSites.length - 1) await new Promise((r) => setTimeout(r, 500));
-    }
-  }, [siteList, siteConfigs, postMessageToSiteIframe]);
-
-  const renderIframe = useCallback((site: { name: string; url: string }) => (
-    <IframeWrapper key={`${site.name}-${resetKey}`} siteName={site.name}
-      siteUrl={siteUrlOverrides[site.name] || site.url} onShare={handleShare} />
-  ), [handleShare, siteUrlOverrides, resetKey]);
-
-  if (settingsLoading || configLoading || !settings) return (
-    <div className="flex items-center justify-center h-full">
-      <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent" />
-    </div>
+  const handleLayoutChange = useCallback(
+    (l: GridLayout) => void updateSettings({ gridLayout: l }),
+    [updateSettings],
   );
+  const handleColumnsChange = useCallback(
+    (c: 1 | 2 | 3 | 4) => void updateSettings({ gridColumns: c }),
+    [updateSettings],
+  );
+
+  const handleFileUpload = useCallback(
+    async (files: File[]) => {
+      if (files.length === 0) return;
+      const enabledSites = siteList.filter((s) => s.enabled);
+      if (enabledSites.length === 0) return;
+      const fileDataArray = await Promise.all(
+        files.map(async (file) => ({
+          arrayBuffer: await file.arrayBuffer(),
+          type: file.type,
+          fileName: file.name,
+        })),
+      );
+      for (let i = 0; i < enabledSites.length; i++) {
+        const site = enabledSites[i];
+        if (!site) continue;
+        const config = siteConfigs.find((c) => c.name === site.name);
+        postMessageToSiteIframe(site.name, {
+          type: "INJECT_FILE_VIA_POST",
+          siteName: site.name,
+          files: fileDataArray,
+          focusSelector: config?.fileUploadHandler?.steps?.[0]?.selector,
+        });
+        if (i < enabledSites.length - 1) await new Promise((r) => setTimeout(r, 500));
+      }
+    },
+    [siteList, siteConfigs, postMessageToSiteIframe],
+  );
+
+  const renderIframe = useCallback(
+    (site: { name: string; url: string }) => (
+      <IframeWrapper
+        key={`${site.name}-${resetKey}`}
+        siteName={site.name}
+        siteUrl={siteUrlOverrides[site.name] || site.url}
+        onShare={handleShare}
+      />
+    ),
+    [handleShare, siteUrlOverrides, resetKey],
+  );
+
+  if (settingsLoading || configLoading || !settings)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent" />
+      </div>
+    );
 
   return (
     <div className="flex flex-col h-full w-full">
       <div className="flex-1 min-h-0">
-        <IframeGrid layout={settings.gridLayout} columns={settings.gridColumns}
-          onLayoutChange={handleLayoutChange} onColumnsChange={handleColumnsChange}
-          onShareAll={handleShareAll} sites={siteList} renderIframe={renderIframe}
-          headerSlot={<>
-            <img src="/icons/icon-48.png" alt="" className="w-4 h-4" />
-            <a href="#/?reset=true" title="New Chat"
-              className="w-7 h-7 flex items-center justify-center rounded-md text-text-secondary hover:text-primary hover:bg-primary/10 transition-all">
-              <NewChatIcon className="w-3.5 h-3.5" />
-            </a>
-          </>}
+        <IframeGrid
+          layout={settings.gridLayout}
+          columns={settings.gridColumns}
+          onLayoutChange={handleLayoutChange}
+          onColumnsChange={handleColumnsChange}
+          onShareAll={handleShareAll}
+          sites={siteList}
+          renderIframe={renderIframe}
+          headerSlot={
+            <>
+              <img src="/icons/icon-48.png" alt="" className="w-4 h-4" />
+              <a
+                href="#/?reset=true"
+                title="New Chat"
+                className="w-7 h-7 flex items-center justify-center rounded-md text-text-secondary hover:text-primary hover:bg-primary/10 transition-all"
+              >
+                <NewChatIcon className="w-3.5 h-3.5" />
+              </a>
+            </>
+          }
         />
       </div>
       <div className="px-2 py-1.5 border-t border-border bg-surface/95 backdrop-blur-sm shrink-0">
         <div className="flex items-start gap-1.5 max-w-5xl mx-auto w-full">
           <div className="flex-1 min-w-0">
-            <QueryInputBar onSend={handleSend} initialQuery={urlQuery}
-              promptTemplates={settings.promptTemplates} disabled={isQuerying} />
+            <QueryInputBar
+              onSend={handleSend}
+              initialQuery={urlQuery}
+              promptTemplates={settings.promptTemplates}
+              disabled={isQuerying}
+            />
           </div>
           <FileUploadButton onFilesSelected={handleFileUpload} disabled={isQuerying} />
         </div>
       </div>
-      <SharePopup isOpen={shareState.isOpen} onClose={closeSharePopup}
-        siteName={shareState.siteName} markdownContent={shareState.content}
+      <SharePopup
+        isOpen={shareState.isOpen}
+        onClose={closeSharePopup}
+        siteName={shareState.siteName}
+        markdownContent={shareState.content}
         exportAllTemplates={settings.exportAllTemplates}
-        defaultExportName={settings.defaultExportName} onSave={handleExportSave} />
+        defaultExportName={settings.defaultExportName}
+        onSave={handleExportSave}
+      />
     </div>
   );
 }
