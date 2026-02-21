@@ -30,7 +30,7 @@ components/
 │   ├── SidepanelLayout.tsx   # Side panel shell: header, bottom tab nav (/, /history, /settings)
 │   └── SidepanelHome.tsx     # Quick query input + float window control (open/focus/close)
 ├── share/
-│   └── SharePopup.tsx        # Export modal: copies Markdown or per-site conversation URLs. 229 LOC — OVER LIMIT
+│   └── SharePopup.tsx        # Export modal: explicit Save to History, copies Markdown, downloads .md. 248 LOC — OVER LIMIT
 └── ui/
     ├── ErrorBanner.tsx       # Generic dismissible error display
     └── Icons.tsx             # SVG icon set: GitHubIcon, NewChatIcon, DetachIcon, etc. 207 LOC — exempt (static SVG)
@@ -46,7 +46,7 @@ components/
 | `query/`     | text input, file input, template selection          | `useSettings` (templates), parent `onSend`            |
 | `settings/`  | all settings UI forms + site toggles                | `useSettings`, `useSiteConfig`                        |
 | `sidepanel/` | side panel shell, quick query, float control        | `useSettings`, `useFloatMode`, `useSiteConfig`        |
-| `share/`     | Markdown export, URL copy                           | `useConversationShare` (extraction results)           |
+| `share/`     | Markdown export, Save to History, URL copy          | `useConversationShare` (extraction results)           |
 | `ui/`        | reusable primitives (errors, icons)                 | nothing — zero dependencies                           |
 
 ## LOC STATUS
@@ -54,7 +54,7 @@ components/
 | File                                | LOC | Status                                            |
 | ----------------------------------- | --- | ------------------------------------------------- |
 | `grid/IframeGrid.tsx`               | 244 | **OVER** — split layout logic before adding modes |
-| `share/SharePopup.tsx`              | 229 | **OVER** — split export format logic              |
+| `share/SharePopup.tsx`              | 248 | **OVER** — split export format logic              |
 | `ui/Icons.tsx`                      | 207 | Exempt (static SVG definitions only)              |
 | `settings/PromptTemplateEditor.tsx` | 202 | **AT LIMIT** — do not add more logic              |
 | `query/QueryInputBar.tsx`           | 173 | OK                                                |
@@ -81,7 +81,7 @@ components/
 | Side panel layout          | `sidepanel/SidepanelLayout.tsx`     | Bottom tab nav; shares Settings/History pages with main      |
 | Side panel quick query     | `sidepanel/SidepanelHome.tsx`       | Sends `DETACH_BATCH_SEARCH` to background with query         |
 | Add template feature       | `settings/PromptTemplateEditor.tsx` | At 202 LOC — extract first                                   |
-| Change export format       | `share/SharePopup.tsx`              | At 229 LOC — split format logic                              |
+| Change export format       | `share/SharePopup.tsx`              | At 248 LOC — split format logic                              |
 | Add new icon               | `ui/Icons.tsx`                      | Add SVG component; export named                              |
 
 ## CONVENTIONS
@@ -96,6 +96,6 @@ components/
 - **Never import from `src/lib/` directly** — go through hooks.
 - **Never put business logic in components** — extract to lib or hook.
 - **`IframeGrid.tsx` at 244 LOC** — add layout modes only after splitting.
-- **`SharePopup.tsx` at 229 LOC** — split export format handlers before new export types.
+- **`SharePopup.tsx` at 248 LOC** — split export format handlers before new export types.
 - **`Icons.tsx` at 207 LOC** — exempt (static SVG only). Do not add stateful logic.
 - **Side panel pages are shared** — `sidepanel/main.tsx` imports `SettingsPage`/`HistoryPage` from `src/pages/`. Never duplicate.

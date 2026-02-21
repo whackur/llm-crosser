@@ -4,19 +4,19 @@ Custom hooks that wrap `chrome.storage`, `browser.runtime`, and extension APIs b
 
 ## HOOKS
 
-| Hook                   | LOC | Wraps                              | Returns                                                          |
-| ---------------------- | --- | ---------------------------------- | ---------------------------------------------------------------- |
-| `useSettings`          | 65  | `chrome.storage.local` (settings)  | `{ settings, updateSettings, loading }`                          |
-| `useHistory`           | 110 | `chrome.storage.local` (history)   | `{ history, addEntry, deleteEntry, clearAll }`                   |
-| `useIframeManager`     | 109 | Multi-iframe lifecycle             | `{ iframeRefs, statuses, dispatch, extract }`                    |
-| `useSiteConfig`        | 28  | `site-handlers.json` fetch         | `{ siteConfigs, loading }`                                       |
-| `useTheme`             | 14  | `document.documentElement` dataset | Applies `data-theme` attribute; no return value                  |
-| `useFloatMode`         | 47  | `lib/float-state.ts`               | `{ isPopupWindow, isFloatActive, floatState, loading }`          |
-| `useExportHistory`     | 88  | `chrome.storage.local` (exports)   | `{ exportHistory, addEntry, deleteEntry, clearAll }`             |
-| `useGitHubStars`       | 67  | GitHub API + chrome.storage cache  | `stars: number \| null`                                          |
-| `useConversationShare` | 189 | Content extraction + formatting    | `{ shareData, extractAll, formatMarkdown, copyToClipboard }`     |
-| `useOmniboxAutoSend`   | 68  | `useSearchParams` (hash ?q= param) | Auto-triggers handleSend on mount if ?q= present; clears after   |
-| `useResetMechanism`    | 33  | `useSearchParams` (hash ?reset)    | `{ resetKey }` — counter incremented on /?reset=true; clears URL |
+| Hook                   | LOC | Wraps                                     | Returns                                                                       |
+| ---------------------- | --- | ----------------------------------------- | ----------------------------------------------------------------------------- |
+| `useSettings`          | 65  | `chrome.storage.local` (settings)         | `{ settings, updateSettings, loading }`                                       |
+| `useHistory`           | 110 | `chrome.storage.local` (history)          | `{ history, addEntry, deleteEntry, clearAll }`                                |
+| `useIframeManager`     | 109 | Multi-iframe lifecycle                    | `{ iframeRefs, statuses, dispatch, extract }`                                 |
+| `useSiteConfig`        | 28  | `site-handlers.json` fetch                | `{ siteConfigs, loading }`                                                    |
+| `useTheme`             | 14  | `document.documentElement` dataset        | Applies `data-theme` attribute; no return value                               |
+| `useFloatMode`         | 47  | `lib/float-state.ts`                      | `{ isPopupWindow, isFloatActive, floatState, loading }`                       |
+| `useExportHistory`     | 88  | `chrome.storage.local` (exports)          | `{ exportHistory, addEntry, deleteEntry, clearAll }`                          |
+| `useGitHubStars`       | 67  | GitHub API + chrome.storage cache         | `stars: number \| null`                                                       |
+| `useConversationShare` | 189 | Content extraction + formatting           | `{ shareData, extractAll, formatMarkdown, copyToClipboard }`                  |
+| `useOmniboxAutoSend`   | 88  | `useSearchParams` (hash ?q=, ?historyId=) | Auto-send from omnibox + history session restore (URL overrides + query text) |
+| `useResetMechanism`    | 33  | `useSearchParams` (hash ?reset)           | `{ resetKey }` — counter incremented on /?reset=true; clears URL              |
 
 ## PATTERNS
 
