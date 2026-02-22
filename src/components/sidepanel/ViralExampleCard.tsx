@@ -1,20 +1,28 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   getRandomExample,
+  preloadQueries,
   VIRAL_CATEGORIES,
   type ViralExample,
-} from "@/src/lib/viral-comparison-examples";
+} from "@/src/lib/viral-examples";
 
 export function ViralExampleCard() {
-  const { t } = useTranslation();
-  const [example, setExample] = useState<ViralExample>(getRandomExample);
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+  const [example, setExample] = useState<ViralExample>(() => getRandomExample(lang));
+
+  useEffect(() => {
+    preloadQueries(lang).then(() => {
+      setExample(getRandomExample(lang));
+    });
+  }, [lang]);
 
   const category = VIRAL_CATEGORIES[example.categoryId];
 
   const handleShuffle = useCallback(() => {
-    setExample(getRandomExample());
-  }, []);
+    setExample(getRandomExample(lang));
+  }, [lang]);
 
   const handleTry = useCallback(() => {
     chrome.runtime.sendMessage({ type: "DETACH_BATCH_SEARCH", query: example.query });
@@ -50,5 +58,3 @@ export function ViralExampleCard() {
     </div>
   );
 }
-
-export default ViralExampleCard;
