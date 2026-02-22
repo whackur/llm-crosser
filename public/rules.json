@@ -14,6 +14,7 @@
       ],
       "responseHeaders": [
         { "header": "content-security-policy", "operation": "remove" },
+        { "header": "content-security-policy-report-only", "operation": "remove" },
         { "header": "x-frame-options", "operation": "remove" },
         { "header": "permissions-policy", "operation": "remove" },
         { "header": "cross-origin-resource-policy", "operation": "remove" },
@@ -29,7 +30,7 @@
         "grok.com",
         "chat.qwen.ai",
         "chat.z.ai",
-        "www.perplexity.ai"
+        "perplexity.ai"
       ],
       "resourceTypes": ["main_frame", "sub_frame"]
     }

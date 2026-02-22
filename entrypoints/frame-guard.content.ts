@@ -8,6 +8,7 @@ export default defineContentScript({
     "https://chat.qwen.ai/*",
     "https://chat.z.ai/*",
     "https://www.perplexity.ai/*",
+    "https://perplexity.ai/*",
   ],
   allFrames: true,
   runAt: "document_start",

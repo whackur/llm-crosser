@@ -1,6 +1,6 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-02-21 | **Commit:** 1ad51ad | **Branch:** feature/sidebar-panel
+**Generated:** 2026-02-22 | **Commit:** bdadc30 | **Branch:** feature/fix-perplexity-load
 
 > **IMMUTABLE SECTIONS**: The three CRITICAL sections below (PR Target Branch, No Autonomous Commits, English-Only Policy) **MUST NEVER be removed or modified.** They are project-level invariants that override all other directives.
 
@@ -49,7 +49,7 @@ All project communications — GitHub Issues, PRs, commit messages, code comment
 
 LLM Crosser is a Chrome extension (WXT + React 19 + Tailwind CSS v4) that embeds multiple LLM chat sites (ChatGPT, Gemini, Grok, Perplexity, Qwen, Z.ai) in iframes within a single tab. Users type once, query all simultaneously, and compare responses side-by-side.
 
-Key mechanism: `declarativeNetRequest` strips `X-Frame-Options`/CSP headers at network level; `frame-guard.content.ts` overrides `window.top`/`window.parent` at JS level to neutralize frame-busting scripts.
+Key mechanism: `declarativeNetRequest` strips `X-Frame-Options`/`Content-Security-Policy`/`Content-Security-Policy-Report-Only` headers at network level; `frame-guard.content.ts` overrides `window.top`/`window.parent` at JS level to neutralize frame-busting scripts.
 
 ## STRUCTURE
 
@@ -164,3 +164,6 @@ pnpm zip              # Package for Chrome Web Store
 - **Language persistence**: `AppLayout.tsx` syncs `i18n.changeLanguage()` with stored `settings.language` on mount via `useEffect`. Without this, page refresh reverts to fallback language (`en`).
 - **GitHub link**: Static link to repo in Sidebar footer, alongside existing "Report Issue" link. No API integration.
 - **Viral comparison examples**: 100 curated LLM comparison queries across 8 categories (Brain Teaser, AI Identity, Creative Writing, Coding Challenge, Practical Advice, Knowledge Test, Hot Take, Fun & Personality). Displayed randomly one-at-a-time in sidepanel via `ViralExampleCard`. Clicking "Try this" triggers `DETACH_BATCH_SEARCH` — reuses existing omnibox pipeline. Static data only, no API. `viral-comparison-examples.ts` is exempt from 200 LOC rule (static data, like `Icons.tsx`).
+ **DNR `requestDomains` must use apex domains**: Use `perplexity.ai` (not `www.perplexity.ai`) in `rules.json` `requestDomains`. Chrome DNR automatically matches all subdomains of listed domains, so apex domains provide the broadest coverage. Same applies to any future LLM site additions.
+ **Both apex and www domains configured for Perplexity**: `host_permissions`, `frame-src`, content script `matches`, and `web_accessible_resources` all include both `https://www.perplexity.ai/*` and `https://perplexity.ai/*` to handle potential redirects or domain variations.
+ **CSP-Report-Only also stripped**: `rules.json` removes both `content-security-policy` and `content-security-policy-report-only` response headers. Some sites (e.g., Perplexity behind Cloudflare) may send either or both.
