@@ -41,10 +41,11 @@ export default defineConfig({
       "https://chat.qwen.ai/*",
       "https://chat.z.ai/*",
       "https://www.perplexity.ai/*",
+      "https://perplexity.ai/*",
     ],
     content_security_policy: {
       extension_pages:
-        "script-src 'self'; object-src 'self'; frame-src https://chatgpt.com https://gemini.google.com https://grok.com https://chat.qwen.ai https://chat.z.ai https://www.perplexity.ai;",
+        "script-src 'self'; object-src 'self'; frame-src https://chatgpt.com https://gemini.google.com https://grok.com https://chat.qwen.ai https://chat.z.ai https://www.perplexity.ai https://perplexity.ai;",
     },
     declarative_net_request: {
       rule_resources: [{ id: "ruleset_1", enabled: true, path: "rules.json" }],
@@ -60,6 +61,7 @@ export default defineConfig({
           "https://chat.qwen.ai/*",
           "https://chat.z.ai/*",
           "https://www.perplexity.ai/*",
+          "https://perplexity.ai/*",
         ],
       },
     ],

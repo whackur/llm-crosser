@@ -23,7 +23,7 @@ entrypoints/
 | ------------------------ | -------------- | ---------------- | ---------------------------------------------------------- |
 | `background.ts`          | Service worker | —                | Message hub, tab/omnibox/float management                  |
 | `frame-guard.content.ts` | **MAIN**       | `document_start` | Overrides `window.top`/`window.parent` before page JS runs |
-| `inject.content.ts`      | **ISOLATED**   | `document_idle`  | Registers message listeners, calls automation engine       |
+| `inject.content.ts`      | **ISOLATED**   | `document_start` | Registers message listeners, calls automation engine       |
 | `batch-search/main.tsx`  | Extension page | —                | React SPA rendered in a full tab                           |
 | `sidepanel/main.tsx`     | Extension page | —                | React SPA rendered in Chrome side panel                    |
 
@@ -51,7 +51,7 @@ Neutralizes frame-busting checks like `if (window.top !== window.self) { top.loc
 
 Must update `matches` array when adding a new LLM site.
 
-## inject.content.ts (112 LOC)
+## inject.content.ts (113 LOC)
 
 Dual-channel listener in ISOLATED world:
 

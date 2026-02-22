@@ -104,6 +104,20 @@
   "disclaimer": {
     "tos": "本工具可能违反嵌入式LLM网站的服务条款。使用风险自负。"
   },
+  "viral": {
+    "tryThis": "试试这个比较",
+    "shuffle": "换一个",
+    "category": {
+      "brainTeaser": "脑筋急转弯",
+      "aiIdentity": "AI身份",
+      "creative": "创意写作",
+      "coding": "编程挑战",
+      "advice": "实用建议",
+      "knowledge": "知识测试",
+      "hotTake": "犀利观点",
+      "fun": "趣味互动"
+    }
+  },
   "common": {
     "enabled": "启用",
     "disabled": "禁用",

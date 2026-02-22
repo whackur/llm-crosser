@@ -28,7 +28,8 @@ components/
 │   └── SiteToggleSection.tsx # Enable/disable LLM sites toggle grid (extracted from SettingsPage)
 ├── sidepanel/
 │   ├── SidepanelLayout.tsx   # Side panel shell: header, bottom tab nav (/, /history, /settings)
-│   └── SidepanelHome.tsx     # Quick query input + float window control (open/focus/close)
+│   ├── SidepanelHome.tsx     # Quick query input + float window control + viral example card
+│   └── ViralExampleCard.tsx  # Viral comparison card: random query + category icon + try/shuffle
 ├── share/
 │   └── SharePopup.tsx        # Export modal: explicit Save to History, copies Markdown, downloads .md. 248 LOC — OVER LIMIT
 └── ui/
@@ -38,16 +39,16 @@ components/
 
 ## FEATURE OWNERSHIP
 
-| Group        | Owns                                                | Consumes                                              |
-| ------------ | --------------------------------------------------- | ----------------------------------------------------- |
-| `grid/`      | iframe layout, loading states, postMessage dispatch | `useIframeManager`, `useSiteConfig`                   |
-| `history/`   | export history list display                         | `useExportHistory`                                    |
-| `layout/`    | app shell, sidebar collapse, float placeholder      | `useSettings`, `useTheme`, `useFloatMode`, `<Outlet>` |
-| `query/`     | text input, file input, template selection          | `useSettings` (templates), parent `onSend`            |
-| `settings/`  | all settings UI forms + site toggles                | `useSettings`, `useSiteConfig`                        |
-| `sidepanel/` | side panel shell, quick query, float control        | `useSettings`, `useFloatMode`, `useSiteConfig`        |
-| `share/`     | Markdown export, Save to History, URL copy          | `useConversationShare` (extraction results)           |
-| `ui/`        | reusable primitives (errors, icons)                 | nothing — zero dependencies                           |
+| Group        | Owns                                                         | Consumes                                                                    |
+| ------------ | ------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `grid/`      | iframe layout, loading states, postMessage dispatch          | `useIframeManager`, `useSiteConfig`                                         |
+| `history/`   | export history list display                                  | `useExportHistory`                                                          |
+| `layout/`    | app shell, sidebar collapse, float placeholder               | `useSettings`, `useTheme`, `useFloatMode`, `<Outlet>`                       |
+| `query/`     | text input, file input, template selection                   | `useSettings` (templates), parent `onSend`                                  |
+| `settings/`  | all settings UI forms + site toggles                         | `useSettings`, `useSiteConfig`                                              |
+| `sidepanel/` | side panel shell, quick query, float control, viral examples | `useSettings`, `useFloatMode`, `useSiteConfig`, `viral-comparison-examples` |
+| `share/`     | Markdown export, Save to History, URL copy                   | `useConversationShare` (extraction results)                                 |
+| `ui/`        | reusable primitives (errors, icons)                          | nothing — zero dependencies                                                 |
 
 ## LOC STATUS
 
@@ -60,8 +61,9 @@ components/
 | `query/QueryInputBar.tsx`           | 173 | OK                                                |
 | `grid/IframeWrapper.tsx`            | 161 | OK                                                |
 | `layout/SidebarFooter.tsx`          | 125 | OK                                                |
-| `sidepanel/SidepanelHome.tsx`       | 125 | OK                                                |
+| `sidepanel/SidepanelHome.tsx`       | 124 | OK                                                |
 | `sidepanel/SidepanelLayout.tsx`     | 122 | OK                                                |
+| `sidepanel/ViralExampleCard.tsx`    | 54  | OK                                                |
 | `layout/Sidebar.tsx`                | 118 | OK                                                |
 | `grid/ActiveSitesBar.tsx`           | 94  | OK                                                |
 | `history/ExportHistoryList.tsx`     | ~70 | OK                                                |
@@ -82,6 +84,7 @@ components/
 | Side panel quick query     | `sidepanel/SidepanelHome.tsx`       | Sends `DETACH_BATCH_SEARCH` to background with query         |
 | Add template feature       | `settings/PromptTemplateEditor.tsx` | At 202 LOC — extract first                                   |
 | Change export format       | `share/SharePopup.tsx`              | At 248 LOC — split format logic                              |
+| Viral comparison examples  | `sidepanel/ViralExampleCard.tsx`    | Random query card; triggers `DETACH_BATCH_SEARCH` on click   |
 | Add new icon               | `ui/Icons.tsx`                      | Add SVG component; export named                              |
 
 ## CONVENTIONS

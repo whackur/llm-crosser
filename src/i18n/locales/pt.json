@@ -104,6 +104,20 @@
   "disclaimer": {
     "tos": "Esta ferramenta pode violar os Termos de Servico dos sites LLM incorporados. Use por sua conta e risco."
   },
+  "viral": {
+    "tryThis": "Tente esta comparação",
+    "shuffle": "Trocar",
+    "category": {
+      "brainTeaser": "Quebra-cabeça",
+      "aiIdentity": "Identidade da IA",
+      "creative": "Escrita Criativa",
+      "coding": "Desafio de Código",
+      "advice": "Conselho Prático",
+      "knowledge": "Teste de Conhecimento",
+      "hotTake": "Opinião Polêmica",
+      "fun": "Diversão"
+    }
+  },
   "common": {
     "enabled": "Ativado",
     "disabled": "Desativado",

@@ -5,6 +5,7 @@ import { useSettings } from "@/src/hooks/useSettings";
 import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 import { SearchIcon, DetachIcon } from "@/src/components/ui/Icons";
 import { ActiveSitesBar } from "@/src/components/grid/ActiveSitesBar";
+import { ViralExampleCard } from "./ViralExampleCard";
 
 export function SidepanelHome() {
   const { t } = useTranslation();
@@ -112,11 +113,9 @@ export function SidepanelHome() {
           {t("nav.batchSearch")}
         </button>
 
-        <div className="my-6 border-t border-border/30" />
+        <div className="my-4 border-t border-border/30" />
 
-        <p className="text-xs text-text-secondary/60 text-center px-4 leading-relaxed">
-          {t("sidepanel.tip")}
-        </p>
+        <ViralExampleCard />
       </div>
     </div>
   );
