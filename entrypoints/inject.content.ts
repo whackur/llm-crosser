@@ -10,6 +10,7 @@ import {
   handleRuntimeExtractContent,
 } from "../src/lib/content-script-handlers";
 import type { ExtensionMessage } from "../src/types";
+import { tryQuillInjection } from "../src/lib/quill-injection";
 
 export default defineContentScript({
   matches: [
@@ -32,7 +33,11 @@ export default defineContentScript({
 
       if (type === "INJECT_QUERY_VIA_POST") {
         (async () => {
-          const result = await handleInjectQuery(event.data);
+          // Try Quill injection first (Gemini logged-in). Falls back to standard automation.
+          const quillSuccess = await tryQuillInjection(event.data.query ?? event.data.text ?? "");
+          const result = quillSuccess
+            ? { status: "done" as const }
+            : await handleInjectQuery(event.data);
           source?.postMessage(
             { type: "QUERY_STATUS", siteName: event.data.siteName ?? "", status: result.status },
             "*",
