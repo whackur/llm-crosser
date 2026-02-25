@@ -1,6 +1,6 @@
 {
   "name": "llm-crosser",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Query multiple LLM chats at once and compare responses side by side",
   "scripts": {
     "dev": "wxt",
