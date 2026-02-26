@@ -38,7 +38,10 @@
     "themeOcean": "海洋",
     "themeForest": "森林",
     "themeRose": "玫瑰",
-    "themeMint": "薄荷"
+    "themeMint": "薄荷",
+    "automation": "自动化",
+    "automationDisabledTip": "自动化已禁用 — 查询不会自动发送",
+    "automationEnabledTip": "自动化已启用 — 查询将自动发送"
   },
   "batch": {
     "inputPlaceholder": "向所有LLM提问...",
@@ -51,7 +54,10 @@
     "ready": "就绪",
     "querying": "查询中...",
     "attachFile": "附加文件",
-    "fileTooLarge": "{{name}}文件太大（最大10MB）"
+    "fileTooLarge": "{{name}}文件太大（最大5MB）",
+    "manualMode": "手动",
+    "automationOff": "自动化关闭 — 点击启用",
+    "automationOn": "自动化开启 — 点击禁用"
   },
   "history": {
     "title": "历史",
@@ -63,7 +69,8 @@
     "sites": "网站",
     "searchTab": "搜索",
     "exportTab": "导出",
-    "exportEmpty": "还没有导出历史"
+    "exportEmpty": "还没有导出历史",
+    "filteredBy": "筛选"
   },
   "share": {
     "title": "分享对话",

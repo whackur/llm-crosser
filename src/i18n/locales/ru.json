@@ -38,7 +38,10 @@
     "themeOcean": "Океан",
     "themeForest": "Лес",
     "themeRose": "Роза",
-    "themeMint": "Мята"
+    "themeMint": "Мята",
+    "automation": "Автоматизация",
+    "automationDisabledTip": "Автоматизация отключена — запросы не будут отправляться автоматически",
+    "automationEnabledTip": "Автоматизация включена — запросы будут отправляться автоматически"
   },
   "batch": {
     "inputPlaceholder": "Спросить все LLM...",
@@ -51,7 +54,10 @@
     "ready": "Готово",
     "querying": "Запрос...",
     "attachFile": "Прикрепить файл",
-    "fileTooLarge": "{{name}} слишком большой (макс. 10 МБ)"
+    "fileTooLarge": "{{name}} слишком большой (макс. 10 МБ)",
+    "manualMode": "Ручной",
+    "automationOff": "Автоматизация выкл. — нажмите для включения",
+    "automationOn": "Автоматизация вкл. — нажмите для выключения"
   },
   "history": {
     "title": "История",
@@ -63,7 +69,8 @@
     "sites": "Сайты",
     "searchTab": "Поиск",
     "exportTab": "Экспорт",
-    "exportEmpty": "История экспорта пуста"
+    "exportEmpty": "История экспорта пуста",
+    "filteredBy": "Фильтр"
   },
   "share": {
     "title": "Поделиться беседой",

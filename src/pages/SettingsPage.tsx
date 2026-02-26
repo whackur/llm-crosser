@@ -28,6 +28,21 @@ export default function SettingsPage() {
     });
   };
 
+  const handleAutomationToggle = async (siteName: string, isDisabled: boolean) => {
+    if (!settings) return;
+
+    const current = new Set(settings.disabledAutomationSites || []);
+    if (isDisabled) {
+      current.add(siteName);
+    } else {
+      current.delete(siteName);
+    }
+
+    await updateSettings({
+      disabledAutomationSites: Array.from(current),
+    });
+  };
+
   if (settingsLoading || configLoading) {
     return <div className="p-6">{t("batch.loading")}</div>;
   }
@@ -39,7 +54,9 @@ export default function SettingsPage() {
       <SiteToggleSection
         availableSites={siteConfigs}
         enabledSites={settings?.enabledSites ?? []}
+        disabledAutomationSites={settings?.disabledAutomationSites ?? []}
         onToggle={handleToggle}
+        onAutomationToggle={handleAutomationToggle}
       />
 
       <section className="mb-7">

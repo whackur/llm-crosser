@@ -5,6 +5,7 @@ import { useHistory } from "@/src/hooks/useHistory";
 import { useExportHistory } from "@/src/hooks/useExportHistory";
 import { useFloatMode } from "@/src/hooks/useFloatMode";
 import { ExportHistoryList } from "@/src/components/history/ExportHistoryList";
+import { HistorySearchCard } from "@/src/components/history/HistorySearchCard";
 import type { ExportHistoryEntry } from "@/src/types/history";
 
 function getRelativeTime(timestamp: number): string {
@@ -50,22 +51,32 @@ export default function HistoryPage() {
   const [search, setSearch] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [siteFilter, setSiteFilter] = useState<string | null>(null);
 
   const loading = activeTab === "search" ? hLoading : eLoading;
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    if (activeTab === "search")
-      return history.filter((h) => !q || h.query.toLowerCase().includes(q));
+    if (activeTab === "search") {
+      return history.filter((h) => {
+        const matchesSearch = !q || h.query.toLowerCase().includes(q);
+        const matchesSite = !siteFilter || h.siteResults.some((sr) => sr.siteName === siteFilter);
+        return matchesSearch && matchesSite;
+      });
+    }
     return exportHistory.filter(
       (e) => !q || e.name.toLowerCase().includes(q) || e.content.toLowerCase().includes(q),
     );
-  }, [activeTab, history, exportHistory, search]);
+  }, [activeTab, history, exportHistory, search, siteFilter]);
 
   const handleCopy = (e: React.MouseEvent, text: string, id: string) => {
     e.stopPropagation();
     navigator.clipboard.writeText(text);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleNavigate = (id: string) => {
+    navigate("/?historyId=" + encodeURIComponent(id));
   };
 
   if (loading)
@@ -96,13 +107,37 @@ export default function HistoryPage() {
         {(["search", "export"] as const).map((tab) => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => {
+              setActiveTab(tab);
+              setSiteFilter(null);
+            }}
             className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === tab ? "bg-surface text-text shadow-sm" : "text-text-secondary hover:text-text"}`}
           >
             {t(`history.${tab}Tab`)}
           </button>
         ))}
       </div>
+
+      {siteFilter && (
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xs text-text-secondary">{t("history.filteredBy")}</span>
+          <button
+            onClick={() => setSiteFilter(null)}
+            className="inline-flex items-center gap-1 text-xs px-2 py-0.5 bg-primary/15 text-primary rounded-full border border-primary/20 hover:bg-primary/25 transition-colors"
+          >
+            {siteFilter}
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+            >
+              <path d="M18 6 6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       <div className="relative mb-4 group">
         <SearchIcon className="absolute left-3 top-2.5 w-4 h-4 text-text-secondary group-focus-within:text-primary transition-colors" />
@@ -117,7 +152,7 @@ export default function HistoryPage() {
 
       {filtered.length === 0 ? (
         <div className="text-center py-12 text-text-secondary text-sm">
-          {search
+          {search || siteFilter
             ? t("history.noResults")
             : t(activeTab === "search" ? "history.empty" : "history.exportEmpty")}
         </div>
@@ -126,18 +161,15 @@ export default function HistoryPage() {
           {activeTab === "search" ? (
             <div className="space-y-2">
               {(filtered as typeof history).map((entry) => (
-                <div
+                <HistorySearchCard
                   key={entry.id}
-                  onClick={() =>
-                    !isFloatActive && navigate("/?historyId=" + encodeURIComponent(entry.id))
-                  }
-                  className={`p-3 bg-surface-secondary/50 hover:bg-surface-secondary border border-border/50 rounded-lg transition-all flex justify-between items-center group ${!isFloatActive ? "cursor-pointer" : ""}`}
-                >
-                  <span className="font-medium text-sm text-text truncate">{entry.query}</span>
-                  <span className="text-xs text-text-secondary">
-                    {getRelativeTime(entry.timestamp)}
-                  </span>
-                </div>
+                  entry={entry}
+                  isFloatActive={isFloatActive}
+                  siteFilter={siteFilter}
+                  onNavigate={handleNavigate}
+                  onSiteFilter={setSiteFilter}
+                  getRelativeTime={getRelativeTime}
+                />
               ))}
             </div>
           ) : (

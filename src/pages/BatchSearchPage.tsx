@@ -64,10 +64,13 @@ export default function BatchSearchPage() {
   const handleSend = useCallback(
     async (query: string) => {
       const enabledSites = siteList.filter((s) => s.enabled);
+      const automationSites = enabledSites.filter(
+        (s) => !settings?.disabledAutomationSites?.includes(s.name),
+      );
       if (enabledSites.length === 0) return;
       setIsQuerying(true);
       await Promise.all(
-        enabledSites.map(
+        automationSites.map(
           (site, i) =>
             new Promise<void>((resolve) => {
               setTimeout(() => {
@@ -102,7 +105,7 @@ export default function BatchSearchPage() {
         },
       });
     },
-    [siteList, siteConfigs, addEntry, updateEntry, postMessageToSiteIframe],
+    [siteList, siteConfigs, settings?.disabledAutomationSites, addEntry, updateEntry, postMessageToSiteIframe],
   );
 
   const handleSendRef = useRef(handleSend);
@@ -139,6 +142,9 @@ export default function BatchSearchPage() {
     async (files: File[]) => {
       if (files.length === 0) return;
       const enabledSites = siteList.filter((s) => s.enabled);
+      const automationSites = enabledSites.filter(
+        (s) => !settings?.disabledAutomationSites?.includes(s.name),
+      );
       if (enabledSites.length === 0) return;
       const fileDataArray = await Promise.all(
         files.map(async (file) => ({
@@ -147,8 +153,8 @@ export default function BatchSearchPage() {
           fileName: file.name,
         })),
       );
-      for (let i = 0; i < enabledSites.length; i++) {
-        const site = enabledSites[i];
+      for (let i = 0; i < automationSites.length; i++) {
+        const site = automationSites[i];
         if (!site) continue;
         const config = siteConfigs.find((c) => c.name === site.name);
         postMessageToSiteIframe(site.name, {
@@ -157,10 +163,24 @@ export default function BatchSearchPage() {
           files: fileDataArray,
           focusSelector: config?.fileUploadHandler?.steps?.[0]?.selector,
         });
-        if (i < enabledSites.length - 1) await new Promise((r) => setTimeout(r, 500));
+        if (i < automationSites.length - 1) await new Promise((r) => setTimeout(r, 500));
       }
     },
-    [siteList, siteConfigs, postMessageToSiteIframe],
+    [siteList, siteConfigs, settings?.disabledAutomationSites, postMessageToSiteIframe],
+  );
+
+  const handleAutomationToggle = useCallback(
+    (siteName: string) => {
+      if (!settings) return;
+      const current = new Set(settings.disabledAutomationSites || []);
+      if (current.has(siteName)) {
+        current.delete(siteName);
+      } else {
+        current.add(siteName);
+      }
+      void updateSettings({ disabledAutomationSites: Array.from(current) });
+    },
+    [settings, updateSettings],
   );
 
   const renderIframe = useCallback(
@@ -169,12 +189,13 @@ export default function BatchSearchPage() {
         key={`${site.name}-${resetKey}`}
         siteName={site.name}
         siteUrl={siteUrlOverrides[site.name] || site.url}
+        automationDisabled={settings?.disabledAutomationSites?.includes(site.name) ?? false}
+        onAutomationToggle={handleAutomationToggle}
         onShare={handleShare}
       />
     ),
-    [handleShare, siteUrlOverrides, resetKey],
+    [handleShare, handleAutomationToggle, siteUrlOverrides, resetKey, settings?.disabledAutomationSites],
   );
-
   if (settingsLoading || configLoading || !settings)
     return (
       <div className="flex items-center justify-center h-full">

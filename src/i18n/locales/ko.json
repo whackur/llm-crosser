@@ -38,7 +38,10 @@
     "themeOcean": "오션",
     "themeForest": "포레스트",
     "themeRose": "로즈",
-    "themeMint": "민트"
+    "themeMint": "민트",
+    "automation": "자동화",
+    "automationDisabledTip": "자동화 비활성화 — 쿼리가 자동으로 전송되지 않습니다",
+    "automationEnabledTip": "자동화 활성화 — 쿼리가 자동으로 전송됩니다"
   },
   "batch": {
     "inputPlaceholder": "모든 LLM에게 질문하기...",
@@ -51,7 +54,10 @@
     "ready": "준비",
     "querying": "질의 중...",
     "attachFile": "파일 첨부",
-    "fileTooLarge": "{{name}} 파일이 너무 큽니다 (최대 10MB)"
+    "fileTooLarge": "{{name}} 파일이 너무 큽니다 (최대 10MB)",
+    "manualMode": "수동",
+    "automationOff": "자동화 꺼짐 — 클릭하여 활성화",
+    "automationOn": "자동화 켜짐 — 클릭하여 비활성화"
   },
   "history": {
     "title": "히스토리",
@@ -64,7 +70,8 @@
     "sites": "사이트",
     "searchTab": "검색",
     "exportTab": "내보내기",
-    "exportEmpty": "내보내기 기록이 없습니다"
+    "exportEmpty": "내보내기 기록이 없습니다",
+    "filteredBy": "필터"
   },
   "share": {
     "title": "대화 공유",
