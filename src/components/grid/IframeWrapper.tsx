@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 interface IframeWrapperProps {
   siteName: string;
   siteUrl: string;
+  automationDisabled?: boolean;
+  onAutomationToggle?: (siteName: string) => void;
   onShare?: (siteName: string) => void;
   onRetry?: (siteName: string) => void;
 }
@@ -11,6 +13,8 @@ interface IframeWrapperProps {
 const IframeWrapperInner: React.FC<IframeWrapperProps> = ({
   siteName,
   siteUrl,
+  automationDisabled = false,
+  onAutomationToggle,
   onShare,
   onRetry,
 }) => {
@@ -57,9 +61,14 @@ const IframeWrapperInner: React.FC<IframeWrapperProps> = ({
     onShare?.(siteName);
   }, [siteName, onShare]);
 
+  const handleAutomationClick = useCallback(() => {
+    onAutomationToggle?.(siteName);
+  }, [siteName, onAutomationToggle]);
+
   const getStatusColor = () => {
     if (isError) return "bg-error";
     if (isLoading) return "bg-warning";
+    if (automationDisabled) return "bg-warning/60";
     return "bg-success";
   };
 
@@ -73,6 +82,25 @@ const IframeWrapperInner: React.FC<IframeWrapperProps> = ({
         >
           {siteName}
         </span>
+
+        {automationDisabled && (
+          <span className="text-[10px] text-warning font-medium px-1.5 py-0.5 rounded bg-warning/10 border border-warning/20 shrink-0 select-none">
+            {t("batch.manualMode")}
+          </span>
+        )}
+
+        <button
+          onClick={handleAutomationClick}
+          className={`p-1.5 rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+            automationDisabled
+              ? "text-warning/70 hover:text-warning hover:bg-warning/10"
+              : "text-text-secondary hover:text-primary hover:bg-primary/10"
+          }`}
+          title={automationDisabled ? t("batch.automationOff") : t("batch.automationOn")}
+          aria-label={`Toggle automation for ${siteName}`}
+        >
+          <AutomationToggleIcon disabled={automationDisabled} />
+        </button>
 
         <button
           onClick={handleShareClick}
@@ -157,5 +185,42 @@ const IframeWrapperInner: React.FC<IframeWrapperProps> = ({
     </div>
   );
 };
+
+function AutomationToggleIcon({ disabled }: { disabled: boolean }) {
+  if (disabled) {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        <line x1="2" y1="2" x2="22" y2="22" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+    </svg>
+  );
+}
 
 export const IframeWrapper = React.memo(IframeWrapperInner);

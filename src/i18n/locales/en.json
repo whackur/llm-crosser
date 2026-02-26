@@ -38,7 +38,10 @@
     "themeOcean": "Ocean",
     "themeForest": "Forest",
     "themeRose": "Rose",
-    "themeMint": "Mint"
+    "themeMint": "Mint",
+    "automation": "Automation",
+    "automationDisabledTip": "Automation disabled — queries will not be sent automatically",
+    "automationEnabledTip": "Automation enabled — queries will be sent automatically"
   },
   "batch": {
     "inputPlaceholder": "Ask all LLMs...",
@@ -51,7 +54,10 @@
     "ready": "Ready",
     "querying": "Querying...",
     "attachFile": "Attach file",
-    "fileTooLarge": "{{name}} is too large (max 10MB)"
+    "fileTooLarge": "{{name}} is too large (max 10MB)",
+    "manualMode": "Manual",
+    "automationOff": "Automation off — click to enable",
+    "automationOn": "Automation on — click to disable"
   },
   "history": {
     "title": "History",

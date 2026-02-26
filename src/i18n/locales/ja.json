@@ -38,7 +38,10 @@
     "themeOcean": "オーシャン",
     "themeForest": "フォレスト",
     "themeRose": "ローズ",
-    "themeMint": "ミント"
+    "themeMint": "ミント",
+    "automation": "自動化",
+    "automationDisabledTip": "自動化が無効 — クエリは自動送信されません",
+    "automationEnabledTip": "自動化が有効 — クエリが自動送信されます"
   },
   "batch": {
     "inputPlaceholder": "すべてのLLMに質問...",
@@ -51,7 +54,10 @@
     "ready": "準備完了",
     "querying": "クエリ中...",
     "attachFile": "ファイルを添付",
-    "fileTooLarge": "{{name}}が大きすぎます（最大10MB）"
+    "fileTooLarge": "{{name}}が大きすぎます（最大5MB）",
+    "manualMode": "手動",
+    "automationOff": "自動化オフ — クリックで有効化",
+    "automationOn": "自動化オン — クリックで無効化"
   },
   "history": {
     "title": "履歴",

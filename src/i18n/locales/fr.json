@@ -38,7 +38,10 @@
     "themeOcean": "Océan",
     "themeForest": "Forêt",
     "themeRose": "Rose",
-    "themeMint": "Menthe"
+    "themeMint": "Menthe",
+    "automation": "Automatisation",
+    "automationDisabledTip": "Automatisation désactivée — les requêtes ne seront pas envoyées automatiquement",
+    "automationEnabledTip": "Automatisation activée — les requêtes seront envoyées automatiquement"
   },
   "batch": {
     "inputPlaceholder": "Poser une question à tous les LLM...",
@@ -51,7 +54,10 @@
     "ready": "Prêt",
     "querying": "Interrogation...",
     "attachFile": "Joindre un fichier",
-    "fileTooLarge": "{{name}} est trop volumineux (max 10 Mo)"
+    "fileTooLarge": "{{name}} est trop volumineux (max 10 Mo)",
+    "manualMode": "Manuel",
+    "automationOff": "Automatisation désactivée — cliquer pour activer",
+    "automationOn": "Automatisation activée — cliquer pour désactiver"
   },
   "history": {
     "title": "Historique",
