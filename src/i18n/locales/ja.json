@@ -69,7 +69,8 @@
     "sites": "サイト",
     "searchTab": "検索",
     "exportTab": "エクスポート",
-    "exportEmpty": "エクスポート履歴がまだありません"
+    "exportEmpty": "エクスポート履歴がまだありません",
+    "filteredBy": "フィルター"
   },
   "share": {
     "title": "会話を共有",

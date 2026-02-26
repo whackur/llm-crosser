@@ -69,7 +69,8 @@
     "sites": "Sites",
     "searchTab": "Recherche",
     "exportTab": "Exportation",
-    "exportEmpty": "Aucun historique d'exportation"
+    "exportEmpty": "Aucun historique d'exportation",
+    "filteredBy": "Filtré par"
   },
   "share": {
     "title": "Partager la conversation",

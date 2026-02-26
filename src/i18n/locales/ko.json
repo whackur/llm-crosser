@@ -70,7 +70,8 @@
     "sites": "사이트",
     "searchTab": "검색",
     "exportTab": "내보내기",
-    "exportEmpty": "내보내기 기록이 없습니다"
+    "exportEmpty": "내보내기 기록이 없습니다",
+    "filteredBy": "필터"
   },
   "share": {
     "title": "대화 공유",

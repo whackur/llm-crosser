@@ -69,7 +69,8 @@
     "sites": "Сайты",
     "searchTab": "Поиск",
     "exportTab": "Экспорт",
-    "exportEmpty": "История экспорта пуста"
+    "exportEmpty": "История экспорта пуста",
+    "filteredBy": "Фильтр"
   },
   "share": {
     "title": "Поделиться беседой",

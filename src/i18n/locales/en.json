@@ -70,7 +70,8 @@
     "sites": "Sites",
     "searchTab": "Search",
     "exportTab": "Export",
-    "exportEmpty": "No export history yet"
+    "exportEmpty": "No export history yet",
+    "filteredBy": "Filtered by"
   },
   "share": {
     "title": "Share Conversation",

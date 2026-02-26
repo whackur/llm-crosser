@@ -69,7 +69,8 @@
     "sites": "网站",
     "searchTab": "搜索",
     "exportTab": "导出",
-    "exportEmpty": "还没有导出历史"
+    "exportEmpty": "还没有导出历史",
+    "filteredBy": "筛选"
   },
   "share": {
     "title": "分享对话",
