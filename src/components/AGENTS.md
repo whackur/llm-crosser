@@ -41,7 +41,7 @@ components/
 
 | Group        | Owns                                                         | Consumes                                                                    |
 | ------------ | ------------------------------------------------------------ | --------------------------------------------------------------------------- |
-| `grid/`      | iframe layout, loading states, postMessage dispatch          | `useIframeManager`, `useSiteConfig`                                         |
+| `grid/`      | iframe layout, loading states, postMessage dispatch          | `useSiteConfig`                                                             |
 | `history/`   | export history list display                                  | `useExportHistory`                                                          |
 | `layout/`    | app shell, sidebar collapse, float placeholder               | `useSettings`, `useTheme`, `useFloatMode`, `<Outlet>`                       |
 | `query/`     | text input, file input, template selection                   | `useSettings` (templates), parent `onSend`                                  |
@@ -54,7 +54,7 @@ components/
 
 | File                                | LOC | Status                                            |
 | ----------------------------------- | --- | ------------------------------------------------- |
-| `grid/IframeGrid.tsx`               | 244 | **OVER** — split layout logic before adding modes |
+| `grid/IframeGrid.tsx`               | 258 | **OVER** — split layout logic before adding modes |
 | `share/SharePopup.tsx`              | 248 | **OVER** — split export format logic              |
 | `ui/Icons.tsx`                      | 207 | Exempt (static SVG definitions only)              |
 | `settings/PromptTemplateEditor.tsx` | 202 | **AT LIMIT** — do not add more logic              |
