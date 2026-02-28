@@ -23,14 +23,7 @@ export default defineConfig({
       48: "icons/icon-48.png",
       128: "icons/icon-128.png",
     },
-    permissions: [
-      "storage",
-      "declarativeNetRequest",
-      "webNavigation",
-      "tabs",
-      "omnibox",
-      "sidePanel",
-    ],
+    permissions: ["storage", "declarativeNetRequest", "omnibox", "sidePanel"],
     side_panel: {
       default_path: "sidepanel.html",
     },
