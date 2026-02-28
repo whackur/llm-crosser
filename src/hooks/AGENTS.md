@@ -8,13 +8,13 @@ Custom hooks that wrap `chrome.storage`, `browser.runtime`, and extension APIs b
 | ---------------------- | --- | ----------------------------------------- | ----------------------------------------------------------------------------- |
 | `useSettings`          | 65  | `chrome.storage.local` (settings)         | `{ settings, updateSettings, loading }`                                       |
 | `useHistory`           | 110 | `chrome.storage.local` (history)          | `{ history, addEntry, deleteEntry, clearAll }`                                |
-| `useIframeManager`     | 109 | Multi-iframe lifecycle                    | `{ iframeRefs, statuses, dispatch, extract }`                                 |
+| `useSiteConfig`        | 28  | `site-handlers.json` fetch                | `{ siteConfigs, loading }`                                                    |
 | `useSiteConfig`        | 28  | `site-handlers.json` fetch                | `{ siteConfigs, loading }`                                                    |
 | `useTheme`             | 14  | `document.documentElement` dataset        | Applies `data-theme` attribute; no return value                               |
 | `useFloatMode`         | 47  | `lib/float-state.ts`                      | `{ isPopupWindow, isFloatActive, floatState, loading }`                       |
 | `useExportHistory`     | 88  | `chrome.storage.local` (exports)          | `{ exportHistory, addEntry, deleteEntry, clearAll }`                          |
 | `useGitHubStars`       | 67  | GitHub API + chrome.storage cache         | `stars: number \| null`                                                       |
-| `useConversationShare` | 189 | Content extraction + formatting           | `{ shareData, extractAll, formatMarkdown, copyToClipboard }`                  |
+| `useConversationShare` | 195 | Content extraction + formatting           | `{ shareState, isExtracting, handleShare, handleShareAll, ... }`              |
 | `useOmniboxAutoSend`   | 88  | `useSearchParams` (hash ?q=, ?historyId=) | Auto-send from omnibox + history session restore (URL overrides + query text) |
 | `useResetMechanism`    | 33  | `useSearchParams` (hash ?reset)           | `{ resetKey }` — counter incremented on /?reset=true; clears URL              |
 
@@ -30,7 +30,7 @@ Custom hooks that wrap `chrome.storage`, `browser.runtime`, and extension APIs b
 | Task                    | Hook                | Notes                                                          |
 | ----------------------- | ------------------- | -------------------------------------------------------------- |
 | Add new settings field  | `useSettings.ts`    | Also update `types/settings.ts` + `lib/constants.ts` defaults  |
-| Change iframe lifecycle | `useIframeManager`  | Manages load/query/status/extract per iframe                   |
+| Add theme               | `useTheme.ts`       | Applies `[data-theme]` to `<html>`. Add theme in `globals.css` |
 | Add theme               | `useTheme.ts`       | Applies `[data-theme]` to `<html>`. Add theme in `globals.css` |
 | Float window reactivity | `useFloatMode.ts`   | Reads from `lib/float-state.ts`; detects popup window type     |
 | Export history CRUD     | `useExportHistory`  | Storage key: `llm-crosser-export-history`                      |

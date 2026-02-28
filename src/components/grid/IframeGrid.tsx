@@ -8,6 +8,7 @@ interface IframeGridProps {
   onLayoutChange: (layout: GridLayout) => void;
   onColumnsChange: (columns: 1 | 2 | 3 | 4) => void;
   onShareAll?: () => void;
+  isExtracting?: boolean;
   sites: Array<{ name: string; url: string; enabled: boolean }>;
   renderIframe: (site: { name: string; url: string }) => React.ReactNode;
   headerSlot?: React.ReactNode;
@@ -19,6 +20,7 @@ export const IframeGrid: React.FC<IframeGridProps> = ({
   onLayoutChange,
   onColumnsChange,
   onShareAll,
+  isExtracting,
   sites,
   renderIframe,
   headerSlot,
@@ -90,11 +92,16 @@ export const IframeGrid: React.FC<IframeGridProps> = ({
         {onShareAll && enabledSites.length > 0 && (
           <button
             onClick={onShareAll}
-            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-text-secondary hover:text-primary hover:bg-primary/10 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
+            disabled={isExtracting}
+            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-text-secondary hover:text-primary hover:bg-primary/10 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
             title={t("share.exportAll")}
             aria-label={t("share.exportAll")}
           >
-            <ExportAllIcon />
+            {isExtracting ? (
+              <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <ExportAllIcon />
+            )}
             <span className="hidden sm:inline">{t("share.exportAll")}</span>
           </button>
         )}

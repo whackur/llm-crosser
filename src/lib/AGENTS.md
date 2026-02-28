@@ -35,20 +35,19 @@ content-extractor.ts  →  html-node-converter.ts  →  html-to-markdown.ts
 - `html-node-converter.ts` (233 LOC): Transforms DOM nodes to clean HTML. Exempt from 200 LOC rule (static conversion mapping).
 - `html-to-markdown.ts`: Final stage — converts clean HTML to Markdown for export/sharing.
 
-### 3. Extension Bridge (messaging + routing + storage + float state)
+### 3. Extension Bridge (routing + storage + float state)
 
 ```
-messaging.ts  ←→  background-frame-router.ts  ←→  site-frame-message-router.ts
-storage.ts         (tab + frame discovery)          (message routing to iframes)
-float-state.ts     (float window lifecycle)
+background-frame-router.ts  ←→  site-frame-message-router.ts
+storage.ts                       (broadcast message routing to iframes)
+float-state.ts                   (float window lifecycle)
 ```
 
-- `messaging.ts` (53 LOC): Typed wrappers around `browser.runtime.sendMessage`. Four operations: `sendToBackground`, `getSiteConfig`, `injectQuery`, `extractContent`.
-- `background-frame-router.ts` (54 LOC): Finds the batch-search tab, resolves `siteName` → `{tabId, frameId}` using `webNavigation.getAllFrames()`.
-- `site-frame-message-router.ts` (85 LOC): Routes `INJECT_QUERY`/`INJECT_FILE`/`EXTRACT_CONTENT` messages from background to the correct iframe. Tries direct frame first, then iterates all frames as fallback (skips `FRAME_SITE_MISMATCH` responses).
+- `background-frame-router.ts` (39 LOC): Finds the batch-search tab via `tabs.query()`. Exports `findBatchSearchTab`, `fetchSiteConfig`, `forwardToExtensionPage`.
+- `site-frame-message-router.ts` (29 LOC): Routes `INJECT_QUERY`/`INJECT_FILE`/`EXTRACT_CONTENT` messages from background to the batch-search tab via broadcast (`tabs.sendMessage` without frameId). Content scripts self-filter by siteName.
 - `float-state.ts` (33 LOC): Float window state CRUD via `chrome.storage.local`. Key: `llm-crosser-float-state`. Exports `getFloatState`, `setFloatState`, `clearFloatState`, `onFloatStateChanged`. Type: `FloatState { active, tabId, windowId, originalWindowId }`.
 - `constants.ts` (~30 LOC): `DEFAULT_SETTINGS` and `STORAGE_KEYS` — single source of truth. Imported by both `storage.ts` and `background.ts`.
-- `url-utils.ts` (~25 LOC): `normalizeHostname()` — centralized URL normalization. Used by `background-frame-router.ts`, `site-frame-message-router.ts`, `content-script-handlers.ts`, and `conversation-url-capture.ts`.
+- `url-utils.ts` (~25 LOC): `matchesHost()` — centralized hostname matching. Used by `content-script-handlers.ts`, `conversation-url-capture.ts`, `BatchSearchPage.tsx`, and `useConversationShare.ts`.
 - `storage.ts` (136 LOC): CRUD for `chrome.storage.local`. Keys: `llm-crosser-settings`, `llm-crosser-history`. Imports defaults from `constants.ts`.
 - `export-history-storage.ts` (~60 LOC): Export history CRUD. Split from `storage.ts`. Key: `llm-crosser-export-history`.
 - `content-script-handlers.ts` (196 LOC): Handler logic extracted from `inject.content.ts`. Processes runtime messages (INJECT_QUERY, EXTRACT_CONTENT, etc.) via typed `RuntimeMessenger` interface.
@@ -75,8 +74,8 @@ BatchSearchPage → startConversationUrlCapture() → postMessage(GET_URL_VIA_PO
 | Fix element not found     | `element-finder.ts`                                             | Check Shadow DOM piercing logic                                           |
 | Fix rich editor input     | `contenteditable-handler.ts`                                    | Lexical vs Tiptap vs generic — different strategies                       |
 | Fix content extraction    | `content-extractor.ts`                                          | Config-driven — check `site-handlers.json` selectors                      |
-| Add new message type      | `messaging.ts`                                                  | Also add to `types/messaging.ts` + `background.ts` handler                |
-| Fix message routing       | `site-frame-message-router.ts`                                  | Direct frame → fallback iteration with mismatch filtering                 |
+| Add new message type      | `types/messaging.ts` + `background.ts` handler                  | Add type to union, add case to background switch                  |
+| Fix message routing       | `site-frame-message-router.ts`                                  | Broadcasts to batch-search tab; content scripts self-filter       |
 | Change storage schema     | `constants.ts` + `storage.ts`                                   | Update defaults in `constants.ts`, CRUD in `storage.ts`                   |
 | Capture conversation URLs | `conversation-url-capture.ts`                                   | Polls at 5s+12s; inject.content.ts handles `GET_URL_VIA_POST`             |
 | Float window state        | `float-state.ts`                                                | CRUD + onChange listener; consumed by `useFloatMode` hook                 |

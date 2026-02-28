@@ -61,13 +61,13 @@ llm-crosser/
 │   │   ├── index.html
 │   │   └── main.tsx          # App root: React + i18n + router
 │   ├── frame-guard.content.ts # MAIN world script: neutralizes frame-busting (document_start)
-│   ├── inject.content.ts     # Content script: dual-channel (postMessage + runtime) automation
+│   ├── inject.content.ts     # Content script: postMessage-based query automation
 │   └── sidepanel/            # React SPA: Chrome side panel (quick query, float window control)
 │       ├── index.html
 │       └── main.tsx          # Side panel root: React + i18n + HashRouter
 ├── src/                      # Application source (see src/AGENTS.md)
 │   ├── components/           # UI components grouped by feature
-│   ├── hooks/                # React hooks (settings, history, iframe manager, site config, theme, float mode, export history, GitHub stars, conversation share, omnibox auto-send, reset mechanism)
+│   ├── hooks/                # React hooks (settings, history, site config, theme, float mode, export history, GitHub stars, conversation share, omnibox auto-send, reset mechanism)
 │   ├── i18n/                 # i18next setup + 7 locale JSONs
 │   ├── lib/                  # Business logic (see src/lib/AGENTS.md)
 │   ├── pages/                # Route-level views (BatchSearch, Settings, History)
@@ -95,7 +95,7 @@ llm-crosser/
 | Modify permissions         | `wxt.config.ts` → `manifest.permissions`                                                                                | Rebuild required                                                                |
 | Fix iframe framing         | `entrypoints/frame-guard.content.ts` + `public/rules.json`                                                              | Network-level + JS-level bypass                                                 |
 | Change theme/add theme     | `src/styles/globals.css` → `@theme` block + `[data-theme]` selectors                                                    | CSS custom properties consumed by Tailwind; `useTheme` hook applies             |
-| Messaging between contexts | `src/lib/messaging.ts` + `entrypoints/background.ts`                                                                    | Hub-and-spoke: background routes to specific frameId                            |
+| Messaging between contexts | `src/lib/site-frame-message-router.ts` + `entrypoints/background.ts`                                                    | Background broadcasts to batch-search tab frames                            |
 | Extract LLM responses      | `src/lib/content-extractor.ts` + `src/lib/html-node-converter.ts` + `src/lib/html-to-markdown.ts`                       | Extraction pipeline: DOM → HTML → Markdown                                      |
 | Float window mode          | `src/lib/float-state.ts` + `src/hooks/useFloatMode.ts` + `entrypoints/background.ts`                                    | Detach batch-search into popup window; state in chrome.storage                  |
 | Side panel UI              | `entrypoints/sidepanel/` + `src/components/sidepanel/`                                                                  | Quick query + float window control; bottom tab nav                              |
@@ -116,21 +116,8 @@ User clicks icon / types "llmc <query>" in omnibox
             → frame-guard.content.ts neutralizes frame-busting (MAIN world)
             → inject.content.ts registers dual listeners (ISOLATED world)
 
-User submits query (manual or auto-send from omnibox)
-    → BatchSearchPage.handleSend() iterates enabled sites
-        → postMessage(INJECT_QUERY_VIA_POST) to each iframe's contentWindow
-            → inject.content.ts receives via window "message" listener
-                → automation-engine.ts executes SearchStep[] from site-handlers.json
-                    → step-actions.ts delegates to input-actions.ts + keyboard-actions.ts
 
-Fallback (if postMessage fails):
-    → background.ts receives INJECT_QUERY via browser.runtime.sendMessage
-        → site-frame-message-router.ts finds target frameId
-            → browser.tabs.sendMessage(tabId, msg, {frameId})
-                → inject.content.ts receives via browser.runtime.onMessage
-```
-
-**Dual messaging**: Primary channel is `postMessage` (reliable for extension page → child iframe). Fallback is `browser.runtime.sendMessage` routed through background (for non-iframe contexts).
+**Messaging**: Primary channel is `postMessage` from extension page to child iframe (`contentWindow.postMessage`). Background fallback broadcasts `tabs.sendMessage` to the batch-search tab without frame targeting.
 
 **Storage**: `chrome.storage.local` with keys `llm-crosser-settings`, `llm-crosser-history`, `llm-crosser-export-history`, `llm-crosser-float-state`, `llm-crosser-github-stars`. `useSettings` hook provides reactive access with `onChanged` listener.
 
@@ -151,7 +138,7 @@ pnpm zip              # Package for Chrome Web Store
 - **`DEFAULT_SETTINGS` unified**: Single source of truth in `src/lib/constants.ts`. Both `storage.ts` and `background.ts` import from there. No dual-sync needed.
 - **Site selectors are fragile**: `public/site-handlers.json` contains hardcoded DOM selectors for each LLM site. These break when target sites update their UI. Test after any site update.
 - **Adding a new LLM site requires 4+ files**: `site-handlers.json` (selectors + steps), `wxt.config.ts` (host_permissions + frame-src CSP), `rules.json` (header stripping), `frame-guard.content.ts` (matches array), `inject.content.ts` (matches array).
-- **`IframeGrid.tsx` at 244 LOC**: **OVER the 200 LOC limit.** Split layout logic before adding new grid modes.
+- **`IframeGrid.tsx` at 258 LOC**: **OVER the 200 LOC limit.** Split layout logic before adding new grid modes.
 - **`SharePopup.tsx` at 248 LOC**: **OVER the 200 LOC limit.** Split export format logic before adding new export types. Has explicit "Save to History" button (Copy/Download no longer auto-save).
 - **`Icons.tsx` at 207 LOC**: Exempt from 200 LOC rule (static SVG definitions only).
 - **`PromptTemplateEditor.tsx` at 202 LOC**: **AT the 200 LOC limit.** Do not add more logic without extracting.

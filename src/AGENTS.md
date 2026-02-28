@@ -18,13 +18,13 @@ src/
 ├── hooks/                # State encapsulation (see hooks/AGENTS.md)
 │   ├── useSettings.ts    # Reactive chrome.storage.local wrapper (settings)
 │   ├── useHistory.ts     # CRUD for search history entries
-│   ├── useIframeManager.ts # Multi-iframe lifecycle: load/query/status/extract
+│   ├── useSiteConfig.ts  # Fetches site-handlers.json from extension bundle
 │   ├── useSiteConfig.ts  # Fetches site-handlers.json from extension bundle
 │   ├── useTheme.ts       # Applies data-theme attribute to document root
 │   ├── useFloatMode.ts   # Float window state: isPopupWindow, isFloatActive
 │   ├── useExportHistory.ts # CRUD for export history entries (optimistic updates)
 │   ├── useGitHubStars.ts # GitHub star count with 12h cache in chrome.storage
-│   ├── useConversationShare.ts # Share popup state: extract, format, copy (189 LOC)
+│   ├── useConversationShare.ts # Share popup state: extract, format, copy, isExtracting (195 LOC)
 │   ├── useOmniboxAutoSend.ts   # Auto-send query from omnibox ?q= param (68 LOC)
 │   └── useResetMechanism.ts    # Handle /?reset=true → clear overrides + remount (33 LOC)
 ├── i18n/                 # i18next config + 7 locale JSONs (en/ko/ja/zh/pt/ru/fr)
@@ -41,9 +41,8 @@ src/
 │   ├── html-node-converter.ts     # Converts DOM nodes to structured HTML
 │   ├── html-to-markdown.ts        # Converts extracted HTML to Markdown for export
 │   ├── content-script-handlers.ts # Handler logic extracted from inject.content.ts
-│   ├── background-frame-router.ts # Finds batch-search tab + resolves siteName → frameId
-│   ├── site-frame-message-router.ts # Routes messages from background to correct iframe
-│   ├── messaging.ts               # Typed wrapper around browser.runtime messaging
+│   ├── background-frame-router.ts # Finds batch-search tab (tabs.query)
+│   ├── site-frame-message-router.ts # Broadcasts messages from background to batch-search tab
 │   ├── conversation-url-capture.ts # Polls iframes for per-site conversation URLs post-query
 │   ├── float-state.ts             # Float window state: get/set/clear/onChange (chrome.storage)
 │   ├── storage.ts                 # chrome.storage.local CRUD (settings + history)
@@ -88,7 +87,7 @@ Pages (orchestrate) → Components (render) → Hooks (state) → Lib (logic) �
 | Add translation key        | `i18n/locales/*.json` (all 7) + `types/i18n.ts`                                  | Key must exist in all locales                                     |
 | Add automation action      | `lib/step-actions.ts` + `lib/input-actions.ts` or `lib/keyboard-actions.ts`      | Router in step-actions, impl in input/keyboard                    |
 | Find elements (Shadow DOM) | `lib/element-finder.ts`                                                          | Pierces shadow roots recursively                                  |
-| Wire new message type      | `types/messaging.ts` → `lib/messaging.ts`                                        | Add type, then handler in background.ts                           |
+| Wire new message type      | `types/messaging.ts` → `background.ts`                                           | Add type to union, add case to background switch                  |
 | Capture conversation URLs  | `lib/conversation-url-capture.ts`                                                | Single export `startConversationUrlCapture()`; returns cleanup fn |
 | Float window state         | `lib/float-state.ts` → `hooks/useFloatMode.ts`                                   | State in `chrome.storage`; hook provides reactive access          |
 | Export history             | `lib/export-history-storage.ts` → `hooks/useExportHistory.ts`                    | Storage key `llm-crosser-export-history`; optimistic updates      |

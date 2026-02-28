@@ -25,6 +25,7 @@ interface UseConversationShareOptions {
 
 interface UseConversationShareReturn {
   shareState: ShareState;
+  isExtracting: boolean;
   handleShare: (siteName: string) => Promise<void>;
   handleShareAll: () => Promise<void>;
   handleExportSave: (name: string, content: string, exportSiteName: string) => void;
@@ -40,6 +41,7 @@ export function useConversationShare(
     siteName: "",
     content: "",
   });
+  const [isExtracting, setIsExtracting] = useState(false);
 
   const extractViaPostMessage = useCallback(
     (siteName: string, contentExtractor: ContentExtractor): Promise<ConversationData | null> => {
@@ -122,19 +124,24 @@ export function useConversationShare(
     const enabledSites = siteList.filter((s) => s.enabled);
     if (enabledSites.length === 0) return;
 
-    const results: Array<{ siteName: string; data: ConversationData }> = [];
-    for (const site of enabledSites) {
-      const config = siteConfigs.find((c) => c.name === site.name);
-      if (!config?.contentExtractor) {
-        results.push({ siteName: site.name, data: { messages: [] } });
-        continue;
+    setIsExtracting(true);
+    try {
+      const results: Array<{ siteName: string; data: ConversationData }> = [];
+      for (const site of enabledSites) {
+        const config = siteConfigs.find((c) => c.name === site.name);
+        if (!config?.contentExtractor) {
+          results.push({ siteName: site.name, data: { messages: [] } });
+          continue;
+        }
+        const data = await extractViaPostMessage(site.name, config.contentExtractor);
+        results.push({ siteName: site.name, data: data ?? { messages: [] } });
       }
-      const data = await extractViaPostMessage(site.name, config.contentExtractor);
-      results.push({ siteName: site.name, data: data ?? { messages: [] } });
-    }
 
-    const markdown = formatAllConversations(results);
-    setShareState({ isOpen: true, siteName: "All Sites", content: markdown });
+      const markdown = formatAllConversations(results);
+      setShareState({ isOpen: true, siteName: "All Sites", content: markdown });
+    } finally {
+      setIsExtracting(false);
+    }
   }, [siteList, siteConfigs, extractViaPostMessage]);
 
   const handleShare = useCallback(
@@ -185,5 +192,5 @@ export function useConversationShare(
     setShareState((prev) => ({ ...prev, isOpen: false }));
   }, []);
 
-  return { shareState, handleShare, handleShareAll, handleExportSave, closeSharePopup };
+  return { shareState, isExtracting, handleShare, handleShareAll, handleExportSave, closeSharePopup };
 }

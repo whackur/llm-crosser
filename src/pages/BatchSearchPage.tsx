@@ -127,7 +127,7 @@ export default function BatchSearchPage() {
     historyLoading,
     onHistoryRestore: setSiteUrlOverrides,
   });
-  const { shareState, handleShare, handleShareAll, handleExportSave, closeSharePopup } =
+  const { shareState, isExtracting, handleShare, handleShareAll, handleExportSave, closeSharePopup } =
     useConversationShare({ siteList, siteConfigs, addExportEntry });
   const handleLayoutChange = useCallback(
     (l: GridLayout) => void updateSettings({ gridLayout: l }),
@@ -212,6 +212,7 @@ export default function BatchSearchPage() {
           onLayoutChange={handleLayoutChange}
           onColumnsChange={handleColumnsChange}
           onShareAll={handleShareAll}
+          isExtracting={isExtracting}
           sites={siteList}
           renderIframe={renderIframe}
           headerSlot={
