@@ -38,10 +38,7 @@
     "themeOcean": "Океан",
     "themeForest": "Лес",
     "themeRose": "Роза",
-    "themeMint": "Мята",
-    "automation": "Автоматизация",
-    "automationDisabledTip": "Автоматизация отключена — запросы не будут отправляться автоматически",
-    "automationEnabledTip": "Автоматизация включена — запросы будут отправляться автоматически"
+    "themeMint": "Мята"
   },
   "batch": {
     "inputPlaceholder": "Спросить все LLM...",
@@ -55,9 +52,7 @@
     "querying": "Запрос...",
     "attachFile": "Прикрепить файл",
     "fileTooLarge": "{{name}} слишком большой (макс. 10 МБ)",
-    "manualMode": "Ручной",
-    "automationOff": "Автоматизация выкл. — нажмите для включения",
-    "automationOn": "Автоматизация вкл. — нажмите для выключения"
+    "disableSite": "Отключить сайт"
   },
   "history": {
     "title": "История",

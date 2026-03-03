@@ -1,6 +1,6 @@
 # LLM Crosser
 
-Chrome extension that embeds multiple LLM chat sites in a single tab for side-by-side comparison. Type once, query all simultaneously, and compare responses.
+Ask once, compare everywhere. A Chrome extension that queries multiple LLM chat sites simultaneously and displays responses side by side — with **no intermediary servers** and **fully open-source** code you can audit yourself.
 
 ## Supported Sites
 
@@ -11,14 +11,30 @@ Chrome extension that embeds multiple LLM chat sites in a single tab for side-by
 - Qwen
 - z.ai
 
+## Why LLM Crosser?
+
+Most multi-LLM tools claim to be private, but their source code is closed — you have no way to verify what happens to your prompts. LLM Crosser is different:
+
+- **No intermediary server** — Your prompts travel directly from the browser to each AI site. Nothing is proxied, relayed, or logged by a middleman.
+- **Fully open source (GPL-3.0)** — Every line of code is on GitHub. Audit it, fork it, contribute to it.
+- **No API keys, no extra cost** — You use your existing accounts and subscriptions as-is. No per-token charges, no separate billing.
+- **Single tab, zero clutter** — All AI responses live in one organized dashboard, not scattered across dozens of browser tabs.
+
+## Chrome Web Store
+
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/gkajapkjkhnfeciamkpgkhckjdenhagj)](https://chromewebstore.google.com/detail/LLM%20Crosser/gkajapkjkhnfeciamkpgkhckjdenhagj)
+
+> For the full store listing description, see [`store/description.md`](store/description.md).
+
 ## Features
 
 - **Batch Query** — Send the same prompt to multiple LLMs at once
-- **Side-by-Side Comparison** — Flexible grid layout (2-4 columns)
-- **Prompt Templates** — Save and reuse frequently used prompts
-- **Response Export** — Extract and share conversations as Markdown
-- **Search History** — Browse and search past queries
+- **Side-by-Side Comparison** — Flexible grid layout (1-4 columns)
+- **Prompt Templates** — Save and reuse prompts with `{query}` placeholders
+- **Response Export** — Extract conversations as Markdown or copy to clipboard
+- **Search History** — Browse and revisit past queries, restore full sessions
 - **Omnibox Integration** — Type `llmc` in the address bar to query directly
+- **Custom Themes** — 6 built-in themes (Midnight, Dawn, Ocean, Forest, Rose, Mint)
 - **Multi-language** — English, Korean, Japanese, Chinese, French, Russian, Portuguese
 
 ## Getting Started

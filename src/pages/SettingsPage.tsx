@@ -15,31 +15,14 @@ export default function SettingsPage() {
 
   const handleToggle = async (siteName: string, isEnabled: boolean) => {
     if (!settings) return;
-
     const currentEnabled = new Set(settings.enabledSites || []);
     if (isEnabled) {
       currentEnabled.add(siteName);
     } else {
       currentEnabled.delete(siteName);
     }
-
     await updateSettings({
       enabledSites: Array.from(currentEnabled),
-    });
-  };
-
-  const handleAutomationToggle = async (siteName: string, isDisabled: boolean) => {
-    if (!settings) return;
-
-    const current = new Set(settings.disabledAutomationSites || []);
-    if (isDisabled) {
-      current.add(siteName);
-    } else {
-      current.delete(siteName);
-    }
-
-    await updateSettings({
-      disabledAutomationSites: Array.from(current),
     });
   };
 
@@ -54,9 +37,7 @@ export default function SettingsPage() {
       <SiteToggleSection
         availableSites={siteConfigs}
         enabledSites={settings?.enabledSites ?? []}
-        disabledAutomationSites={settings?.disabledAutomationSites ?? []}
         onToggle={handleToggle}
-        onAutomationToggle={handleAutomationToggle}
       />
 
       <section className="mb-7">

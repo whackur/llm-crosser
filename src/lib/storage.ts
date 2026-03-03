@@ -11,10 +11,16 @@ export async function getSettings(): Promise<UserSettings> {
   return new Promise((resolve) => {
     chrome.storage.local.get([SETTINGS_KEY], (result: Record<string, unknown>) => {
       const stored = result[SETTINGS_KEY] as UserSettings | undefined;
-      resolve({
+      const merged: UserSettings = {
         ...DEFAULT_SETTINGS,
         ...stored,
-      });
+      };
+      // Legacy cleanup: remove orphaned disabledAutomationSites key
+      if ("disabledAutomationSites" in merged) {
+        delete (merged as Record<string, unknown>)["disabledAutomationSites"];
+        void chrome.storage.local.set({ [SETTINGS_KEY]: merged });
+      }
+      resolve(merged);
     });
   });
 }
