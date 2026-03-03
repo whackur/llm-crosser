@@ -38,10 +38,7 @@
     "themeOcean": "오션",
     "themeForest": "포레스트",
     "themeRose": "로즈",
-    "themeMint": "민트",
-    "siteAccess": "사이트 액세스",
-    "siteAccessDisabledTip": "사이트 액세스 비활성화 — 이 사이트는 로드되지 않습니다",
-    "siteAccessEnabledTip": "사이트 액세스 활성화 — 이 사이트를 사용할 수 있습니다"
+    "themeMint": "민트"
   },
   "batch": {
     "inputPlaceholder": "모든 LLM에게 질문하기...",
@@ -55,7 +52,7 @@
     "querying": "질의 중...",
     "attachFile": "파일 첨부",
     "fileTooLarge": "{{name}} 파일이 너무 큽니다 (최대 10MB)",
-    "disableAccess": "사이트 액세스 비활성화"
+    "disableSite": "사이트 비활성화"
   },
   "history": {
     "title": "히스토리",

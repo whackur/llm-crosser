@@ -163,22 +163,12 @@ export default function BatchSearchPage() {
     [siteList, siteConfigs, postMessageToSiteIframe],
   );
 
-  const handleAccessToggle = useCallback(
+  const handleDisableSite = useCallback(
     (siteName: string) => {
       if (!settings) return;
-      const currentAccess = new Set(settings.disabledAccessSites || []);
       const currentEnabled = new Set(settings.enabledSites || []);
-      if (currentAccess.has(siteName)) {
-        // Access was OFF → turn ON (auto-enable)
-        currentAccess.delete(siteName);
-        currentEnabled.add(siteName);
-      } else {
-        // Access was ON → turn OFF (force-disable)
-        currentAccess.add(siteName);
-        currentEnabled.delete(siteName);
-      }
+      currentEnabled.delete(siteName);
       void updateSettings({
-        disabledAccessSites: Array.from(currentAccess),
         enabledSites: Array.from(currentEnabled),
       });
     },
@@ -191,11 +181,11 @@ export default function BatchSearchPage() {
         key={`${site.name}-${resetKey}`}
         siteName={site.name}
         siteUrl={siteUrlOverrides[site.name] || site.url}
-        onAccessToggle={handleAccessToggle}
+        onDisable={handleDisableSite}
         onShare={handleShare}
       />
     ),
-    [handleShare, handleAccessToggle, siteUrlOverrides, resetKey],
+    [handleShare, handleDisableSite, siteUrlOverrides, resetKey],
   );
   if (settingsLoading || configLoading || !settings)
     return (

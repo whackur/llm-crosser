@@ -38,10 +38,7 @@
     "themeOcean": "オーシャン",
     "themeForest": "フォレスト",
     "themeRose": "ローズ",
-    "themeMint": "ミント",
-    "siteAccess": "サイトアクセス",
-    "siteAccessDisabledTip": "サイトアクセス無効 — このサイトは読み込まれません",
-    "siteAccessEnabledTip": "サイトアクセス有効 — このサイトを使用できます"
+    "themeMint": "ミント"
   },
   "batch": {
     "inputPlaceholder": "すべてのLLMに質問...",
@@ -55,7 +52,7 @@
     "querying": "クエリ中...",
     "attachFile": "ファイルを添付",
     "fileTooLarge": "{{name}}が大きすぎます（最大5MB）",
-    "disableAccess": "サイトアクセスを無効にする"
+    "disableSite": "サイトを無効にする"
   },
   "history": {
     "title": "履歴",

@@ -15,8 +15,6 @@ export default function SettingsPage() {
 
   const handleToggle = async (siteName: string, isEnabled: boolean) => {
     if (!settings) return;
-    // Guard: cannot enable a site that has access disabled
-    if (isEnabled && settings.disabledAccessSites?.includes(siteName)) return;
     const currentEnabled = new Set(settings.enabledSites || []);
     if (isEnabled) {
       currentEnabled.add(siteName);
@@ -24,23 +22,6 @@ export default function SettingsPage() {
       currentEnabled.delete(siteName);
     }
     await updateSettings({
-      enabledSites: Array.from(currentEnabled),
-    });
-  };
-
-  const handleAccessToggle = async (siteName: string, isAccessDisabled: boolean) => {
-    if (!settings) return;
-    const currentAccess = new Set(settings.disabledAccessSites || []);
-    const currentEnabled = new Set(settings.enabledSites || []);
-    if (isAccessDisabled) {
-      currentAccess.add(siteName);
-      currentEnabled.delete(siteName); // force-disable when access OFF
-    } else {
-      currentAccess.delete(siteName);
-      currentEnabled.add(siteName); // auto-enable when access ON
-    }
-    await updateSettings({
-      disabledAccessSites: Array.from(currentAccess),
       enabledSites: Array.from(currentEnabled),
     });
   };
@@ -56,9 +37,7 @@ export default function SettingsPage() {
       <SiteToggleSection
         availableSites={siteConfigs}
         enabledSites={settings?.enabledSites ?? []}
-        disabledAccessSites={settings?.disabledAccessSites ?? []}
         onToggle={handleToggle}
-        onAccessToggle={handleAccessToggle}
       />
 
       <section className="mb-7">

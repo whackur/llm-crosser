@@ -38,10 +38,7 @@
     "themeOcean": "Océan",
     "themeForest": "Forêt",
     "themeRose": "Rose",
-    "themeMint": "Menthe",
-    "siteAccess": "Accès au site",
-    "siteAccessDisabledTip": "Accès au site désactivé — ce site ne sera pas chargé",
-    "siteAccessEnabledTip": "Accès au site activé — ce site peut être utilisé"
+    "themeMint": "Menthe"
   },
   "batch": {
     "inputPlaceholder": "Poser une question à tous les LLM...",
@@ -55,7 +52,7 @@
     "querying": "Interrogation...",
     "attachFile": "Joindre un fichier",
     "fileTooLarge": "{{name}} est trop volumineux (max 10 Mo)",
-    "disableAccess": "Désactiver l'accès au site"
+    "disableSite": "Désactiver le site"
   },
   "history": {
     "title": "Historique",

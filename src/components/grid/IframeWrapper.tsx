@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 interface IframeWrapperProps {
   siteName: string;
   siteUrl: string;
-  onAccessToggle?: (siteName: string) => void;
+  onDisable?: (siteName: string) => void;
   onShare?: (siteName: string) => void;
   onRetry?: (siteName: string) => void;
 }
@@ -12,7 +12,7 @@ interface IframeWrapperProps {
 const IframeWrapperInner: React.FC<IframeWrapperProps> = ({
   siteName,
   siteUrl,
-  onAccessToggle,
+  onDisable,
   onShare,
   onRetry,
 }) => {
@@ -59,9 +59,9 @@ const IframeWrapperInner: React.FC<IframeWrapperProps> = ({
     onShare?.(siteName);
   }, [siteName, onShare]);
 
-  const handleAccessClick = useCallback(() => {
-    onAccessToggle?.(siteName);
-  }, [siteName, onAccessToggle]);
+  const handleDisableClick = useCallback(() => {
+    onDisable?.(siteName);
+  }, [siteName, onDisable]);
 
   const getStatusColor = () => {
     if (isError) return "bg-error";
@@ -81,12 +81,12 @@ const IframeWrapperInner: React.FC<IframeWrapperProps> = ({
         </span>
 
         <button
-          onClick={handleAccessClick}
+          onClick={handleDisableClick}
           className="p-1.5 rounded-md text-text-secondary/50 hover:text-error hover:bg-error/10 transition-all focus:outline-none focus:ring-2 focus:ring-error/20"
-          title={t("batch.disableAccess")}
-          aria-label={`Disable access for ${siteName}`}
+          title={t("batch.disableSite")}
+          aria-label={`Disable ${siteName}`}
         >
-          <AccessDisableIcon />
+          <DisableSiteIcon />
         </button>
 
         <button
@@ -173,7 +173,7 @@ const IframeWrapperInner: React.FC<IframeWrapperProps> = ({
   );
 };
 
-function AccessDisableIcon() {
+function DisableSiteIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

@@ -15,17 +15,12 @@ export function SidepanelHome() {
   const [query, setQuery] = useState("");
 
   const allSites = useMemo(
-    () =>
-      siteConfigs
-        .filter((site) => !settings?.disabledAccessSites?.includes(site.name))
-        .map((site) => ({ name: site.name, url: String(site.url) })),
-    [siteConfigs, settings?.disabledAccessSites],
+    () => siteConfigs.map((site) => ({ name: site.name, url: String(site.url) })),
+    [siteConfigs],
   );
   const handleSiteToggle = useCallback(
     (siteName: string, enabled: boolean) => {
       if (!settings) return;
-      // Guard: cannot enable a site that has access disabled
-      if (enabled && settings.disabledAccessSites?.includes(siteName)) return;
       const current = new Set(settings.enabledSites);
       if (enabled) {
         current.add(siteName);

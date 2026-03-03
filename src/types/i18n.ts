@@ -22,7 +22,7 @@ export interface TranslationKeys {
     title: string;
     language: string;
     gridColumns: string;
-    enabledSites: string;
+
     promptTemplates: string;
     addTemplate: string;
     templateName: string;

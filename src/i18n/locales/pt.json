@@ -38,10 +38,7 @@
     "themeOcean": "Oceano",
     "themeForest": "Floresta",
     "themeRose": "Rosa",
-    "themeMint": "Menta",
-    "siteAccess": "Acesso ao Site",
-    "siteAccessDisabledTip": "Acesso ao site desativado — este site não será carregado",
-    "siteAccessEnabledTip": "Acesso ao site ativado — este site pode ser usado"
+    "themeMint": "Menta"
   },
   "batch": {
     "inputPlaceholder": "Pergunte a todos os LLMs...",
@@ -55,7 +52,7 @@
     "querying": "Consultando...",
     "attachFile": "Anexar arquivo",
     "fileTooLarge": "{{name}} é muito grande (máx. 10MB)",
-    "disableAccess": "Desativar acesso ao site"
+    "disableSite": "Desativar site"
   },
   "history": {
     "title": "Histórico",

@@ -38,10 +38,7 @@
     "themeOcean": "海洋",
     "themeForest": "森林",
     "themeRose": "玫瑰",
-    "themeMint": "薄荷",
-    "siteAccess": "网站访问",
-    "siteAccessDisabledTip": "网站访问已禁用 — 此网站不会被加载",
-    "siteAccessEnabledTip": "网站访问已启用 — 可以使用此网站"
+    "themeMint": "薄荷"
   },
   "batch": {
     "inputPlaceholder": "向所有LLM提问...",
@@ -55,7 +52,7 @@
     "querying": "查询中...",
     "attachFile": "附加文件",
     "fileTooLarge": "{{name}}文件太大（最大5MB）",
-    "disableAccess": "禁用网站访问"
+    "disableSite": "禁用网站"
   },
   "history": {
     "title": "历史",

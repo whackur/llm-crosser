@@ -38,10 +38,7 @@
     "themeOcean": "Океан",
     "themeForest": "Лес",
     "themeRose": "Роза",
-    "themeMint": "Мята",
-    "siteAccess": "Доступ к сайту",
-    "siteAccessDisabledTip": "Доступ к сайту отключён — этот сайт не будет загружен",
-    "siteAccessEnabledTip": "Доступ к сайту включён — этот сайт можно использовать"
+    "themeMint": "Мята"
   },
   "batch": {
     "inputPlaceholder": "Спросить все LLM...",
@@ -55,7 +52,7 @@
     "querying": "Запрос...",
     "attachFile": "Прикрепить файл",
     "fileTooLarge": "{{name}} слишком большой (макс. 10 МБ)",
-    "disableAccess": "Отключить доступ к сайту"
+    "disableSite": "Отключить сайт"
   },
   "history": {
     "title": "История",
