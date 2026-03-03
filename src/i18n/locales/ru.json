@@ -39,9 +39,9 @@
     "themeForest": "Лес",
     "themeRose": "Роза",
     "themeMint": "Мята",
-    "automation": "Автоматизация",
-    "automationDisabledTip": "Автоматизация отключена — запросы не будут отправляться автоматически",
-    "automationEnabledTip": "Автоматизация включена — запросы будут отправляться автоматически"
+    "siteAccess": "Доступ к сайту",
+    "siteAccessDisabledTip": "Доступ к сайту отключён — этот сайт не будет загружен",
+    "siteAccessEnabledTip": "Доступ к сайту включён — этот сайт можно использовать"
   },
   "batch": {
     "inputPlaceholder": "Спросить все LLM...",
@@ -55,9 +55,7 @@
     "querying": "Запрос...",
     "attachFile": "Прикрепить файл",
     "fileTooLarge": "{{name}} слишком большой (макс. 10 МБ)",
-    "manualMode": "Ручной",
-    "automationOff": "Автоматизация выкл. — нажмите для включения",
-    "automationOn": "Автоматизация вкл. — нажмите для выключения"
+    "disableAccess": "Отключить доступ к сайту"
   },
   "history": {
     "title": "История",

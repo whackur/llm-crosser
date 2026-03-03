@@ -39,9 +39,9 @@
     "themeForest": "森林",
     "themeRose": "玫瑰",
     "themeMint": "薄荷",
-    "automation": "自动化",
-    "automationDisabledTip": "自动化已禁用 — 查询不会自动发送",
-    "automationEnabledTip": "自动化已启用 — 查询将自动发送"
+    "siteAccess": "网站访问",
+    "siteAccessDisabledTip": "网站访问已禁用 — 此网站不会被加载",
+    "siteAccessEnabledTip": "网站访问已启用 — 可以使用此网站"
   },
   "batch": {
     "inputPlaceholder": "向所有LLM提问...",
@@ -55,9 +55,7 @@
     "querying": "查询中...",
     "attachFile": "附加文件",
     "fileTooLarge": "{{name}}文件太大（最大5MB）",
-    "manualMode": "手动",
-    "automationOff": "自动化关闭 — 点击启用",
-    "automationOn": "自动化开启 — 点击禁用"
+    "disableAccess": "禁用网站访问"
   },
   "history": {
     "title": "历史",

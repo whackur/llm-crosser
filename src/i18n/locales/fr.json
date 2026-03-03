@@ -39,9 +39,9 @@
     "themeForest": "Forêt",
     "themeRose": "Rose",
     "themeMint": "Menthe",
-    "automation": "Automatisation",
-    "automationDisabledTip": "Automatisation désactivée — les requêtes ne seront pas envoyées automatiquement",
-    "automationEnabledTip": "Automatisation activée — les requêtes seront envoyées automatiquement"
+    "siteAccess": "Accès au site",
+    "siteAccessDisabledTip": "Accès au site désactivé — ce site ne sera pas chargé",
+    "siteAccessEnabledTip": "Accès au site activé — ce site peut être utilisé"
   },
   "batch": {
     "inputPlaceholder": "Poser une question à tous les LLM...",
@@ -55,9 +55,7 @@
     "querying": "Interrogation...",
     "attachFile": "Joindre un fichier",
     "fileTooLarge": "{{name}} est trop volumineux (max 10 Mo)",
-    "manualMode": "Manuel",
-    "automationOff": "Automatisation désactivée — cliquer pour activer",
-    "automationOn": "Automatisation activée — cliquer pour désactiver"
+    "disableAccess": "Désactiver l'accès au site"
   },
   "history": {
     "title": "Historique",

@@ -4,17 +4,17 @@ import type { SiteConfig } from "@/src/types";
 interface SiteToggleSectionProps {
   availableSites: SiteConfig[];
   enabledSites: string[];
-  disabledAutomationSites: string[];
+  disabledAccessSites: string[];
   onToggle: (siteName: string, isEnabled: boolean) => void;
-  onAutomationToggle: (siteName: string, isDisabled: boolean) => void;
+  onAccessToggle: (siteName: string, isAccessDisabled: boolean) => void;
 }
 
 export function SiteToggleSection({
   availableSites,
   enabledSites,
-  disabledAutomationSites,
+  disabledAccessSites,
   onToggle,
-  onAutomationToggle,
+  onAccessToggle,
 }: SiteToggleSectionProps) {
   const { t } = useTranslation();
 
@@ -28,15 +28,17 @@ export function SiteToggleSection({
       <div className="grid gap-2.5 sm:grid-cols-2">
         {availableSites.map((site) => {
           const isEnabled = enabledSites.includes(site.name);
-          const isAutomationDisabled = disabledAutomationSites.includes(site.name);
+          const isAccessDisabled = disabledAccessSites.includes(site.name);
 
           return (
             <div
               key={site.name}
               className={`rounded-lg border transition-all duration-200 ${
-                isEnabled
-                  ? "bg-surface border-primary/30 shadow-sm shadow-primary/5"
-                  : "bg-surface/50 border-border hover:border-border/80"
+                isAccessDisabled
+                  ? "bg-surface border-border/50"
+                  : isEnabled
+                    ? "bg-surface border-primary/30 shadow-sm shadow-primary/5"
+                    : "bg-surface/50 border-border hover:border-border/80"
               }`}
             >
               <div className="flex items-center justify-between p-3">
@@ -53,10 +55,13 @@ export function SiteToggleSection({
 
                 <button
                   onClick={() => onToggle(site.name, !isEnabled)}
-                  className={`w-10 h-6 rounded-full relative transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 shrink-0 cursor-pointer ${
-                    isEnabled
-                      ? "bg-primary shadow-inner"
-                      : "bg-surface-secondary border border-border"
+                  disabled={isAccessDisabled}
+                  className={`w-10 h-6 rounded-full relative transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 shrink-0 ${
+                    isAccessDisabled
+                      ? "opacity-40 cursor-not-allowed bg-surface-secondary border border-border"
+                      : isEnabled
+                        ? "cursor-pointer bg-primary shadow-inner"
+                        : "cursor-pointer bg-surface-secondary border border-border"
                   }`}
                   type="button"
                   aria-pressed={isEnabled}
@@ -69,39 +74,37 @@ export function SiteToggleSection({
                 </button>
               </div>
 
-              {isEnabled && (
-                <div className="px-3 pb-2.5 pt-0">
-                  <div className="flex items-center justify-between py-1.5 px-2.5 rounded-md bg-surface-secondary/40 border border-border/30">
-                    <div className="flex items-center gap-1.5">
-                      <AutomationIcon disabled={isAutomationDisabled} />
-                      <span className="text-[11px] text-text-secondary">
-                        {t("settings.automation")}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => onAutomationToggle(site.name, !isAutomationDisabled)}
-                      className={`w-8 h-[18px] rounded-full relative transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 shrink-0 cursor-pointer ${
-                        isAutomationDisabled
-                          ? "bg-surface-secondary border border-border"
-                          : "bg-primary/80 shadow-inner"
-                      }`}
-                      type="button"
-                      title={
-                        isAutomationDisabled
-                          ? t("settings.automationDisabledTip")
-                          : t("settings.automationEnabledTip")
-                      }
-                      aria-pressed={!isAutomationDisabled}
-                    >
-                      <span
-                        className={`absolute top-[2px] left-0 h-[14px] w-[14px] rounded-full bg-white shadow-sm transition-transform duration-200 ${
-                          isAutomationDisabled ? "translate-x-[2px]" : "translate-x-[14px]"
-                        }`}
-                      />
-                    </button>
+              <div className="px-3 pb-2.5 pt-0">
+                <div className="flex items-center justify-between py-1.5 px-2.5 rounded-md bg-surface-secondary/40 border border-border/30">
+                  <div className="flex items-center gap-1.5">
+                    <SiteAccessIcon disabled={isAccessDisabled} />
+                    <span className="text-[11px] text-text-secondary">
+                      {t("settings.siteAccess")}
+                    </span>
                   </div>
+                  <button
+                    onClick={() => onAccessToggle(site.name, !isAccessDisabled)}
+                    className={`w-8 h-[18px] rounded-full relative transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 shrink-0 cursor-pointer ${
+                      isAccessDisabled
+                        ? "bg-surface-secondary border border-border"
+                        : "bg-primary/80 shadow-inner"
+                    }`}
+                    type="button"
+                    title={
+                      isAccessDisabled
+                        ? t("settings.siteAccessDisabledTip")
+                        : t("settings.siteAccessEnabledTip")
+                    }
+                    aria-pressed={!isAccessDisabled}
+                  >
+                    <span
+                      className={`absolute top-[2px] left-0 h-[14px] w-[14px] rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                        isAccessDisabled ? "translate-x-[2px]" : "translate-x-[14px]"
+                      }`}
+                    />
+                  </button>
                 </div>
-              )}
+              </div>
             </div>
           );
         })}
@@ -110,7 +113,7 @@ export function SiteToggleSection({
   );
 }
 
-function AutomationIcon({ disabled }: { disabled: boolean }) {
+function SiteAccessIcon({ disabled }: { disabled: boolean }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +127,8 @@ function AutomationIcon({ disabled }: { disabled: boolean }) {
       strokeLinejoin="round"
       className={`${disabled ? "text-text-secondary/50" : "text-primary/70"} transition-colors`}
     >
-      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
     </svg>
   );
 }

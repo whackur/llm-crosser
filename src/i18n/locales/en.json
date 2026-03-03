@@ -39,9 +39,9 @@
     "themeForest": "Forest",
     "themeRose": "Rose",
     "themeMint": "Mint",
-    "automation": "Automation",
-    "automationDisabledTip": "Automation disabled — queries will not be sent automatically",
-    "automationEnabledTip": "Automation enabled — queries will be sent automatically"
+    "siteAccess": "Site Access",
+    "siteAccessDisabledTip": "Site access disabled — this site will not be loaded",
+    "siteAccessEnabledTip": "Site access enabled — this site can be used"
   },
   "batch": {
     "inputPlaceholder": "Ask all LLMs...",
@@ -55,9 +55,7 @@
     "querying": "Querying...",
     "attachFile": "Attach file",
     "fileTooLarge": "{{name}} is too large (max 10MB)",
-    "manualMode": "Manual",
-    "automationOff": "Automation off — click to enable",
-    "automationOn": "Automation on — click to disable"
+    "disableAccess": "Disable site access"
   },
   "history": {
     "title": "History",

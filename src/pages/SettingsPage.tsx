@@ -15,31 +15,33 @@ export default function SettingsPage() {
 
   const handleToggle = async (siteName: string, isEnabled: boolean) => {
     if (!settings) return;
-
+    // Guard: cannot enable a site that has access disabled
+    if (isEnabled && settings.disabledAccessSites?.includes(siteName)) return;
     const currentEnabled = new Set(settings.enabledSites || []);
     if (isEnabled) {
       currentEnabled.add(siteName);
     } else {
       currentEnabled.delete(siteName);
     }
-
     await updateSettings({
       enabledSites: Array.from(currentEnabled),
     });
   };
 
-  const handleAutomationToggle = async (siteName: string, isDisabled: boolean) => {
+  const handleAccessToggle = async (siteName: string, isAccessDisabled: boolean) => {
     if (!settings) return;
-
-    const current = new Set(settings.disabledAutomationSites || []);
-    if (isDisabled) {
-      current.add(siteName);
+    const currentAccess = new Set(settings.disabledAccessSites || []);
+    const currentEnabled = new Set(settings.enabledSites || []);
+    if (isAccessDisabled) {
+      currentAccess.add(siteName);
+      currentEnabled.delete(siteName); // force-disable when access OFF
     } else {
-      current.delete(siteName);
+      currentAccess.delete(siteName);
+      currentEnabled.add(siteName); // auto-enable when access ON
     }
-
     await updateSettings({
-      disabledAutomationSites: Array.from(current),
+      disabledAccessSites: Array.from(currentAccess),
+      enabledSites: Array.from(currentEnabled),
     });
   };
 
@@ -54,9 +56,9 @@ export default function SettingsPage() {
       <SiteToggleSection
         availableSites={siteConfigs}
         enabledSites={settings?.enabledSites ?? []}
-        disabledAutomationSites={settings?.disabledAutomationSites ?? []}
+        disabledAccessSites={settings?.disabledAccessSites ?? []}
         onToggle={handleToggle}
-        onAutomationToggle={handleAutomationToggle}
+        onAccessToggle={handleAccessToggle}
       />
 
       <section className="mb-7">
