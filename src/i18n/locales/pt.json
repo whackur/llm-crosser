@@ -38,10 +38,7 @@
     "themeOcean": "Oceano",
     "themeForest": "Floresta",
     "themeRose": "Rosa",
-    "themeMint": "Menta",
-    "automation": "Automação",
-    "automationDisabledTip": "Automação desativada — consultas não serão enviadas automaticamente",
-    "automationEnabledTip": "Automação ativada — consultas serão enviadas automaticamente"
+    "themeMint": "Menta"
   },
   "batch": {
     "inputPlaceholder": "Pergunte a todos os LLMs...",
@@ -55,9 +52,7 @@
     "querying": "Consultando...",
     "attachFile": "Anexar arquivo",
     "fileTooLarge": "{{name}} é muito grande (máx. 10MB)",
-    "manualMode": "Manual",
-    "automationOff": "Automação desativada — clique para ativar",
-    "automationOn": "Automação ativada — clique para desativar"
+    "disableSite": "Desativar site"
   },
   "history": {
     "title": "Histórico",

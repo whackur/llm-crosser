@@ -18,7 +18,6 @@ export function SidepanelHome() {
     () => siteConfigs.map((site) => ({ name: site.name, url: String(site.url) })),
     [siteConfigs],
   );
-
   const handleSiteToggle = useCallback(
     (siteName: string, enabled: boolean) => {
       if (!settings) return;
