@@ -1,6 +1,6 @@
 {
-  "version": "0.1.0",
-  "lastUpdated": "2026-02-18T00:00:00Z",
+  "version": "0.1.1",
+  "lastUpdated": "2026-06-27T00:00:00Z",
   "sites": [
     {
       "name": "ChatGPT",
@@ -143,22 +143,21 @@
         "steps": [
           {
             "action": "focus",
-            "selector": "div[contenteditable=\"true\"].tiptap",
+            "selector": "textarea",
             "waitForElement": true,
             "maxAttempts": 5,
             "retryInterval": 200
           },
           {
             "action": "setValue",
-            "selector": "div[contenteditable=\"true\"].tiptap",
-            "inputType": "contenteditable",
+            "selector": "textarea",
             "waitForElement": true,
             "maxAttempts": 5,
             "retryInterval": 200
           },
           {
             "action": "triggerEvents",
-            "selector": "div[contenteditable=\"true\"].tiptap",
+            "selector": "textarea",
             "events": ["input", "change", "blur", "focus"],
             "waitForElement": true,
             "maxAttempts": 5,
@@ -169,12 +168,11 @@
             "duration": 100
           },
           {
-            "action": "sendKeys",
-            "selector": "div[contenteditable=\"true\"].tiptap",
-            "keys": "Enter",
-            "waitForElement": true,
+            "action": "click",
+            "selector": "button[data-testid=\"chat-submit\"]",
+            "retryOnDisabled": true,
             "maxAttempts": 5,
-            "retryInterval": 200
+            "retryInterval": 300
           }
         ]
       },
@@ -182,7 +180,7 @@
         "steps": [
           {
             "action": "focus",
-            "selector": "div[contenteditable=\"true\"].tiptap",
+            "selector": "textarea",
             "waitForElement": true,
             "maxAttempts": 5,
             "retryInterval": 200
@@ -211,7 +209,8 @@
       "userPromptButton": {
         "containerSelector": "[data-message-author-role=\"assistant\"]",
         "textSelector": "[data-message-author-role=\"assistant\"]"
-      }
+      },
+      "notes": "Input migrated from tiptap contenteditable to a plain textarea (verified 2026-06-27); submit button is button[data-testid=\"chat-submit\"]. contentExtractor and userPromptButton selectors are unverified (require an authenticated conversation) and may need updating."
     },
     {
       "name": "Qwen",
