@@ -20,5 +20,4 @@ export interface UserSettings {
   promptTemplates: PromptTemplate[];
   exportAllTemplates: PromptTemplate[];
   defaultExportName: string;
-
 }

@@ -13,5 +13,4 @@ export const DEFAULT_SETTINGS: UserSettings = {
   promptTemplates: [],
   exportAllTemplates: [],
   defaultExportName: "",
-
 };

@@ -23,8 +23,7 @@ export function useExportHistory(): UseExportHistoryReturn {
     (changes: Record<string, chrome.storage.StorageChange>) => {
       if ("llm-crosser-export-history" in changes) {
         const next = changes["llm-crosser-export-history"].newValue as
-          | ExportHistoryEntry[]
-          | undefined;
+          ExportHistoryEntry[] | undefined;
         if (next !== undefined) {
           setExportHistory(next);
         }

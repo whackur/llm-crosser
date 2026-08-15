@@ -34,14 +34,6 @@ export default defineConfig(
     },
   },
   {
-    ignores: [
-      "dist/",
-      "coverage/",
-      "data/",
-      ".output/",
-      ".wxt/",
-      "dev/",
-      "node_modules/",
-    ],
+    ignores: ["dist/", "coverage/", "data/", ".output/", ".wxt/", "dev/", "node_modules/"],
   },
 );

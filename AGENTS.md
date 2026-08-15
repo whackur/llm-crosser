@@ -95,7 +95,7 @@ llm-crosser/
 | Modify permissions         | `wxt.config.ts` → `manifest.permissions`                                                                                | Rebuild required                                                                |
 | Fix iframe framing         | `entrypoints/frame-guard.content.ts` + `public/rules.json`                                                              | Network-level + JS-level bypass                                                 |
 | Change theme/add theme     | `src/styles/globals.css` → `@theme` block + `[data-theme]` selectors                                                    | CSS custom properties consumed by Tailwind; `useTheme` hook applies             |
-| Messaging between contexts | `src/lib/site-frame-message-router.ts` + `entrypoints/background.ts`                                                    | Background broadcasts to batch-search tab frames                            |
+| Messaging between contexts | `src/lib/site-frame-message-router.ts` + `entrypoints/background.ts`                                                    | Background broadcasts to batch-search tab frames                                |
 | Extract LLM responses      | `src/lib/content-extractor.ts` + `src/lib/html-node-converter.ts` + `src/lib/html-to-markdown.ts`                       | Extraction pipeline: DOM → HTML → Markdown                                      |
 | Float window mode          | `src/lib/float-state.ts` + `src/hooks/useFloatMode.ts` + `entrypoints/background.ts`                                    | Detach batch-search into popup window; state in chrome.storage                  |
 | Side panel UI              | `entrypoints/sidepanel/` + `src/components/sidepanel/`                                                                  | Quick query + float window control; bottom tab nav                              |
@@ -108,7 +108,7 @@ llm-crosser/
 
 ## EXTENSION ARCHITECTURE
 
-```
+````
 User clicks icon / types "llmc <query>" in omnibox
     → background.ts opens/focuses batch-search tab (with #/?q= hash for omnibox)
         → BatchSearchPage renders IframeGrid
@@ -129,7 +129,7 @@ pnpm build            # Production build → .output/chrome-mv3/
 pnpm build:firefox    # Firefox build
 pnpm build:safari     # Safari build
 pnpm zip              # Package for Chrome Web Store
-```
+````
 
 **No test runner, linter, or formatter CLI configured.** Code style enforced by convention (see CODE STYLE above).
 
@@ -151,6 +151,6 @@ pnpm zip              # Package for Chrome Web Store
 - **Language persistence**: `AppLayout.tsx` syncs `i18n.changeLanguage()` with stored `settings.language` on mount via `useEffect`. Without this, page refresh reverts to fallback language (`en`).
 - **GitHub link**: Static link to repo in Sidebar footer, alongside existing "Report Issue" link. No API integration.
 - **Viral comparison examples**: 100 curated LLM comparison queries across 8 categories (Brain Teaser, AI Identity, Creative Writing, Coding Challenge, Practical Advice, Knowledge Test, Hot Take, Fun & Personality). Displayed randomly one-at-a-time in sidepanel via `ViralExampleCard`. Clicking "Try this" triggers `DETACH_BATCH_SEARCH` — reuses existing omnibox pipeline. Static data only, no API. `viral-comparison-examples.ts` is exempt from 200 LOC rule (static data, like `Icons.tsx`).
- **DNR `requestDomains` must use apex domains**: Use `perplexity.ai` (not `www.perplexity.ai`) in `rules.json` `requestDomains`. Chrome DNR automatically matches all subdomains of listed domains, so apex domains provide the broadest coverage. Same applies to any future LLM site additions.
- **Both apex and www domains configured for Perplexity**: `host_permissions`, `frame-src`, content script `matches`, and `web_accessible_resources` all include both `https://www.perplexity.ai/*` and `https://perplexity.ai/*` to handle potential redirects or domain variations.
- **CSP-Report-Only also stripped**: `rules.json` removes both `content-security-policy` and `content-security-policy-report-only` response headers. Some sites (e.g., Perplexity behind Cloudflare) may send either or both.
+  **DNR `requestDomains` must use apex domains**: Use `perplexity.ai` (not `www.perplexity.ai`) in `rules.json` `requestDomains`. Chrome DNR automatically matches all subdomains of listed domains, so apex domains provide the broadest coverage. Same applies to any future LLM site additions.
+  **Both apex and www domains configured for Perplexity**: `host_permissions`, `frame-src`, content script `matches`, and `web_accessible_resources` all include both `https://www.perplexity.ai/*` and `https://perplexity.ai/*` to handle potential redirects or domain variations.
+  **CSP-Report-Only also stripped**: `rules.json` removes both `content-security-policy` and `content-security-policy-report-only` response headers. Some sites (e.g., Perplexity behind Cloudflare) may send either or both.

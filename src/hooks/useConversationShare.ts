@@ -192,5 +192,12 @@ export function useConversationShare(
     setShareState((prev) => ({ ...prev, isOpen: false }));
   }, []);
 
-  return { shareState, isExtracting, handleShare, handleShareAll, handleExportSave, closeSharePopup };
+  return {
+    shareState,
+    isExtracting,
+    handleShare,
+    handleShareAll,
+    handleExportSave,
+    closeSharePopup,
+  };
 }

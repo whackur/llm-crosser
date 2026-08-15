@@ -1,6 +1,6 @@
 # Privacy Policy for LLM Crosser
 
-LLM Crosser ("the Extension") respects your privacy and is committed to protecting it. 
+LLM Crosser ("the Extension") respects your privacy and is committed to protecting it.
 
 **1. Data Collection and Usage**
 The Extension does NOT collect, store, transmit, or share any personal information, user data, or browsing history. All operations, including sending prompts and viewing responses on supported LLM websites, are performed entirely locally on your device within your browser.

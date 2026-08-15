@@ -4,7 +4,6 @@ import { getFloatState } from "./float-state";
 
 export const BATCH_SEARCH_PATH = "batch-search.html";
 
-
 export async function findBatchSearchTab(): Promise<Browser.tabs.Tab | undefined> {
   const floatState = await getFloatState();
 
@@ -27,7 +26,6 @@ export async function fetchSiteConfig(): Promise<unknown> {
   const response = await fetch(url);
   return response.json() as Promise<unknown>;
 }
-
 
 export async function forwardToExtensionPage(
   message: QueryStatusMessage | SiteReadyMessage,

@@ -56,21 +56,18 @@ export default defineContentScript({
       const { text, requestId } = event.data as { text: string; requestId: string };
 
       const reply = (success: boolean) =>
-        window.postMessage(
-          { type: "LLM_CROSSER_QUILL_INJECT_RESULT", requestId, success },
-          "*",
-        );
+        window.postMessage({ type: "LLM_CROSSER_QUILL_INJECT_RESULT", requestId, success }, "*");
 
       const container = document.querySelector(".ql-container") as HTMLElement | null;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const quill = (container as any)?.__quill as
         | {
-          focus: () => void;
-          deleteText: (i: number, l: number, s: string) => void;
-          insertText: (i: number, t: string, s: string) => void;
-          getLength: () => number;
-          setSelection: (i: number) => void;
-        }
+            focus: () => void;
+            deleteText: (i: number, l: number, s: string) => void;
+            insertText: (i: number, t: string, s: string) => void;
+            getLength: () => number;
+            setSelection: (i: number) => void;
+          }
         | undefined;
 
       if (!quill) {

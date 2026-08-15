@@ -124,8 +124,14 @@ export default function BatchSearchPage() {
     historyLoading,
     onHistoryRestore: setSiteUrlOverrides,
   });
-  const { shareState, isExtracting, handleShare, handleShareAll, handleExportSave, closeSharePopup } =
-    useConversationShare({ siteList, siteConfigs, addExportEntry });
+  const {
+    shareState,
+    isExtracting,
+    handleShare,
+    handleShareAll,
+    handleExportSave,
+    closeSharePopup,
+  } = useConversationShare({ siteList, siteConfigs, addExportEntry });
   const handleLayoutChange = useCallback(
     (l: GridLayout) => void updateSettings({ gridLayout: l }),
     [updateSettings],

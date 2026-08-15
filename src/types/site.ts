@@ -4,14 +4,7 @@
  */
 
 export type SearchActionType =
-  | "focus"
-  | "setValue"
-  | "triggerEvents"
-  | "click"
-  | "wait"
-  | "sendKeys"
-  | "paste"
-  | "custom";
+  "focus" | "setValue" | "triggerEvents" | "click" | "wait" | "sendKeys" | "paste" | "custom";
 
 export type InputType = "contenteditable" | "angular" | "special";
 

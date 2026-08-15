@@ -74,8 +74,8 @@ BatchSearchPage → startConversationUrlCapture() → postMessage(GET_URL_VIA_PO
 | Fix element not found     | `element-finder.ts`                                             | Check Shadow DOM piercing logic                                           |
 | Fix rich editor input     | `contenteditable-handler.ts`                                    | Lexical vs Tiptap vs generic — different strategies                       |
 | Fix content extraction    | `content-extractor.ts`                                          | Config-driven — check `site-handlers.json` selectors                      |
-| Add new message type      | `types/messaging.ts` + `background.ts` handler                  | Add type to union, add case to background switch                  |
-| Fix message routing       | `site-frame-message-router.ts`                                  | Broadcasts to batch-search tab; content scripts self-filter       |
+| Add new message type      | `types/messaging.ts` + `background.ts` handler                  | Add type to union, add case to background switch                          |
+| Fix message routing       | `site-frame-message-router.ts`                                  | Broadcasts to batch-search tab; content scripts self-filter               |
 | Change storage schema     | `constants.ts` + `storage.ts`                                   | Update defaults in `constants.ts`, CRUD in `storage.ts`                   |
 | Capture conversation URLs | `conversation-url-capture.ts`                                   | Polls at 5s+12s; inject.content.ts handles `GET_URL_VIA_POST`             |
 | Float window state        | `float-state.ts`                                                | CRUD + onChange listener; consumed by `useFloatMode` hook                 |
